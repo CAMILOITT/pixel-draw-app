@@ -1,0 +1,23 @@
+.pickerColor {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.colorSwatch {
+  border: 5px solid;
+  border-image: var(--imgBorderPixel) 10/1.3/1;
+}
+
+.colorSwatch {
+  width: 100%;
+  height: 75px;
+}
+
+.addColor {
+  --size: 35px;
+  width: var(--size);
+  height: var(--size);
+  padding: 4px;
+  margin: auto;
+}

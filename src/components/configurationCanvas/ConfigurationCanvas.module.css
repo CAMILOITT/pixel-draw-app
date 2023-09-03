@@ -1,0 +1,105 @@
+.dialogConfiguration {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 30px 15px 20px;
+  outline: none;
+  border: none;
+  background: skyblue;
+}
+
+.dialogConfiguration,
+.dialogConfiguration :is(button, div, input) {
+  border: 5px solid;
+  border-image: var(--imgBorderPixel) 10/1.3/1;
+}
+
+.setting {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.setting h2 {
+  font-size: 1.4em;
+}
+
+.setting h3 {
+  line-height: .8em;
+}
+
+.closeSetting {
+  position: absolute;
+  top: -27px;
+  right: -10px;
+  padding: 5px;
+  padding: 0;
+  margin: 0;
+  width: min-content;
+  height: min-content;
+  display: grid;
+  place-content: center;
+}
+
+.closeSetting svg {
+  --size: 15px;
+  width: var(--size);
+  height: var(--size);
+}
+
+
+.nameSetting {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.valueSetting::-webkit-inner-spin-button {
+  text-align: center;
+  appearance: none;
+}
+
+.addBackground {
+  border: 3px solid;
+  border-image: var(--imgBorderPixel) 5/1/1;
+  width: 10px;
+  height: 10px;
+  transition: .5s;
+  -webkit-transition: .5s;
+  -moz-transition: .5s;
+  -ms-transition: .5s;
+  -o-transition: .5s;
+  background: #fff;
+}
+
+.addBackground:checked {
+  background: #000;
+}
+
+.valueSettingColor {
+  padding: 0;
+  position: relative;
+  background: #000;
+  appearance: none;
+  border: none;
+  -webkit-appearance: none;
+
+}
+
+.valueSettingColor::-webkit-color-swatch-wrapper {
+  --sizeBorderParent: -5px;
+  --size: calc(100% + (var(--sizeBorderParent)* -2));
+  appearance: none;
+  padding: 0;
+  width: var(--size);
+  height: var(--size);
+  position: absolute;
+  top: var(--sizeBorderParent);
+  left: var(--sizeBorderParent);
+}
+
+.valueSettingColor::-webkit-color-swatch {
+  border: none;
+}

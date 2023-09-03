@@ -1,0 +1,17 @@
+.color {
+  --size: 35px;
+  width: var(--size);
+  height: var(--size);
+  cursor: pointer;
+  position: relative;
+}
+
+.deleteColor {
+  position: absolute;
+  top: -25%;
+  left: -50%;
+  z-index: 1;
+  /* opacity: 1;  */
+  /* contain: none; */
+  display: none;
+}

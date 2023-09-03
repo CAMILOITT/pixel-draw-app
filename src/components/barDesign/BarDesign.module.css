@@ -1,0 +1,66 @@
+.barDesign {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  translate: 0 -50%;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding: 10px;
+  width: 270px;
+  transition: .5s;
+  -webkit-transition: .5s;
+  -moz-transition: .5s;
+  -ms-transition: .5s;
+  -o-transition: .5s;
+  background: var(--barTools);
+}
+
+.barDesignClose {
+  translate: 100% -50%;
+}
+
+.barDesignOpen {
+  right: 0;
+  translate: 0 -50%;
+}
+
+.closeMenu {
+  font-size: .9em;
+  font-weight: bold;
+  position: absolute;
+  writing-mode: vertical-rl;
+  -webkit-writing-mode: vertical-rl;
+  -ms-writing-mode: vertical-rl;
+  left: calc((1em)* -1);
+  top: 50%;
+  translate: -85% -50%;
+  padding: 10px 5px;
+  rotate: 180deg;
+  z-index: 1;
+}
+
+.listColors {
+  display: flex;
+  flex-wrap: wrap;
+  list-style: none;
+  justify-content: center;
+  gap: 15px;
+  width: 100%;
+  max-height: calc(15px + (35px * 2) + 10px);
+  overflow-y: scroll;
+  padding: 5px;
+}
+
+.listColors::-webkit-scrollbar {
+  display: none;
+}
+
+
+
+.barDesign,
+.closeMenu,
+.barDesign :is(button, input, li) {
+  border: 5px solid;
+  border-image: var(--imgBorderPixel) 10/1.3/1;
+}
