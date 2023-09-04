@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 import BrushIcon from '../../assets/icons/BrushIcon'
 import EraserIcon from '../../assets/icons/EraserIcon'
 import EyeDropperIcon from '../../assets/icons/EyeDropperIcon'
@@ -13,14 +13,17 @@ import DownloadIcon from '../../assets/icons/DownloadIcon'
 import { InfoCanvasContext } from '../../context/state/infoCanvas/InfoCanvas'
 import ConfigurationIcon from '../../assets/icons/ConfigurationIcon'
 import { redo, undo } from '../../api/canvas/tools'
+import { createPortal } from 'react-dom'
+import Modal, { ModalRef } from '../modal/Modal'
+import ConfigurationCanvas from '../configurationCanvas/ConfigurationCanvas'
+import ConfigDownload from '../configDownload/ConfigDownload'
 
 interface BarToolsProps {}
 
 export default function BarTools({}: BarToolsProps) {
   const { setColorFocus, colors } = useContext(ColorContext)
 
-  const { setOpenMenuDownload, setOpenConfiguration, contextCanvasDrawing } =
-    useContext(InfoCanvasContext)
+  const { contextCanvasDrawing } = useContext(InfoCanvasContext)
 
   const [closeMenu, setCloseMenu] = useState(true)
 
@@ -31,6 +34,9 @@ export default function BarTools({}: BarToolsProps) {
     useState<StatusTransitionColor>('colorDesactive')
 
   const { setToolSelect } = useContext(SelectorToolsContext)
+
+  const ModalConfigurationCanvas = useRef<ModalRef | null>(null)
+  const ModalDownload = useRef<ModalRef | null>(null)
 
   useEffect(() => {
     let idTimeOut: number
@@ -68,27 +74,27 @@ export default function BarTools({}: BarToolsProps) {
   function handleSelectColor(e: React.MouseEvent<HTMLDivElement>) {
     const { color, colorSelect } = e.currentTarget.dataset
     if (colors.colorFocus === colorSelect) return
-    console.log({ focus: colors.colorFocus, colorSelect })
     if (colorSelect === 'colorPrimary' || colorSelect === 'colorSecondary')
       setColorFocus(colorSelect)
     if (!color) return
   }
 
   function openMenuDownload() {
-    setOpenMenuDownload(true)
+    ModalDownload.current?.open()
   }
 
   function openMenuCanvas() {
-    setOpenConfiguration(true)
+    ModalConfigurationCanvas.current?.open()
   }
 
   function handleRedo() {
-    contextCanvasDrawing
-    redo
+    if (!contextCanvasDrawing) return
+    redo(contextCanvasDrawing)
   }
 
   function handleUndo() {
-    contextCanvasDrawing
+    if (!contextCanvasDrawing) return
+    undo(contextCanvasDrawing)
   }
 
   return (
@@ -101,7 +107,7 @@ export default function BarTools({}: BarToolsProps) {
       <li className={css.tools}>
         <button
           value={Tools.brush}
-          // onClick={(    ) => undo() }
+          onClick={handleUndo}
           data-title="under (ctrl + Mays + z)"
         >
           <UndoIcon />
@@ -110,7 +116,7 @@ export default function BarTools({}: BarToolsProps) {
       <li className={css.tools}>
         <button
           value={Tools.brush}
-          onClick={handleUndo}
+          onClick={handleRedo}
           data-title="rendo (ctrl + z)"
         >
           <RedoIcon />
@@ -178,6 +184,18 @@ export default function BarTools({}: BarToolsProps) {
           <DownloadIcon />
         </button>
       </li>
+      {createPortal(
+        <Modal ref={ModalConfigurationCanvas}>
+          <ConfigurationCanvas />
+        </Modal>,
+        document.body
+      )}
+      {createPortal(
+        <Modal ref={ModalDownload}>
+          <ConfigDownload />
+        </Modal>,
+        document.body
+      )}
     </menu>
   )
 }

@@ -16,28 +16,17 @@ export function eyeDropper(value: CanvasContext & CoordDrawing) {
   return color
 }
 
-export function redo() {
-  console.log('rehacer')
-  console.log(arrCoord)
-
+export function redo({ ctx }: CanvasContext) {
   if (arrCoord.length === nextArrCoord.length) return
-
   const index = arrCoord.length
-
   arrCoord.push(nextArrCoord[index])
+  reDrawing({ ctx })
 }
 
-export function undo({ ctx, w, h, bg }) {
-  /**
-   * @todo poner el context en un estado global o exportar el contexto de layerPixel
-   */
-  console.log('deshacer')
+export function undo({ ctx }: CanvasContext) {
   if (arrCoord.length < 0) return
   arrCoord.pop()
-  console.log(arrCoord)
-  cleanCanvas({ ctx, w, h, bg })
-  // reDrawing(ctx)
-  // handleCleanBg({ ctx })
+  reDrawing({ ctx })
 }
 
 // Función para rellenar el área contigua con un color específico

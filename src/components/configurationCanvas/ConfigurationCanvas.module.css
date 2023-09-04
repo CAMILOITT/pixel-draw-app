@@ -1,15 +1,7 @@
 .dialogConfiguration {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  padding: 30px 15px 20px;
-  outline: none;
-  border: none;
   background: skyblue;
 }
 
-.dialogConfiguration,
 .dialogConfiguration :is(button, div, input) {
   border: 5px solid;
   border-image: var(--imgBorderPixel) 10/1.3/1;
@@ -27,28 +19,8 @@
 }
 
 .setting h3 {
-  line-height: .8em;
+  line-height: 0.8em;
 }
-
-.closeSetting {
-  position: absolute;
-  top: -27px;
-  right: -10px;
-  padding: 5px;
-  padding: 0;
-  margin: 0;
-  width: min-content;
-  height: min-content;
-  display: grid;
-  place-content: center;
-}
-
-.closeSetting svg {
-  --size: 15px;
-  width: var(--size);
-  height: var(--size);
-}
-
 
 .nameSetting {
   display: flex;
@@ -66,11 +38,11 @@
   border-image: var(--imgBorderPixel) 5/1/1;
   width: 10px;
   height: 10px;
-  transition: .5s;
-  -webkit-transition: .5s;
-  -moz-transition: .5s;
-  -ms-transition: .5s;
-  -o-transition: .5s;
+  transition: 0.5s;
+  -webkit-transition: 0.5s;
+  -moz-transition: 0.5s;
+  -ms-transition: 0.5s;
+  -o-transition: 0.5s;
   background: #fff;
 }
 
@@ -85,12 +57,11 @@
   appearance: none;
   border: none;
   -webkit-appearance: none;
-
 }
 
 .valueSettingColor::-webkit-color-swatch-wrapper {
   --sizeBorderParent: -5px;
-  --size: calc(100% + (var(--sizeBorderParent)* -2));
+  --size: calc(100% + (var(--sizeBorderParent) * -2));
   appearance: none;
   padding: 0;
   width: var(--size);

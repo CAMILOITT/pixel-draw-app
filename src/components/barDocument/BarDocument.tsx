@@ -8,7 +8,6 @@ const Edit = {
     {
       name: 'undo',
       action: (e: React.MouseEvent<HTMLLIElement>) => {
-        console.log(e)
       },
     },
     {

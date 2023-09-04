@@ -1,26 +1,16 @@
 import { useContext } from 'react'
 import { InfoCanvasContext } from '../../context/state/infoCanvas/InfoCanvas'
 import css from './ConfigDownload.module.css'
-import CloseIcon from '../../assets/icons/CloseIcon'
 
 interface ConfigDownloadProps {}
 
 export default function ConfigDownload({}: ConfigDownloadProps) {
-  const { urlImage, openMenuDownload, setOpenMenuDownload } =
+  const { urlImage,} =
     useContext(InfoCanvasContext)
-  function closeConfiguration() {
-    setOpenMenuDownload(false)
-  }
   return (
-    <dialog open={openMenuDownload}>
+    <div >
       <form className={css.formDownload}>
-        <button
-          className={css.closeMenu}
-          type="button"
-          onClick={closeConfiguration}
-        >
-          <CloseIcon />
-        </button>
+     
         <h2>Download</h2>
         <img src={urlImage} alt="drawing" className={css.previewImage} />
         <label className={css.informationDownload}>
@@ -43,6 +33,6 @@ export default function ConfigDownload({}: ConfigDownloadProps) {
           Download
         </a>
       </form>
-    </dialog>
+    </div>
   )
 }

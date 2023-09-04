@@ -54,7 +54,6 @@ export default function RangeSaturation({
         light: Math.round(50 - saturation / 2),
       }
     })
-    console.log(infoColor.light)
   }
 
   function desactiveChangeColor() {

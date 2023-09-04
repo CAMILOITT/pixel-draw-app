@@ -9,7 +9,7 @@ import {
 } from './interface'
 
 /**
- * 
+ *
  * @type {CoordDrawing & DrawingColor & DrawingDimensiones}
  * @prop {number} w - pixel width to draw
  * @prop {number} h - pixel height to draw
@@ -26,7 +26,7 @@ export type DrawingRectangle = DrawingDimensiones & DrawingColor & CoordDrawing
 
 export type DrawingLine = CoordDrawing & DrawingColor & DrawingSize
 
-export type Correction = CoordDrawing & DrawingColor & DrawingSize
+// export type Correction = CoordDrawing & DrawingColor & DrawingSize
 
 /**
  * Represents a canvas context with additional configuration options for filling the background.
@@ -56,3 +56,26 @@ export type Eraser = CanvasContext &
   CoordDrawing &
   DrawingDimensiones &
   CleanDrawing
+
+/**
+ * @type {CanvasContext & CoordDrawing & DrawingColor & DrawingDimensiones}
+ *  @prop {CanvasContext} ctx - Canvas context
+ *  @prop {CoordDrawing} x - coordinate in the x-axis
+ *  @prop {CoordDrawing} y - coordinate in the y-axis
+ *  @prop {DrawingDimensiones} w - pixel width
+ *  @prop {DrawingDimensiones} h - pixel height
+ *  @prop {DrawingColor} bg - pixel color
+ *  @prop {CoordDrawing} prevPosition - previous coordinates of the drawing
+ *  @prop {CoordDrawing} movementX - mouse movement in the x-direction
+ *  @prop {CoordDrawing} movementY - mouse movement in the y-direction
+ */
+
+export type CorrectionDrawing = CanvasContext &
+  CoordDrawing &
+  DrawingDimensiones &
+  DrawingColor & {
+    prevPosition: CoordDrawing
+    movementX: number
+    movementY: number
+  }
+

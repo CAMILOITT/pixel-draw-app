@@ -21,14 +21,10 @@ export interface CanvasProvider {
   setInfoCanvas: React.Dispatch<React.SetStateAction<ConfigCanvas>>
   sizePixel: DrawingDimensiones
   setSizePixel: React.Dispatch<React.SetStateAction<DrawingDimensiones>>
-  openConfiguration: boolean
-  setOpenConfiguration: React.Dispatch<React.SetStateAction<boolean>>
   urlImage: string
   setUrlImage: React.Dispatch<React.SetStateAction<string>>
-  openMenuDownload: boolean
-  setOpenMenuDownload: React.Dispatch<React.SetStateAction<boolean>>
   contextCanvasDrawing: CanvasContext | null
   setContextCanvasDrawing: React.Dispatch<
-    React.SetStateAction<CanvasRenderingContext2D | null>
+    React.SetStateAction<CanvasContext | null>
   >
 }

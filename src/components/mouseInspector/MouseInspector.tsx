@@ -10,7 +10,6 @@ export default function MouseInspector({}: MouseInspectorProps) {
         pointerEvents: 'revert',
       }}
       onMouseMove={e => {
-        console.log(e)
       }}
     >
       tu navegador no soporta la api de Canvas por favor considere actualizar o

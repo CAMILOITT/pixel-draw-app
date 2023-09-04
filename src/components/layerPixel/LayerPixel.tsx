@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { handleCorrection } from '../../api/canvas/correction'
 import { clean, draw, fillBackgroundCanvas } from '../../api/canvas/drawing'
-import { eyeDropper } from '../../api/canvas/tools'
+import { eyeDropper, redo, undo } from '../../api/canvas/tools'
 import { update } from '../../api/canvas/update'
 import { ColorContext } from '../../context/state/color/Color'
 import { InfoCanvasContext } from '../../context/state/infoCanvas/InfoCanvas'
@@ -9,26 +9,30 @@ import { BrushContext } from '../../context/state/pencil/Pencil'
 import { SelectorToolsContext } from '../../context/state/selectorTools/SelectorTools'
 import { Tools } from '../../types/tools/enums'
 import css from './LayerPixel.module.css'
+import { renderToPipeableStream } from 'react-dom/server'
 
 interface LayerPixelProps {}
 
 let drawing = false
 
 const limit = 1
+
 let prevPosition = { x: 0, y: 0 }
 
 export default function LayerPixel({}: LayerPixelProps) {
   const LayerDrawing = useRef<HTMLCanvasElement | null>(null)
-  const LayerResult = useRef<HTMLCanvasElement | null>(null)
+  const LayerMouse = useRef<HTMLCanvasElement | null>(null)
   const [ctx, setCtx] = useState<CanvasRenderingContext2D | null>(null)
+  const [ctxMouse, setCtxMouse] = useState<CanvasRenderingContext2D | null>(
+    null
+  )
   const [sizeCanvas, setSizeCanvas] = useState({ w: 500, h: 500 })
   const [multiplier, setMultiplier] = useState({ x: 1, y: 1 })
 
   const {
     infoCanvas,
     sizePixel,
-    openConfiguration,
-    setOpenConfiguration,
+
     setUrlImage,
     setContextCanvasDrawing,
   } = useContext(InfoCanvasContext)
@@ -44,11 +48,13 @@ export default function LayerPixel({}: LayerPixelProps) {
   }, [infoCanvas, sizeCanvas])
 
   useEffect(() => {
-    if (!LayerResult.current) return
-    LayerResult.current.width = infoCanvas.w
-    LayerResult.current.height = infoCanvas.h
+    if (!LayerMouse.current) return
+    LayerMouse.current.width = sizeCanvas.w
+    LayerMouse.current.height = sizeCanvas.h
 
-    const ctx = LayerResult.current.getContext('2d')
+    const ctx = LayerMouse.current.getContext('2d')
+
+    setCtxMouse(ctx)
 
     if (!ctx) return
     fillBackgroundCanvas({ ctx, ...sizeCanvas, bg: infoCanvas.bg })
@@ -66,8 +72,9 @@ export default function LayerPixel({}: LayerPixelProps) {
 
     if (!ctx) return
     setCtx(ctx)
-    setContextCanvasDrawing(ctx)
+    setContextCanvasDrawing({ ctx })
     fillBackgroundCanvas({ ctx, ...sizeCanvas, bg: infoCanvas.bg })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [infoCanvas, sizeCanvas])
 
   function handleStartDrawing(e: React.MouseEvent<HTMLCanvasElement>) {
@@ -138,7 +145,7 @@ export default function LayerPixel({}: LayerPixelProps) {
   }
 
   function handleDrawing(e: React.MouseEvent<HTMLCanvasElement>) {
-    if (!ctx) return
+    if (!ctx || !ctxMouse) return
 
     const { clientX, clientY, movementX, movementY } = e
     const { left, top } = e.currentTarget.getBoundingClientRect()
@@ -163,6 +170,13 @@ export default function LayerPixel({}: LayerPixelProps) {
     const x = Math.floor(
       Math.floor(correctingX / sizePixelW) * sizePixelW - centerDrawX
     )
+
+    ctxMouse.clearRect(0, 0, sizeCanvas.w, sizeCanvas.h)
+    ctxMouse.beginPath()
+    ctxMouse.fillStyle = colors[colors.colorFocus].color
+    ctxMouse.rect(x, y, w, h)
+    ctxMouse.fill()
+    ctxMouse.closePath()
 
     if (prevPosition.x === x && prevPosition.y === y) return
 
@@ -222,28 +236,21 @@ export default function LayerPixel({}: LayerPixelProps) {
     prevPosition = { x, y }
   }
 
-  function handleEndDrawing(e: React.MouseEvent<HTMLCanvasElement>) {
+  function handleEndDrawing() {
     drawing = false
-    const { clientX, clientY } = e
-    const { offsetLeft, offsetTop } = e.currentTarget
-    console.log(clientX, clientY, offsetLeft, offsetTop)
+
     update()
     if (!LayerDrawing.current) return
     const imageUrl = LayerDrawing.current.toDataURL('image/png')
     setUrlImage(imageUrl)
+    ctxMouse?.clearRect(0, 0, sizeCanvas.w, sizeCanvas.h)
   }
   // comandos
   function handleCommand(e: React.KeyboardEvent<HTMLCanvasElement>) {
     e.preventDefault()
 
-    const { code, key, ctrlKey, shiftKey } = e
+    const { key, ctrlKey, shiftKey } = e
 
-    if (code === 'Escape') {
-      if (openConfiguration) {
-        setOpenConfiguration(false)
-      }
-      return
-    }
     if (key === 'x') {
       colors.colorFocus === 'colorPrimary'
         ? setColorFocus('colorSecondary')
@@ -264,12 +271,15 @@ export default function LayerPixel({}: LayerPixelProps) {
     }
 
     if (key === 'z' && ctrlKey) {
-      console.log('deshacer')
+      if (!ctx) return
+      undo({ ctx })
       return
     }
 
     if (shiftKey && ctrlKey && key === 'Z') {
       console.log('rehacer')
+      if (!ctx) return
+      redo({ ctx })
       return
     }
   }
@@ -365,6 +375,23 @@ export default function LayerPixel({}: LayerPixelProps) {
     <>
       <canvas
         ref={LayerDrawing}
+        // onMouseMove={handleDrawing}
+        // onMouseDown={handleStartDrawing}
+        // onMouseUp={handleEndDrawing}
+        // onKeyDown={handleCommand}
+        // // onKeyUp={e => console.log('no se puede mover', e.code)}
+        // onTouchMove={handleTouch}
+        // onTouchStart={handleTouchStart}
+        // tabIndex={0}
+        className={css.canvasPixel}
+      >
+        parece que tu navegador no soporta la api de canvas por favor considera
+        actualizar el navegador a la version mas reciente o utilizar otro
+        navegador
+      </canvas>
+      <canvas
+        ref={LayerMouse}
+        className={css.canvasPixel}
         onMouseMove={handleDrawing}
         onMouseDown={handleStartDrawing}
         onMouseUp={handleEndDrawing}
@@ -373,13 +400,7 @@ export default function LayerPixel({}: LayerPixelProps) {
         onTouchMove={handleTouch}
         onTouchStart={handleTouchStart}
         tabIndex={0}
-        className={css.canvasPixel}
-      >
-        parece que tu navegador no soporta la api de canvas por favor considera
-        actualizar el navegador a la version mas reciente o utilizar otro
-        navegador
-      </canvas>
-      <canvas ref={LayerResult}></canvas>
+      ></canvas>
     </>
   )
 }

@@ -5,7 +5,7 @@ import {
   InfoDrawing,
 } from '../../types/drawing/types'
 import { Tools } from '../../types/tools/enums'
-import { arrCoord, toGroup } from './update'
+import { arrCoord, cleanCanvas, toGroup } from './update'
 
 /**
  * Fills the background of a canvas with the specified color.
@@ -68,15 +68,11 @@ export function clean(valueClean: Eraser) {
   toGroup({ tool: Tools.eraser, ...valueClean })
 }
 
-export function reDrawing({
-  ctx,
-  multiplier,
-}: CanvasContext & {
-  multiplier: number
-}) {
+export function reDrawing({ ctx }: CanvasContext) {
   const sizeCanvas = { w: ctx.canvas.width, h: ctx.canvas.height }
-  
   ctx.clearRect(0, -100, sizeCanvas.w + 500, sizeCanvas.h + 500)
+  
+  cleanCanvas({ ctx, w: ctx.canvas.width, h: ctx.canvas.height, bg: null })
 
   for (const blockDraw of arrCoord) {
     for (const dataDraw of blockDraw) {

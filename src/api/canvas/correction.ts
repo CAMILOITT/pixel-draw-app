@@ -1,37 +1,32 @@
+import { CorrectionDrawing } from '../../types/drawing/types'
 import { draw } from './drawing'
 
 /**
  * Handle correction of position on canvas.
- * @param value - Object containing canvas context, position, size, background color, and movement information.
- * @param {CanvasRenderingContext2D} value.ctx - The canvas rendering context.
- * @param {number} value.x - The x-coordinate of the shape.
- * @param {number} value.y - The y-coordinate of the shape.
- * @param {number} value.w - The width of the shape.
- * @param {number} value.h - The height of the shape.
- * @param {string} value.bg - The background color of the shape.
- * @param {Object} value.prevPosition - The previous position of the shape.
- * @param {number} value.prevPosition.x - The previous x-coordinate of the shape.
- * @param {number} value.prevPosition.y - The previous y-coordinate of the shape.
- * @param {number} value.movementX - The movement in the x-direction.
- * @param {number} value.movementY - The movement in the y-direction.
+ * @prop {CanvasRenderingContext2D} ctx - The canvas rendering context.
+ * @prop {number} x - The x-coordinate of the shape.
+ * @prop {number} y - The y-coordinate of the shape.
+ * @prop {number} w - The width of the shape.
+ * @prop {number} h - The height of the shape.
+ * @prop {string} bg - The background color of the shape.
+ * @prop {Object} prevPosition - The previous position of the shape.
+ * @prop {number} prevPosition.x - The previous x-coordinate of the shape.
+ * @prop {number} prevPosition.y - The previous y-coordinate of the shape.
+ * @prop {number} movementX - The movement in the x-direction.
+ * @prop {number} movementY - The movement in the y-direction.
  */
 
-export function handleCorrection(value: {
-  ctx: CanvasRenderingContext2D
-  x: number
-  y: number
-  w: number
-  h: number
-  bg: string
-  prevPosition: {
-    x: number
-    y: number
-  }
-  movementX: number
-  movementY: number
-}) {
-  const { ctx, x, y, w, h, bg, prevPosition, movementX, movementY } = value
-
+export function handleCorrection({
+  ctx,
+  x,
+  y,
+  w,
+  h,
+  bg,
+  prevPosition,
+  movementX,
+  movementY,
+}: CorrectionDrawing) {
   const mouseMoveLeft = prevPosition.x + w !== x && movementX > 0
   const mouseMoveRight = prevPosition.x - w !== x && movementX < 0
   const mouseMoveTop = prevPosition.y - h !== y && movementY < 0

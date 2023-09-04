@@ -16,8 +16,8 @@ export default function JoinRoom({}: JoinRoomProps) {
       <BarTools />
       <AdditionalTools />
       <BarDesign />
-      <ConfigurationCanvas />
-      <ConfigDownload />
+      {/* <ConfigurationCanvas /> */}
+      {/* <ConfigDownload /> */}
     </div>
   )
 }

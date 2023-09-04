@@ -29,8 +29,6 @@ export function update() {
   arrCoord.push(group)
   nextArrCoord = [...arrCoord]
   group = []
-  console.log(arrCoord)
-  console.log(nextArrCoord)
 }
 
 /**

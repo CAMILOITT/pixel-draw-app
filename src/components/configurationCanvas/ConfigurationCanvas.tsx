@@ -1,17 +1,11 @@
 import { useContext, useState } from 'react'
 import { InfoCanvasContext } from '../../context/state/infoCanvas/InfoCanvas'
 import css from './ConfigurationCanvas.module.css'
-import CloseIcon from '../../assets/icons/CloseIcon'
 
 interface ConfigurationCanvasProps {}
 
 export default function ConfigurationCanvas({}: ConfigurationCanvasProps) {
-  const {
-    setInfoCanvas,
-    setSizePixel,
-    openConfiguration,
-    setOpenConfiguration,
-  } = useContext(InfoCanvasContext)
+  const { setInfoCanvas, setSizePixel } = useContext(InfoCanvasContext)
 
   const [addBackground, setAddBackground] = useState(false)
 
@@ -42,16 +36,9 @@ export default function ConfigurationCanvas({}: ConfigurationCanvasProps) {
     // handleOpenConfiguration(false)
   }
 
-  function handleClose() {
-    setOpenConfiguration(false)
-  }
-
   return (
-    <dialog open={openConfiguration} className={css.dialogConfiguration}>
+    <div className={css.dialogConfiguration}>
       <form onSubmit={actInfoCanvas} className={css.setting}>
-        <button onClick={handleClose} className={css.closeSetting}>
-          <CloseIcon />
-        </button>
         <h2 className={css.titleSetting}>Configuración del canvas</h2>
         <h3 className={css.subtitleSetting}>Tamaño del canvas</h3>
         <label htmlFor="canvas-width" className={css.nameSetting}>
@@ -131,6 +118,6 @@ export default function ConfigurationCanvas({}: ConfigurationCanvasProps) {
 
         <button type="submit">crear</button>
       </form>
-    </dialog>
+    </div>
   )
 }
