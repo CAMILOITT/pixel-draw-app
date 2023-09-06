@@ -1,22 +1,22 @@
 import { useContext, useEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
+import { redo, undo } from '../../api/canvas/tools'
 import BrushIcon from '../../assets/icons/BrushIcon'
+import ConfigurationIcon from '../../assets/icons/ConfigurationIcon'
+import DownloadIcon from '../../assets/icons/DownloadIcon'
 import EraserIcon from '../../assets/icons/EraserIcon'
 import EyeDropperIcon from '../../assets/icons/EyeDropperIcon'
-import { ColorContext } from '../../context/state/color/Color'
-import { SelectorToolsContext } from '../../context/state/selectorTools/SelectorTools'
-import { Tools } from '../../types/tools/enums'
-import css from './BarTools.module.css'
-import { StatusTransitionColor } from '../../types/color/type'
 import RedoIcon from '../../assets/icons/RedoIcon'
 import UndoIcon from '../../assets/icons/UndoIcon'
-import DownloadIcon from '../../assets/icons/DownloadIcon'
+import { ColorContext } from '../../context/state/color/Color'
 import { InfoCanvasContext } from '../../context/state/infoCanvas/InfoCanvas'
-import ConfigurationIcon from '../../assets/icons/ConfigurationIcon'
-import { redo, undo } from '../../api/canvas/tools'
-import { createPortal } from 'react-dom'
-import Modal, { ModalRef } from '../modal/Modal'
-import ConfigurationCanvas from '../configurationCanvas/ConfigurationCanvas'
+import { SelectorToolsContext } from '../../context/state/selectorTools/SelectorTools'
+import { StatusTransitionColor } from '../../types/color/type'
+import { Tools } from '../../types/tools/enums'
 import ConfigDownload from '../configDownload/ConfigDownload'
+import ConfigurationCanvas from '../configurationCanvas/ConfigurationCanvas'
+import Modal, { ModalRef } from '../modal/Modal'
+import css from './BarTools.module.css'
 
 interface BarToolsProps {}
 
@@ -33,7 +33,7 @@ export default function BarTools({}: BarToolsProps) {
   const [statusColorSecondary, setStatusColorSecondary] =
     useState<StatusTransitionColor>('colorDesactive')
 
-  const { setToolSelect } = useContext(SelectorToolsContext)
+  const { setToolSelect, toolSelect } = useContext(SelectorToolsContext)
 
   const ModalConfigurationCanvas = useRef<ModalRef | null>(null)
   const ModalDownload = useRef<ModalRef | null>(null)
@@ -63,6 +63,7 @@ export default function BarTools({}: BarToolsProps) {
   function handleSelectTools(
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) {
+    console.log(toolSelect)
     const { value } = e.currentTarget
     setToolSelect(Tools[value as keyof typeof Tools])
   }
@@ -113,7 +114,7 @@ export default function BarTools({}: BarToolsProps) {
           <UndoIcon />
         </button>
       </li>
-      <li className={css.tools}>
+      <li className={`${css.tools}`}>
         <button
           value={Tools.brush}
           onClick={handleRedo}
@@ -123,7 +124,11 @@ export default function BarTools({}: BarToolsProps) {
         </button>
       </li>
 
-      <li className={css.tools}>
+      <li
+        className={`${css.tools} ${
+          Tools.brush === toolSelect ? css.InUse : ''
+        }`}
+      >
         <button
           value={Tools.brush}
           onClick={handleSelectTools}
@@ -132,7 +137,11 @@ export default function BarTools({}: BarToolsProps) {
           <BrushIcon />
         </button>
       </li>
-      <li className={css.tools}>
+      <li
+        className={`${css.tools} ${
+          Tools.eraser === toolSelect ? css.InUse : ''
+        }`}
+      >
         <button
           value={Tools.eraser}
           onClick={handleSelectTools}
@@ -141,7 +150,11 @@ export default function BarTools({}: BarToolsProps) {
           <EraserIcon />
         </button>
       </li>
-      <li className={css.tools}>
+      <li
+        className={`${css.tools} ${
+          Tools.eyeDropper === toolSelect ? css.InUse : ''
+        }`}
+      >
         <button
           value={Tools.eyeDropper}
           onClick={handleSelectTools}
@@ -150,12 +163,8 @@ export default function BarTools({}: BarToolsProps) {
           <EyeDropperIcon />
         </button>
       </li>
-      <li className={css.tools}>
-        <button
-          value={Tools.eyeDropper}
-          onClick={openMenuCanvas}
-          data-title="configuration of canvas"
-        >
+      <li className={`${css.tools}`}>
+        <button onClick={openMenuCanvas} data-title="configuration of canvas">
           <ConfigurationIcon />
         </button>
       </li>
@@ -177,7 +186,6 @@ export default function BarTools({}: BarToolsProps) {
       </li>
       <li className={`${css.tools} ${css.download}`}>
         <button
-          value={Tools.brush}
           onClick={openMenuDownload}
           data-title="Download (ctrl + s)"
         >

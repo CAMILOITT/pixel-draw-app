@@ -10,16 +10,21 @@ interface AdditionalToolsProps {}
 const toolConfigurations = {
   [Tools.brush]: (
     <menu className={css.additionalTools}>
-      <h2>PixelDraw</h2>
+      <h2 className={css.nameWeb} >PixelDraw</h2>
       <Brush />
     </menu>
   ),
   [Tools.eraser]: (
     <menu className={css.additionalTools}>
+      <h2 className={css.nameWeb} >PixelDraw</h2>
       <Eraser />
     </menu>
   ),
-  [Tools.eyeDropper]: <menu className={css.additionalTools}> dropper</menu>,
+  [Tools.eyeDropper]: (
+    <menu className={css.additionalTools}>
+      <h2 className={css.nameWeb} >PixelDraw</h2>
+    </menu>
+  ),
 }
 
 export default function AdditionalTools({}: AdditionalToolsProps) {

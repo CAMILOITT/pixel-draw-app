@@ -1,5 +1,4 @@
-import ArrowIcon from '../../../assets/icons/ArrowIcon'
-import css from './OutputColor.module.css'
+import css from './OutputColor.module.css';
 
 interface OutputColorProps {
   infoColor: { color: number; saturation: number; light: number; dark: number }
@@ -31,9 +30,9 @@ export default function OutputColor({ infoColor }: OutputColorProps) {
         hsl({infoColor.color}, {infoColor.saturation}%,
         {infoColor.dark + infoColor.light}%)
       </span>
-      <button className={css.openFormatColor}>
+      {/* <button className={css.openFormatColor}>
         <ArrowIcon />
-      </button>
+      </button> */}
     </div>
   )
 }

@@ -10,8 +10,23 @@ export default function Eraser({}: EraserProps) {
   const [valueBrushSize, setValueBrushSize] = useState(brushSize)
 
   function handleValueBrushSize(e: React.ChangeEvent<HTMLInputElement>) {
-    setValueBrushSize(parseInt(e.target.value))
-    setBrushSize(parseInt(e.target.value))
+    setValueBrushSize({
+      w: parseInt(e.target.value),
+      h: parseInt(e.target.value),
+    })
+    setBrushSize({ w: parseInt(e.target.value), h: parseInt(e.target.value) })
+  }
+
+  function handleValueInvalid(e: React.ChangeEvent<HTMLInputElement>) {
+    if (Number(e.target.value) > 0) return
+    e.target.value = '1'
+    const value = '1'
+
+    setValueBrushSize({
+      w: parseInt(value),
+      h: parseInt(value),
+    })
+    setBrushSize({ w: parseInt(value), h: parseInt(value) })
   }
 
   return (
@@ -25,10 +40,11 @@ export default function Eraser({}: EraserProps) {
           name="valueBrushSize"
           id="valueBrushSize"
           onChange={handleValueBrushSize}
-          value={valueBrushSize}
-          defaultValue={valueBrushSize}
+          onBlur={handleValueInvalid}
+          value={valueBrushSize.w}
+          defaultValue={valueBrushSize.w}
           max={200}
-          min={0}
+          min={1}
           className="inputSize"
         />
       </label>

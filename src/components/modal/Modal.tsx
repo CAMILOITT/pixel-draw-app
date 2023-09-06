@@ -35,9 +35,6 @@ const Modal = forwardRef<ModalRef, ModalProps>(({ children }, ref) => {
       <button onClick={close} className={css.btnClose} >
         <CloseIcon />
       </button>
-      {/* <button onClick={handleClose} className={css.closeSetting}>
-        <CloseIcon />
-      </button> */}
       {children}
     </dialog>
   )

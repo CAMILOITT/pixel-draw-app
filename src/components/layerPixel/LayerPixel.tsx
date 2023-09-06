@@ -9,7 +9,6 @@ import { BrushContext } from '../../context/state/pencil/Pencil'
 import { SelectorToolsContext } from '../../context/state/selectorTools/SelectorTools'
 import { Tools } from '../../types/tools/enums'
 import css from './LayerPixel.module.css'
-import { renderToPipeableStream } from 'react-dom/server'
 
 interface LayerPixelProps {}
 
@@ -26,13 +25,12 @@ export default function LayerPixel({}: LayerPixelProps) {
   const [ctxMouse, setCtxMouse] = useState<CanvasRenderingContext2D | null>(
     null
   )
-  const [sizeCanvas, setSizeCanvas] = useState({ w: 500, h: 500 })
+  const [sizeCanvas] = useState({ w: 500, h: 500 })
   const [multiplier, setMultiplier] = useState({ x: 1, y: 1 })
-
+console.log('renderizando')
   const {
     infoCanvas,
     sizePixel,
-
     setUrlImage,
     setContextCanvasDrawing,
   } = useContext(InfoCanvasContext)
@@ -373,18 +371,7 @@ export default function LayerPixel({}: LayerPixelProps) {
 
   return (
     <>
-      <canvas
-        ref={LayerDrawing}
-        // onMouseMove={handleDrawing}
-        // onMouseDown={handleStartDrawing}
-        // onMouseUp={handleEndDrawing}
-        // onKeyDown={handleCommand}
-        // // onKeyUp={e => console.log('no se puede mover', e.code)}
-        // onTouchMove={handleTouch}
-        // onTouchStart={handleTouchStart}
-        // tabIndex={0}
-        className={css.canvasPixel}
-      >
+      <canvas ref={LayerDrawing} className={css.canvasPixel}>
         parece que tu navegador no soporta la api de canvas por favor considera
         actualizar el navegador a la version mas reciente o utilizar otro
         navegador

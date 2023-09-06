@@ -1,12 +1,12 @@
 import React, { useContext, useState } from 'react'
 import { BrushContext } from '../../../../context/state/pencil/Pencil'
 import { ShapesBrush } from '../../../../types/brush/enum'
-import css from './Brush.module.css'
 import '../style/styleTemplates.css'
+import css from './Brush.module.css'
 
 interface BrushProps {}
 
-const LIMITSIZE = { min: 0, max: 20 }
+const LIMITSIZE = { min: 1, max: 20 }
 
 export default function Brush({}: BrushProps) {
   const { brushSize, setBrushSize, selectedBrush, setSelectedBrush } =
@@ -16,6 +16,11 @@ export default function Brush({}: BrushProps) {
 
   function handleValueBrushSize(e: React.ChangeEvent<HTMLInputElement>) {
     const { value, name } = e.target
+    if (Number(value) < 1) {
+      console.log('error')
+      return
+    }
+
     let size
 
     if (ShapesBrush.rectangle === selectedBrush) {
@@ -48,6 +53,29 @@ export default function Brush({}: BrushProps) {
     setSelectedBrush(value as ShapesBrush)
   }
 
+  function handleValueInvalid(e: React.ChangeEvent<HTMLInputElement>) {
+    const { name } = e.target
+    if (Number(e.target.value) > 0) return
+    e.target.value = '1'
+    const value = '1'
+    let size
+
+    if (ShapesBrush.rectangle === selectedBrush) {
+      size = {
+        w: name === 'valueBrushSize' ? parseInt(value) : brushSize.w,
+        h: name === 'secondPencilSize' ? parseInt(value) : brushSize.h,
+      }
+    } else {
+      size = {
+        w: parseInt(value),
+        h: parseInt(value),
+      }
+    }
+
+    setValueBrushSize(size)
+    setBrushSize(size)
+  }
+
   return (
     <div className={css.toolBrush}>
       <h3>Pinceles</h3>
@@ -65,9 +93,6 @@ export default function Brush({}: BrushProps) {
           <option value={ShapesBrush.rectangle} className={css.optionBrush}>
             {ShapesBrush.rectangle}
           </option>
-          <option value={ShapesBrush.line} className={css.optionBrush}>
-            {ShapesBrush.line}
-          </option>
         </select>
       </label>
       <label htmlFor="pencilSize" className={css.brushSize}>
@@ -77,6 +102,7 @@ export default function Brush({}: BrushProps) {
           name="valueBrushSize"
           id="valueBrushSize"
           onChange={handleValueBrushSize}
+          onBlur={handleValueInvalid}
           defaultValue={valueBrushSize.h}
           max={LIMITSIZE.max}
           min={LIMITSIZE.min}
@@ -92,6 +118,7 @@ export default function Brush({}: BrushProps) {
             name="secondPencilSize"
             id="secondPencilSize"
             onChange={handleValueBrushSize}
+            onBlur={handleValueInvalid}
             defaultValue={valueBrushSize.h}
             max={LIMITSIZE.max}
             min={LIMITSIZE.min}
