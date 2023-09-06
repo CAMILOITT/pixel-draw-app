@@ -1,4 +1,10 @@
-import React, { useContext, useEffect, useRef, useState } from 'react'
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 import { handleCorrection } from '../../api/canvas/correction'
 import { clean, draw, fillBackgroundCanvas } from '../../api/canvas/drawing'
 import { eyeDropper, redo, undo } from '../../api/canvas/tools'
@@ -27,13 +33,9 @@ export default function LayerPixel({}: LayerPixelProps) {
   )
   const [sizeCanvas] = useState({ w: 500, h: 500 })
   const [multiplier, setMultiplier] = useState({ x: 1, y: 1 })
-console.log('renderizando')
-  const {
-    infoCanvas,
-    sizePixel,
-    setUrlImage,
-    setContextCanvasDrawing,
-  } = useContext(InfoCanvasContext)
+  console.log('render')
+  const { infoCanvas, sizePixel, setUrlImage, setContextCanvasDrawing } =
+    useContext(InfoCanvasContext)
   const { toolSelect, setToolSelect } = useContext(SelectorToolsContext)
   const { colors, setColorFocus, setColor } = useContext(ColorContext)
   const { brushSize } = useContext(BrushContext)
@@ -75,72 +77,155 @@ console.log('renderizando')
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [infoCanvas, sizeCanvas])
 
-  function handleStartDrawing(e: React.MouseEvent<HTMLCanvasElement>) {
-    drawing = true
-    const { clientX, clientY } = e
-    const { left, top } = e.currentTarget.getBoundingClientRect()
+  const handleStartDrawing = useCallback(
+    (e: React.MouseEvent<HTMLCanvasElement>) => {
+      drawing = true
+      const { clientX, clientY } = e
+      const { left, top } = e.currentTarget.getBoundingClientRect()
 
-    const correctingX = clientX - left
-    const correctingY = clientY - top
+      const correctingX = clientX - left
+      const correctingY = clientY - top
 
-    const sizePixelW = sizePixel.w * multiplier.x
-    const sizePixelH = sizePixel.h * multiplier.y
+      const sizePixelW = sizePixel.w * multiplier.x
+      const sizePixelH = sizePixel.h * multiplier.y
 
-    const w = Math.ceil(sizePixelW * brushSize.w)
-    const h = Math.ceil(sizePixelH * brushSize.h)
+      const w = Math.ceil(sizePixelW * brushSize.w)
+      const h = Math.ceil(sizePixelH * brushSize.h)
 
-    const centerDrawX = brushSize.w > 1 ? w / 2 : 0
-    const centerDrawY = brushSize.h > 1 ? h / 2 : 0
+      const centerDrawX = brushSize.w > 1 ? w / 2 : 0
+      const centerDrawY = brushSize.h > 1 ? h / 2 : 0
 
-    const y = Math.floor(
-      Math.floor(correctingY / sizePixelH) * sizePixelH - centerDrawY
-    )
+      const y = Math.floor(
+        Math.floor(correctingY / sizePixelH) * sizePixelH - centerDrawY
+      )
 
-    const x = Math.floor(
-      Math.floor(correctingX / sizePixelW) * sizePixelW - centerDrawX
-    )
+      const x = Math.floor(
+        Math.floor(correctingX / sizePixelW) * sizePixelW - centerDrawX
+      )
 
-    if (!ctx) return
+      if (!ctx) return
 
-    prevPosition = { x, y }
+      prevPosition = { x, y }
 
-    if (Tools.brush === toolSelect) {
-      for (let i = 0; i < limit; i++) {
-        draw({
-          ctx,
-          x: x - w * (limit - i - 1),
-          y: y - h * i,
-          w: w * (limit - i) * 2 - w,
-          h: h,
-          bg: colors[colors.colorFocus].color,
-        })
+      if (Tools.brush === toolSelect) {
+        for (let i = 0; i < limit; i++) {
+          draw({
+            ctx,
+            x: x - w * (limit - i - 1),
+            y: y - h * i,
+            w: w * (limit - i) * 2 - w,
+            h: h,
+            bg: colors[colors.colorFocus].color,
+          })
 
-        draw({
-          ctx,
-          x: x - w * (limit - i - 1),
-          y: y + h * i,
-          w: w * (limit - i) * 2 - w,
-          h: h,
-          bg: colors[colors.colorFocus].color,
+          draw({
+            ctx,
+            x: x - w * (limit - i - 1),
+            y: y + h * i,
+            w: w * (limit - i) * 2 - w,
+            h: h,
+            bg: colors[colors.colorFocus].color,
+          })
+        }
+      }
+
+      if (Tools.eraser === toolSelect) {
+        clean({ ctx, x, y, w, h, bg: infoCanvas.bg })
+      }
+
+      if (Tools.eyeDropper === toolSelect) {
+        const color = eyeDropper({ ctx, x, y })
+        setColor({
+          hue: 0,
+          lightness: 0,
+          saturation: 100,
+          alpha: 1,
+          color: `rgba(${color[0]}, ${color[1]}, ${color[2]}, ${color[3]})`,
         })
       }
-    }
+    },
+    [
+      brushSize.h,
+      brushSize.w,
+      colors,
+      ctx,
+      infoCanvas.bg,
+      multiplier.x,
+      multiplier.y,
+      setColor,
+      sizePixel.h,
+      sizePixel.w,
+      toolSelect,
+    ]
+  )
 
-    if (Tools.eraser === toolSelect) {
-      clean({ ctx, x, y, w, h, bg: infoCanvas.bg })
-    }
+  
+  // function handleStartDrawing(e: React.MouseEvent<HTMLCanvasElement>) {
+  //   drawing = true
+  //   const { clientX, clientY } = e
+  //   const { left, top } = e.currentTarget.getBoundingClientRect()
 
-    if (Tools.eyeDropper === toolSelect) {
-      const color = eyeDropper({ ctx, x, y })
-      setColor({
-        hue: 0,
-        lightness: 0,
-        saturation: 100,
-        alpha: 1,
-        color: `rgba(${color[0]}, ${color[1]}, ${color[2]}, ${color[3]})`,
-      })
-    }
-  }
+  //   const correctingX = clientX - left
+  //   const correctingY = clientY - top
+
+  //   const sizePixelW = sizePixel.w * multiplier.x
+  //   const sizePixelH = sizePixel.h * multiplier.y
+
+  //   const w = Math.ceil(sizePixelW * brushSize.w)
+  //   const h = Math.ceil(sizePixelH * brushSize.h)
+
+  //   const centerDrawX = brushSize.w > 1 ? w / 2 : 0
+  //   const centerDrawY = brushSize.h > 1 ? h / 2 : 0
+
+  //   const y = Math.floor(
+  //     Math.floor(correctingY / sizePixelH) * sizePixelH - centerDrawY
+  //   )
+
+  //   const x = Math.floor(
+  //     Math.floor(correctingX / sizePixelW) * sizePixelW - centerDrawX
+  //   )
+
+  //   if (!ctx) return
+
+  //   prevPosition = { x, y }
+
+  //   if (Tools.brush === toolSelect) {
+  //     for (let i = 0; i < limit; i++) {
+  //       draw({
+  //         ctx,
+  //         x: x - w * (limit - i - 1),
+  //         y: y - h * i,
+  //         w: w * (limit - i) * 2 - w,
+  //         h: h,
+  //         bg: colors[colors.colorFocus].color,
+  //       })
+
+  //       draw({
+  //         ctx,
+  //         x: x - w * (limit - i - 1),
+  //         y: y + h * i,
+  //         w: w * (limit - i) * 2 - w,
+  //         h: h,
+  //         bg: colors[colors.colorFocus].color,
+  //       })
+  //     }
+  //   }
+
+  //   if (Tools.eraser === toolSelect) {
+  //     clean({ ctx, x, y, w, h, bg: infoCanvas.bg })
+  //   }
+
+  //   if (Tools.eyeDropper === toolSelect) {
+  //     const color = eyeDropper({ ctx, x, y })
+  //     setColor({
+  //       hue: 0,
+  //       lightness: 0,
+  //       saturation: 100,
+  //       alpha: 1,
+  //       color: `rgba(${color[0]}, ${color[1]}, ${color[2]}, ${color[3]})`,
+  //     })
+  //   }
+  // }
 
   function handleDrawing(e: React.MouseEvent<HTMLCanvasElement>) {
     if (!ctx || !ctxMouse) return
@@ -244,6 +329,122 @@ console.log('renderizando')
     ctxMouse?.clearRect(0, 0, sizeCanvas.w, sizeCanvas.h)
   }
   // comandos
+
+  // touch
+  function handleTouch(e: React.TouchEvent<HTMLCanvasElement>) {
+    if (!ctx) return
+    const { clientX, clientY } = e.targetTouches[0]
+    const { left, top } = e.currentTarget.getBoundingClientRect()
+
+    const movementX = prevPosition.x < clientX ? 1 : -1
+    const movementY = prevPosition.y < clientY ? 1 : -1
+
+    const correctingX = clientX - left
+    const correctingY = clientY - top
+
+    const sizePixelW = sizePixel.w * multiplier.x
+    const sizePixelH = sizePixel.h * multiplier.y
+
+    const w = Math.ceil(sizePixelW * brushSize.w)
+    const h = Math.ceil(sizePixelH * brushSize.h)
+
+    const centerDrawX = brushSize.w > 1 ? w / 2 : 0
+    const centerDrawY = brushSize.h > 1 ? h / 2 : 0
+
+    const y = Math.floor(
+      Math.floor(correctingY / sizePixelH) * sizePixelH - centerDrawY
+    )
+
+    const x = Math.floor(
+      Math.floor(correctingX / sizePixelW) * sizePixelW - centerDrawX
+    )
+
+    if (prevPosition.x === x && prevPosition.y === y) return
+
+    handleCorrection({
+      ctx,
+      x,
+      y,
+      w,
+      h,
+      bg: colors[colors.colorFocus].color,
+      movementX,
+      movementY,
+      prevPosition,
+    })
+
+    prevPosition = { x, y }
+
+    if (Tools.brush === toolSelect) {
+      draw({ ctx, x, y, w, h, bg: colors[colors.colorFocus].color })
+    }
+
+    if (Tools.eraser === toolSelect) {
+      clean({ ctx, x, y, w, h, bg: infoCanvas.bg })
+    }
+  }
+
+  function handleTouchStart(e: React.TouchEvent<HTMLCanvasElement>) {
+    drawing = true
+
+    if (!ctx) return
+
+    const { clientX, clientY } = e.targetTouches[0]
+    const { left, top } = e.currentTarget.getBoundingClientRect()
+
+    const correctingX = clientX - left
+    const correctingY = clientY - top
+
+    const sizePixelW = sizePixel.w * multiplier.x
+    const sizePixelH = sizePixel.h * multiplier.y
+
+    const w = Math.ceil(sizePixelW * brushSize.w)
+    const h = Math.ceil(sizePixelH * brushSize.h)
+
+    const centerDrawX = brushSize.w > 1 ? w / 2 : 0
+    const centerDrawY = brushSize.h > 1 ? h / 2 : 0
+
+    const y = Math.floor(
+      Math.floor(correctingY / sizePixelH) * sizePixelH - centerDrawY
+    )
+
+    const x = Math.floor(
+      Math.floor(correctingX / sizePixelW) * sizePixelW - centerDrawX
+    )
+
+    prevPosition = { x, y }
+
+    if (Tools.brush === toolSelect) {
+      for (let i = 0; i < limit; i++) {
+        draw({
+          ctx,
+          x: x - w * (limit - i - 1),
+          y: y - h * i,
+          w: w * (limit - i) * 2 - w,
+          h: h,
+          bg: colors[colors.colorFocus].color,
+        })
+
+        draw({
+          ctx,
+          x: x - w * (limit - i - 1),
+          y: y + h * i,
+          w: w * (limit - i) * 2 - w,
+          h: h,
+          bg: colors[colors.colorFocus].color,
+        })
+      }
+    }
+
+    if (Tools.eraser === toolSelect) {
+      clean({ ctx, x, y, w, h, bg: infoCanvas.bg })
+    }
+
+    if (Tools.eyeDropper === toolSelect) {
+      eyeDropper({ ctx, x, y })
+    }
+  }
+
   function handleCommand(e: React.KeyboardEvent<HTMLCanvasElement>) {
     e.preventDefault()
 
@@ -281,93 +482,6 @@ console.log('renderizando')
       return
     }
   }
-  // touch
-  function handleTouch(e: React.TouchEvent<HTMLCanvasElement>) {
-    if (!ctx) return
-
-    const { clientX, clientY } = e.targetTouches[0]
-    const { offsetLeft, offsetTop } = e.currentTarget
-
-    const movementX = prevPosition.x < clientX ? 1 : -1
-    const movementY = prevPosition.y < clientY ? 1 : -1
-
-    const w = sizePixel.w
-    const h = sizePixel.h
-    const y = Math.floor((clientY - offsetTop) / h) * h
-    const x = Math.floor((clientX - offsetLeft) / w) * w
-
-    if (prevPosition.x === x && prevPosition.y === y) return
-
-    handleCorrection({
-      ctx,
-      x,
-      y,
-      w,
-      h,
-      bg: colors[colors.colorFocus].color,
-      movementX,
-      movementY,
-      prevPosition,
-    })
-
-    prevPosition = { x, y }
-
-    if (Tools.brush === toolSelect) {
-      draw({ ctx, x, y, w, h, bg: colors[colors.colorFocus].color })
-    }
-
-    if (Tools.eraser === toolSelect) {
-      clean({ ctx, x, y, w, h, bg: infoCanvas.bg })
-    }
-  }
-
-  function handleTouchStart(e: React.TouchEvent<HTMLCanvasElement>) {
-    drawing = true
-    const { clientX, clientY } = e.targetTouches[0]
-
-    const { offsetLeft, offsetTop } = e.currentTarget
-
-    const w = sizePixel.w
-    const h = sizePixel.h
-    // const y = Math.floor((screenY - offsetTop) / h) * h
-    const y = Math.floor((clientY - offsetTop) / h) * h
-    // const x = Math.floor((screenX - offsetLeft) / w) * w
-    const x = Math.floor((clientX - offsetLeft) / w) * w
-
-    if (!ctx) return
-
-    prevPosition = { x, y }
-
-    if (Tools.brush === toolSelect) {
-      for (let i = 0; i < limit; i++) {
-        draw({
-          ctx,
-          x: x - w * (limit - i - 1),
-          y: y - h * i,
-          w: w * (limit - i) * 2 - w,
-          h: h,
-          bg: colors[colors.colorFocus].color,
-        })
-
-        draw({
-          ctx,
-          x: x - w * (limit - i - 1),
-          y: y + h * i,
-          w: w * (limit - i) * 2 - w,
-          h: h,
-          bg: colors[colors.colorFocus].color,
-        })
-      }
-    }
-
-    if (Tools.eraser === toolSelect) {
-      clean({ ctx, x, y, w, h, bg: infoCanvas.bg })
-    }
-
-    if (Tools.eyeDropper === toolSelect) {
-      eyeDropper({ ctx, x, y })
-    }
-  }
 
   return (
     <>
@@ -386,6 +500,7 @@ console.log('renderizando')
         // onKeyUp={e => console.log('no se puede mover', e.code)}
         onTouchMove={handleTouch}
         onTouchStart={handleTouchStart}
+        onTouchEnd={handleEndDrawing}
         tabIndex={0}
       ></canvas>
     </>
