@@ -10,9 +10,9 @@ export default function JoinRoom({}: JoinRoomProps) {
   return (
     <div className={css.joinRoom}>
       {/* <BarDocument /> */}
+      <AdditionalTools />
       <LayerPixel />
       <BarTools />
-      <AdditionalTools />
       <BarDesign />
       {/* <ConfigurationCanvas /> */}
       {/* <ConfigDownload /> */}

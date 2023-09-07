@@ -24,6 +24,11 @@ const limit = 1
 
 let prevPosition = { x: 0, y: 0 }
 
+let translateX = 50
+let translateY = 50
+
+const maxTranslate = 50
+
 export default function LayerPixel({}: LayerPixelProps) {
   const LayerDrawing = useRef<HTMLCanvasElement | null>(null)
   const LayerMouse = useRef<HTMLCanvasElement | null>(null)
@@ -51,7 +56,7 @@ export default function LayerPixel({}: LayerPixelProps) {
     if (!LayerMouse.current) return
     LayerMouse.current.width = sizeCanvas.w
     LayerMouse.current.height = sizeCanvas.h
-
+    LayerMouse.current.style.translate = `${translateX}% ${-translateY}%`
     const ctx = LayerMouse.current.getContext('2d')
 
     setCtxMouse(ctx)
@@ -64,6 +69,8 @@ export default function LayerPixel({}: LayerPixelProps) {
     if (!LayerDrawing.current) return
     LayerDrawing.current.width = sizeCanvas.w
     LayerDrawing.current.height = sizeCanvas.h
+    LayerDrawing.current.style.translate = `${translateX}% ${-translateY}%`
+
     const ctx = LayerDrawing.current.getContext('2d')
     setMultiplier({
       x: sizeCanvas.w / infoCanvas.w,
@@ -77,155 +84,72 @@ export default function LayerPixel({}: LayerPixelProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [infoCanvas, sizeCanvas])
 
-  const handleStartDrawing = useCallback(
-    (e: React.MouseEvent<HTMLCanvasElement>) => {
-      drawing = true
-      const { clientX, clientY } = e
-      const { left, top } = e.currentTarget.getBoundingClientRect()
+  function handleStartDrawing(e: React.MouseEvent<HTMLCanvasElement>) {
+    drawing = true
+    const { clientX, clientY } = e
+    const { left, top } = e.currentTarget.getBoundingClientRect()
 
-      const correctingX = clientX - left
-      const correctingY = clientY - top
+    const correctingX = clientX - left
+    const correctingY = clientY - top
 
-      const sizePixelW = sizePixel.w * multiplier.x
-      const sizePixelH = sizePixel.h * multiplier.y
+    const sizePixelW = sizePixel.w * multiplier.x
+    const sizePixelH = sizePixel.h * multiplier.y
 
-      const w = Math.ceil(sizePixelW * brushSize.w)
-      const h = Math.ceil(sizePixelH * brushSize.h)
+    const w = Math.ceil(sizePixelW * brushSize.w)
+    const h = Math.ceil(sizePixelH * brushSize.h)
 
-      const centerDrawX = brushSize.w > 1 ? w / 2 : 0
-      const centerDrawY = brushSize.h > 1 ? h / 2 : 0
+    const centerDrawX = brushSize.w > 1 ? w / 2 : 0
+    const centerDrawY = brushSize.h > 1 ? h / 2 : 0
 
-      const y = Math.floor(
-        Math.floor(correctingY / sizePixelH) * sizePixelH - centerDrawY
-      )
+    const y = Math.floor(
+      Math.floor(correctingY / sizePixelH) * sizePixelH - centerDrawY
+    )
 
-      const x = Math.floor(
-        Math.floor(correctingX / sizePixelW) * sizePixelW - centerDrawX
-      )
+    const x = Math.floor(
+      Math.floor(correctingX / sizePixelW) * sizePixelW - centerDrawX
+    )
 
-      if (!ctx) return
+    if (!ctx) return
 
-      prevPosition = { x, y }
+    prevPosition = { x, y }
 
-      if (Tools.brush === toolSelect) {
-        for (let i = 0; i < limit; i++) {
-          draw({
-            ctx,
-            x: x - w * (limit - i - 1),
-            y: y - h * i,
-            w: w * (limit - i) * 2 - w,
-            h: h,
-            bg: colors[colors.colorFocus].color,
-          })
+    if (Tools.brush === toolSelect) {
+      for (let i = 0; i < limit; i++) {
+        draw({
+          ctx,
+          x: x - w * (limit - i - 1),
+          y: y - h * i,
+          w: w * (limit - i) * 2 - w,
+          h: h,
+          bg: colors[colors.colorFocus].color,
+        })
 
-          draw({
-            ctx,
-            x: x - w * (limit - i - 1),
-            y: y + h * i,
-            w: w * (limit - i) * 2 - w,
-            h: h,
-            bg: colors[colors.colorFocus].color,
-          })
-        }
-      }
-
-      if (Tools.eraser === toolSelect) {
-        clean({ ctx, x, y, w, h, bg: infoCanvas.bg })
-      }
-
-      if (Tools.eyeDropper === toolSelect) {
-        const color = eyeDropper({ ctx, x, y })
-        setColor({
-          hue: 0,
-          lightness: 0,
-          saturation: 100,
-          alpha: 1,
-          color: `rgba(${color[0]}, ${color[1]}, ${color[2]}, ${color[3]})`,
+        draw({
+          ctx,
+          x: x - w * (limit - i - 1),
+          y: y + h * i,
+          w: w * (limit - i) * 2 - w,
+          h: h,
+          bg: colors[colors.colorFocus].color,
         })
       }
-    },
-    [
-      brushSize.h,
-      brushSize.w,
-      colors,
-      ctx,
-      infoCanvas.bg,
-      multiplier.x,
-      multiplier.y,
-      setColor,
-      sizePixel.h,
-      sizePixel.w,
-      toolSelect,
-    ]
-  )
+    }
 
-  
-  // function handleStartDrawing(e: React.MouseEvent<HTMLCanvasElement>) {
-  //   drawing = true
-  //   const { clientX, clientY } = e
-  //   const { left, top } = e.currentTarget.getBoundingClientRect()
+    if (Tools.eraser === toolSelect) {
+      clean({ ctx, x, y, w, h, bg: infoCanvas.bg })
+    }
 
-  //   const correctingX = clientX - left
-  //   const correctingY = clientY - top
-
-  //   const sizePixelW = sizePixel.w * multiplier.x
-  //   const sizePixelH = sizePixel.h * multiplier.y
-
-  //   const w = Math.ceil(sizePixelW * brushSize.w)
-  //   const h = Math.ceil(sizePixelH * brushSize.h)
-
-  //   const centerDrawX = brushSize.w > 1 ? w / 2 : 0
-  //   const centerDrawY = brushSize.h > 1 ? h / 2 : 0
-
-  //   const y = Math.floor(
-  //     Math.floor(correctingY / sizePixelH) * sizePixelH - centerDrawY
-  //   )
-
-  //   const x = Math.floor(
-  //     Math.floor(correctingX / sizePixelW) * sizePixelW - centerDrawX
-  //   )
-
-  //   if (!ctx) return
-
-  //   prevPosition = { x, y }
-
-  //   if (Tools.brush === toolSelect) {
-  //     for (let i = 0; i < limit; i++) {
-  //       draw({
-  //         ctx,
-  //         x: x - w * (limit - i - 1),
-  //         y: y - h * i,
-  //         w: w * (limit - i) * 2 - w,
-  //         h: h,
-  //         bg: colors[colors.colorFocus].color,
-  //       })
-
-  //       draw({
-  //         ctx,
-  //         x: x - w * (limit - i - 1),
-  //         y: y + h * i,
-  //         w: w * (limit - i) * 2 - w,
-  //         h: h,
-  //         bg: colors[colors.colorFocus].color,
-  //       })
-  //     }
-  //   }
-
-  //   if (Tools.eraser === toolSelect) {
-  //     clean({ ctx, x, y, w, h, bg: infoCanvas.bg })
-  //   }
-
-  //   if (Tools.eyeDropper === toolSelect) {
-  //     const color = eyeDropper({ ctx, x, y })
-  //     setColor({
-  //       hue: 0,
-  //       lightness: 0,
-  //       saturation: 100,
-  //       alpha: 1,
-  //       color: `rgba(${color[0]}, ${color[1]}, ${color[2]}, ${color[3]})`,
-  //     })
-  //   }
-  // }
+    if (Tools.eyeDropper === toolSelect) {
+      const color = eyeDropper({ ctx, x, y })
+      setColor({
+        hue: 0,
+        lightness: 0,
+        saturation: 100,
+        alpha: 1,
+        color: `rgba(${color[0]}, ${color[1]}, ${color[2]}, ${color[3]})`,
+      })
+    }
+  }
 
   function handleDrawing(e: React.MouseEvent<HTMLCanvasElement>) {
     if (!ctx || !ctxMouse) return
@@ -332,6 +256,8 @@ export default function LayerPixel({}: LayerPixelProps) {
 
   // touch
   function handleTouch(e: React.TouchEvent<HTMLCanvasElement>) {
+    if (e.targetTouches.length >= 2) return
+
     if (!ctx) return
     const { clientX, clientY } = e.targetTouches[0]
     const { left, top } = e.currentTarget.getBoundingClientRect()
@@ -386,6 +312,7 @@ export default function LayerPixel({}: LayerPixelProps) {
 
   function handleTouchStart(e: React.TouchEvent<HTMLCanvasElement>) {
     drawing = true
+    if (e.targetTouches.length >= 2) return
 
     if (!ctx) return
 
@@ -483,26 +410,79 @@ export default function LayerPixel({}: LayerPixelProps) {
     }
   }
 
+  function wheel(e: React.WheelEvent<HTMLDivElement>) {
+    const { deltaY, shiftKey } = e
+    if (!LayerDrawing.current || !LayerMouse.current) return
+    LayerDrawing.current.style.translate = `${translateX}% 
+    ${translateY}%`
+    LayerMouse.current.style.translate = `${translateX}% 
+    ${translateY}%`
+    if (shiftKey) {
+      deltaY > 0 && -maxTranslate < translateX && translateX--
+      deltaY < 0 && maxTranslate * 2 > translateX && translateX++
+      return
+    } else {
+      deltaY > 0 && maxTranslate * 2 > translateY && translateY++
+      deltaY < 0 && -maxTranslate < translateY && translateY--
+    }
+  }
+
+  function handleRemoveScrollTouch(e: React.TouchEvent<HTMLDivElement>) {
+    if (e.targetTouches.length <= 1 || drawing) return
+
+    const { clientX, clientY } = e.targetTouches[0]
+
+    const movementX = prevPosition.x < clientX ? 1 : -1
+    const movementY = prevPosition.y < clientY ? 1 : -1
+
+    if (!LayerDrawing.current || !LayerMouse.current) return
+
+    if (clientX !== prevPosition.x) {
+      movementX > 0 && maxTranslate * 2 > translateX && translateX++
+      movementX < 0 && -maxTranslate < translateX && translateX--
+    }
+    if (clientY !== prevPosition.y) {
+      movementY > 0 && maxTranslate * 2 > translateY && translateY++
+      movementY < 0 && -maxTranslate < translateY && translateY--
+      // movementY > 0 ? translateY++ : translateY--
+    }
+
+    LayerDrawing.current.style.translate = `${translateX}% ${translateY}%`
+    LayerMouse.current.style.translate = `${translateX}% ${translateY}%`
+
+    prevPosition = { x: clientX, y: clientY }
+  }
+
   return (
-    <>
-      <canvas ref={LayerDrawing} className={css.canvasPixel}>
-        parece que tu navegador no soporta la api de canvas por favor considera
-        actualizar el navegador a la version mas reciente o utilizar otro
-        navegador
-      </canvas>
-      <canvas
-        ref={LayerMouse}
-        className={css.canvasPixel}
-        onMouseMove={handleDrawing}
-        onMouseDown={handleStartDrawing}
-        onMouseUp={handleEndDrawing}
-        onKeyDown={handleCommand}
-        // onKeyUp={e => console.log('no se puede mover', e.code)}
-        onTouchMove={handleTouch}
-        onTouchStart={handleTouchStart}
-        onTouchEnd={handleEndDrawing}
-        tabIndex={0}
-      ></canvas>
-    </>
+    <div
+      className={css.sizeLayer}
+      onWheel={wheel}
+      onTouchMove={handleRemoveScrollTouch}
+      // todo a;adir scroll con dos dedos y quitar al pintar en el canvas de abajo
+      // todo al posicionar el mouse detectar el color de fondo y poner de otro color el color de mouse
+    >
+      <div>
+        <canvas ref={LayerDrawing} className={css.canvasPixel}>
+          parece que tu navegador no soporta la api de canvas por favor
+          considera actualizar el navegador a la version mas reciente o utilizar
+          otro navegador
+        </canvas>
+        <canvas
+          ref={LayerMouse}
+          className={css.canvasPixel}
+          onMouseMove={handleDrawing}
+          onMouseDown={handleStartDrawing}
+          onMouseUp={handleEndDrawing}
+          onKeyDown={handleCommand}
+          // onKeyUp={e => console.log('no se puede mover', e.code)}
+          onTouchMove={handleTouch}
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleEndDrawing}
+          // onMouseLeave={}
+
+          tabIndex={0}
+        ></canvas>
+      </div>
+    </div>
   )
 }

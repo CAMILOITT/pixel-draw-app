@@ -7,7 +7,7 @@ export const arrCoord: InformationDrawing[][] = []
 export let nextArrCoord: InformationDrawing[][] = []
 export let group: InformationDrawing[] = []
 
-/**
+/**k
  * Saves the information of the drawing to be able to repaint the canvas
  * @param {InformationDrawing} dataDrawing
  * @prop {number} x - coordinate on the x-axis in the two-dimensional plane
