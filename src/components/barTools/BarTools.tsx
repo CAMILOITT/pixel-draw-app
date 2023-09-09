@@ -23,7 +23,7 @@ interface BarToolsProps {}
 export default function BarTools({}: BarToolsProps) {
   const { setColorFocus, colors } = useContext(ColorContext)
 
-  const { contextCanvasDrawing } = useContext(InfoCanvasContext)
+  const { contextCanvasDrawing, setUrlImage } = useContext(InfoCanvasContext)
 
   const [closeMenu, setCloseMenu] = useState(true)
 
@@ -105,19 +105,19 @@ export default function BarTools({}: BarToolsProps) {
       <button className={`${css.closeMenu} `} onClick={handleCloseMenu()}>
         tools
       </button>
-      <li className={css.tools}>
+      <li className={`${css.tools}`}>
         <button
           value={Tools.brush}
-          onClick={handleUndo}
+          onClick={handleRedo}
           data-title="under (ctrl + Mays + z)"
         >
           <UndoIcon />
         </button>
       </li>
-      <li className={`${css.tools}`}>
+      <li className={css.tools}>
         <button
           value={Tools.brush}
-          onClick={handleRedo}
+          onClick={handleUndo}
           data-title="rendo (ctrl + z)"
         >
           <RedoIcon />
@@ -185,16 +185,15 @@ export default function BarTools({}: BarToolsProps) {
         ></div>
       </li>
       <li className={`${css.tools} ${css.download}`}>
-        <button
-          onClick={openMenuDownload}
-          data-title="Download (ctrl + s)"
-        >
+        <button onClick={openMenuDownload} data-title="Download (ctrl + s)">
           <DownloadIcon />
         </button>
       </li>
       {createPortal(
         <Modal ref={ModalConfigurationCanvas}>
-          <ConfigurationCanvas />
+          <ConfigurationCanvas
+            closeCanvas={ModalConfigurationCanvas.current?.close}
+          />
         </Modal>,
         document.body
       )}

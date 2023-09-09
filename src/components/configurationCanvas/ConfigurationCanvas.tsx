@@ -2,9 +2,13 @@ import { useContext, useState } from 'react'
 import { InfoCanvasContext } from '../../context/state/infoCanvas/InfoCanvas'
 import css from './ConfigurationCanvas.module.css'
 
-interface ConfigurationCanvasProps {}
+interface ConfigurationCanvasProps {
+  closeCanvas?: () => void
+}
 
-export default function ConfigurationCanvas({}: ConfigurationCanvasProps) {
+export default function ConfigurationCanvas({
+  closeCanvas,
+}: ConfigurationCanvasProps) {
   const { setInfoCanvas, setSizePixel } = useContext(InfoCanvasContext)
 
   const [addBackground, setAddBackground] = useState(false)
@@ -33,7 +37,8 @@ export default function ConfigurationCanvas({}: ConfigurationCanvasProps) {
 
     setInfoCanvas(valueInfoCanvas)
     setSizePixel(valueSizePixel)
-    // handleOpenConfiguration(false)
+    // close Canvas
+    closeCanvas && closeCanvas()
   }
 
   return (
@@ -115,7 +120,9 @@ export default function ConfigurationCanvas({}: ConfigurationCanvasProps) {
         </label>
       )}
 
-      <button type="submit" className={css.btnCreateCanvas} >crear</button>
+      <button type="submit" className={css.btnCreateCanvas}>
+        crear
+      </button>
     </form>
   )
 }

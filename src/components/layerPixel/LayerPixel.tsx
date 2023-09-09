@@ -1,9 +1,8 @@
 import React, {
-  useCallback,
   useContext,
   useEffect,
   useRef,
-  useState,
+  useState
 } from 'react'
 import { handleCorrection } from '../../api/canvas/correction'
 import { clean, draw, fillBackgroundCanvas } from '../../api/canvas/drawing'
@@ -38,7 +37,6 @@ export default function LayerPixel({}: LayerPixelProps) {
   )
   const [sizeCanvas] = useState({ w: 500, h: 500 })
   const [multiplier, setMultiplier] = useState({ x: 1, y: 1 })
-  console.log('render')
   const { infoCanvas, sizePixel, setUrlImage, setContextCanvasDrawing } =
     useContext(InfoCanvasContext)
   const { toolSelect, setToolSelect } = useContext(SelectorToolsContext)
@@ -370,7 +368,6 @@ export default function LayerPixel({}: LayerPixelProps) {
     }
 
     if (shiftKey && ctrlKey && key === 'Z') {
-      console.log('rehacer')
       if (!ctx) return
       redo({ ctx })
       return

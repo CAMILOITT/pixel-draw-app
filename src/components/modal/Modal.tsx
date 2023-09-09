@@ -7,6 +7,7 @@ interface ModalProps {
 }
 export interface ModalRef {
   open(): void
+  close(): void
 }
 
 const Modal = forwardRef<ModalRef, ModalProps>(({ children }, ref) => {
@@ -24,15 +25,14 @@ const Modal = forwardRef<ModalRef, ModalProps>(({ children }, ref) => {
   useImperativeHandle(
     ref,
     () => {
-      return { open }
+      return { open, close }
     },
     []
   )
 
   return (
     <dialog ref={Modal} className={css.modal}>
-
-      <button onClick={close} className={css.btnClose} >
+      <button onClick={close} className={css.btnClose}>
         <CloseIcon />
       </button>
       {children}
