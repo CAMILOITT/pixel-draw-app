@@ -10,8 +10,7 @@ import { arrCoord, cleanCanvas, handleCleanBg, nextArrCoord } from './update'
  * @prop {CoordDrawing} y - The y-coordinate of the shape
  * @returns Object containing color
  */
-export function eyeDropper(value: CanvasContext & CoordDrawing) {
-  const { ctx, x, y } = value
+export function eyeDropper({ ctx, x, y }: CanvasContext & CoordDrawing) {
   const color = ctx.getImageData(x, y, 1, 1).data
   return color
 }

@@ -20,13 +20,18 @@ export default function RangeColor({
 }) {
   const InfoColor = useRef<HTMLDivElement | null>(null)
 
-  function activeChangeColor(e: React.MouseEvent<HTMLDivElement>) {
+  function activeChangeColor({
+    clientX,
+    left,
+    widthParentPicker,
+  }: {
+    clientX: number
+    left: number
+    widthParentPicker: number
+  }) {
     activePickerColor = true
     if (!InfoColor.current) return
 
-    const { left, width: widthParentPicker } =
-      e.currentTarget.getBoundingClientRect()
-    const { clientX } = e
     const { width: widthPicker } = InfoColor.current.getBoundingClientRect()
 
     const posX = Math.round(clientX - left)
@@ -50,14 +55,17 @@ export default function RangeColor({
     })
   }
 
-  function changeColor(e: React.MouseEvent<HTMLDivElement>) {
+  function changeColor({
+    clientX,
+    left,
+    widthParentPicker,
+  }: {
+    clientX: number
+    left: number
+    widthParentPicker: number
+  }) {
     if (!activePickerColor) return
     if (!InfoColor.current) return
-
-    const { left, width: widthParentPicker } =
-      e.currentTarget.getBoundingClientRect()
-
-    const { clientX } = e
 
     const { width: widthPicker } = InfoColor.current.getBoundingClientRect()
 
@@ -85,13 +93,44 @@ export default function RangeColor({
     activePickerColor = false
   }
 
+  function handlerActiveMouse(e: React.MouseEvent<HTMLDivElement>) {
+    const { clientX } = e
+    const { left, width } = e.currentTarget.getBoundingClientRect()
+    activeChangeColor({ clientX, left, widthParentPicker: width })
+  }
+
+  function handlerActiveTouch(e: React.TouchEvent<HTMLDivElement>) {
+    const { clientX } = e.touches[0]
+    const { left, width: widthParentPicker } =
+      e.currentTarget.getBoundingClientRect()
+    activeChangeColor({ clientX, left, widthParentPicker })
+  }
+
+  function handlerChangeColorMouse(e: React.MouseEvent<HTMLDivElement>) {
+    const { left, width: widthParentPicker } =
+      e.currentTarget.getBoundingClientRect()
+    const { clientX } = e
+    changeColor({ clientX, left, widthParentPicker })
+  }
+
+  function handlerChangeColorTouch(e: React.TouchEvent<HTMLDivElement>) {
+    const { left, width: widthParentPicker } =
+      e.currentTarget.getBoundingClientRect()
+    const { clientX } = e.touches[0]
+    changeColor({ clientX, left, widthParentPicker })
+  }
+
   return (
     <div
       className={css.rangeColor}
-      onMouseDown={activeChangeColor}
-      onMouseMove={changeColor}
+      onMouseDown={handlerActiveMouse}
+      onMouseMove={handlerChangeColorMouse}
       onMouseUp={desactiveChangeColor}
       onMouseOut={desactiveChangeColor}
+      // touch
+      onTouchStart={handlerActiveTouch}
+      onTouchMove={handlerChangeColorTouch}
+      onTouchEnd={desactiveChangeColor}
       style={{
         background: `linear-gradient(to right, hsl(0deg 100% 50%),hsl(90deg 100% 50%), hsl(180deg 100% 50%), hsl(270deg 100% 50%),  hsl(360deg 100% 50%))`,
       }}

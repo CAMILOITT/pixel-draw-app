@@ -6,36 +6,7 @@
 
 .canvasPixel {
   top: 50%;
+  left: 50%;
   position: absolute;
   outline: 4px solid var(--color-secondary);
 }
-
-
-/* 
-.sizeLayer::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
-}
-.sizeLayer::-webkit-scrollbar-button{
-  display: none;
-}
-
-.sizeLayer::-webkit-scrollbar-corner {
-  background: transparent;
-}
-
-.sizeLayer::-webkit-scrollbar-thumb {
-  background: var(--color-hover);
-  border-radius: 10px;
-}
-
-.sizeLayer > div {
-  width: 500px;
-  height: 500px;
-  /* margin: 100px; */
-/*position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: auto;
-} */
