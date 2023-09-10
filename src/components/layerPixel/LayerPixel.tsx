@@ -1,9 +1,4 @@
-import React, {
-  useContext,
-  useEffect,
-  useRef,
-  useState
-} from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { handleCorrection } from '../../api/canvas/correction'
 import { clean, draw, fillBackgroundCanvas } from '../../api/canvas/drawing'
 import { eyeDropper, redo, undo } from '../../api/canvas/tools'

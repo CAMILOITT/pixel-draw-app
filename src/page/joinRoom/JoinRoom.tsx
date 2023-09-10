@@ -9,13 +9,10 @@ interface JoinRoomProps {}
 export default function JoinRoom({}: JoinRoomProps) {
   return (
     <div className={css.joinRoom}>
-      {/* <BarDocument /> */}
       <AdditionalTools />
       <LayerPixel />
       <BarTools />
       <BarDesign />
-      {/* <ConfigurationCanvas /> */}
-      {/* <ConfigDownload /> */}
     </div>
   )
 }

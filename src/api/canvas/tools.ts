@@ -1,6 +1,7 @@
 import { CanvasContext, CoordDrawing } from '../../types/drawing/interface'
+import { FillBucket } from '../../types/tools/type'
 import { reDrawing } from './drawing'
-import { arrCoord, cleanCanvas, handleCleanBg, nextArrCoord } from './update'
+import { arrCoord, nextArrCoord } from './update'
 
 /**
  * Gets the color of the canvas at the cursor position
@@ -15,6 +16,13 @@ export function eyeDropper({ ctx, x, y }: CanvasContext & CoordDrawing) {
   return color
 }
 
+/**
+ * Redo the canvas drawing by adding a new coordinate to the array and redrawing the canvas.
+ *
+ * @param {CanvasContext} context - The canvas context object.
+ * @prop {CanvasRenderingContext2D} ctx - The canvas rendering context
+ */
+
 export function redo({ ctx }: CanvasContext) {
   if (arrCoord.length === nextArrCoord.length) return
   const index = arrCoord.length
@@ -22,50 +30,45 @@ export function redo({ ctx }: CanvasContext) {
   reDrawing({ ctx })
 }
 
+/**
+ * Undraw the canvas by deleting the last coordinate of the array and redrawing the canvas.
+ *
+ * @param {CanvasContext} context - The canvas context object.
+ * @prop {CanvasRenderingContext2D} ctx - The canvas rendering context
+ */
 export function undo({ ctx }: CanvasContext) {
   if (arrCoord.length < 0) return
   arrCoord.pop()
   reDrawing({ ctx })
 }
 
-// Función para rellenar el área contigua con un color específico
-export function bucketFill(
-  startX: number,
-  startY: number,
-  targetColor: string,
-  fillColor: string,
-  ctx: CanvasRenderingContext2D
-) {
-  const pixelStack = [[startX, startY]]
-
+/**
+ * Fill the adjacent area with a specific color.
+ *
+ * @param {object} options - The options object.
+ * @prop {CanvasRenderingContext2D} ctx - The canvas rendering context.
+ * @prop {number} x - The starting x-coordinate.
+ * @prop {number} y - The starting y-coordinate.
+ * @prop {string} bg - The color to be replaced.
+ * @prop {string} fillColor - The color to fill with.
+ */
+export function bucketFill({ ctx, x, y, bg, fillColor }: FillBucket) {
+  const pixelStack = [[x, y]]
   const { canvas } = ctx
-
   const w = 10
   const h = 10
-
-  // if (!pixelStack) return
+  if (!pixelStack) return
   while (pixelStack.length) {
     if (!pixelStack === undefined) continue
-
     const coord = pixelStack.pop()
-
     if (!coord) continue
-
     const [x, y] = coord
-
-    // Comprobamos si estamos dentro del lienzo
     if (x < 0 || x >= canvas.width || y < 0 || y >= canvas.height) continue
-
-    // Obtenemos el color del píxel actual
     const pixelData = ctx.getImageData(x, y, 1, 1).data
     const pixelColor = `rgb(${pixelData[0]}, ${pixelData[1]}, ${pixelData[2]})`
-
-    // Si el píxel actual es del color que queremos rellenar, lo cambiamos al nuevo color
-    if (pixelColor === targetColor) {
+    if (pixelColor === bg) {
       ctx.fillStyle = fillColor
       ctx.fillRect(x, y, w, h)
-
-      // Agregamos los píxeles adyacentes a la pila para continuar el relleno
       pixelStack.push([x + w, y])
       pixelStack.push([x - w, y])
       pixelStack.push([x, y + h])

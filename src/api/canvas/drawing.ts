@@ -10,16 +10,16 @@ import { arrCoord, cleanCanvas, toGroup } from './update'
 /**
  * Fills the background of a canvas with the specified color.
  *
- * @param infoCanvas - A object with info about the canvas.
+ * @param {FillBackgroundCanvas} infoCanvas - A object with info about the canvas.
  * @prop {CanvasContext} ctx - Context of the canvas to be modified.
  * @prop {number} h - The height of the canvas.
  * @prop {number} w - The width of the canvas.
  * @prop {string | null} bg - The background color of the canvas.
  */
 
-export function fillBackgroundCanvas(infoCanvas: FillBackgroundCanvas) {
-  if (!infoCanvas.bg) return
-  const { ctx, bg, w, h } = infoCanvas
+export function fillBackgroundCanvas({ ctx, bg, w, h }: FillBackgroundCanvas) {
+  if (!bg) return
+  // const { ctx, bg, w, h } = infoCanvas
   ctx.beginPath()
   ctx.fillStyle = bg
   ctx.rect(0, 0, w, h)
@@ -32,6 +32,7 @@ export function fillBackgroundCanvas(infoCanvas: FillBackgroundCanvas) {
  *
  * @param {InfoDrawing} infoDraw - The canvas context and configuration.
  */
+
 export function draw(infoDraw: InfoDrawing) {
   const { ctx } = infoDraw
   ctx.beginPath()
@@ -53,11 +54,9 @@ export function draw(infoDraw: InfoDrawing) {
  * @prop {string | null} bg - pixel color
  */
 
-export function clean(valueClean: Eraser) {
-  const { ctx, x, y, w, h, bg } = valueClean
-
+export function clean({ ctx, x, y, w, h, bg }: Eraser) {
   if (bg) {
-    const infoDrawing = { ...valueClean, bg: bg }
+    const infoDrawing = { ctx, x, y, w, h, bg }
     draw(infoDrawing)
     return
   }
@@ -65,13 +64,20 @@ export function clean(valueClean: Eraser) {
   ctx.beginPath()
   ctx.clearRect(x, y, w, h)
   ctx.closePath()
-  toGroup({ tool: Tools.eraser, ...valueClean })
+  toGroup({ tool: Tools.eraser, x, y, w, h, bg })
 }
+
+/**
+ * repaint the canvas with the saved information
+ *
+ * @param {CanvasContext} CanvasContext
+ * @prop {CanvasRenderingContext2D} ctx
+ */
 
 export function reDrawing({ ctx }: CanvasContext) {
   const sizeCanvas = { w: ctx.canvas.width, h: ctx.canvas.height }
   ctx.clearRect(0, -100, sizeCanvas.w + 500, sizeCanvas.h + 500)
-  
+
   cleanCanvas({ ctx, w: ctx.canvas.width, h: ctx.canvas.height, bg: null })
 
   for (const blockDraw of arrCoord) {

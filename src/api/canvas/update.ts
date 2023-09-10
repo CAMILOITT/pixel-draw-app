@@ -7,7 +7,7 @@ export const arrCoord: InformationDrawing[][] = []
 export let nextArrCoord: InformationDrawing[][] = []
 export let group: InformationDrawing[] = []
 
-/**k
+/**
  * Saves the information of the drawing to be able to repaint the canvas
  * @param {InformationDrawing} dataDrawing
  * @prop {number} x - coordinate on the x-axis in the two-dimensional plane
@@ -17,14 +17,13 @@ export let group: InformationDrawing[] = []
  * @prop {Tools} tool - tool used for painting
  * @prop {string | null} bg - color of the pixel being painted
  */
-export function toGroup(dataDrawing: InformationDrawing) {
-  const {} = dataDrawing
-  group.push(dataDrawing)
+export function toGroup({ x, y, w, h, tool, bg }: InformationDrawing) {
+  group.push({ x, y, w, h, tool, bg })
 }
+
 /**
  * Saves the information of the drawing to be able to repaint the canvas
  */
-
 export function update() {
   arrCoord.push(group)
   nextArrCoord = [...arrCoord]
@@ -34,16 +33,13 @@ export function update() {
 /**
  * erase the entire canvas
  * @param {CleanCanvas} value
- *
  * @prop {CanvasRenderingContext2D} ctx - context of canvas
  * @prop {number} w - width of canvas
  * @prop {number} h - height of canvas
  * @prop {string | null} bg - background color of canvas
  */
 
-export function cleanCanvas(value: CleanCanvas) {
-  const { ctx, w, h, bg } = value
-
+export function cleanCanvas({ ctx, w, h, bg }: CleanCanvas) {
   if (!bg) {
     ctx.beginPath()
     ctx.clearRect(0, 0, w, h)
@@ -58,13 +54,12 @@ export function cleanCanvas(value: CleanCanvas) {
 }
 
 /**
- * paints the canvas with the information stored in the variable @constant arrCoord
- * @param {CanvasContext} context
+ * paints the canvas with the information stored in the variable
+ * @param {CanvasContext} CanvasContext
  * @prop {CanvasRenderingContext2D} ctx - context of canvas
  */
 
-export function handleCleanBg(context: CanvasContext) {
-  const { ctx } = context
+export function handleCleanBg({ ctx }: CanvasContext) {
   for (const clean of cleanBgCanvas) {
     ctx.clearRect(clean.x, clean.y, clean.w, clean.h)
   }

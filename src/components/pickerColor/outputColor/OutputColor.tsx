@@ -1,7 +1,8 @@
-import css from './OutputColor.module.css';
+import { InfoColor } from '../../../types/color/enums'
+import css from './OutputColor.module.css'
 
 interface OutputColorProps {
-  infoColor: { color: number; saturation: number; light: number; dark: number }
+  infoColor: InfoColor
 }
 
 export default function OutputColor({ infoColor }: OutputColorProps) {
@@ -21,18 +22,12 @@ export default function OutputColor({ infoColor }: OutputColorProps) {
           background: `hsl(${infoColor.color}, ${infoColor.saturation}%, ${
             infoColor.light + infoColor.dark
           }%)`,
-          /**
-           * @todo a;adir condiciones para que cambie de color dependiendo el color
-           */
           color: infoColor.dark + infoColor.light < 45 ? 'white' : 'black',
         }}
       >
         hsl({infoColor.color}, {infoColor.saturation}%,
         {infoColor.dark + infoColor.light}%)
       </span>
-      {/* <button className={css.openFormatColor}>
-        <ArrowIcon />
-      </button> */}
     </div>
   )
 }

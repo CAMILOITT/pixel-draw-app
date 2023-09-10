@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from 'react'
 import AddIcon from '../../assets/icons/AddIcon'
 import { ColorContext } from '../../context/state/color/Color'
+import { InfoColor } from '../../types/color/enums'
 import { InformationColor, ListInfoColor } from '../../types/color/interface'
 import css from './PickerColor.module.css'
 import OutputColor from './outputColor/OutputColor'
@@ -9,14 +10,14 @@ import RangeLightness from './rangeSettingColor/RangeLightness'
 import RangeSaturation from './rangeSettingColor/RangeSaturation'
 
 interface PickerColorProps {
-  addColor: React.Dispatch<React.SetStateAction<ListInfoColor[] >>
+  addColor: React.Dispatch<React.SetStateAction<ListInfoColor[]>>
   listColors: InformationColor[]
 }
 
 export function PickerColor({ addColor, listColors }: PickerColorProps) {
   const { setColor: getColor } = useContext(ColorContext)
 
-  const [color, setColor] = useState({
+  const [color, setColor] = useState<InfoColor>({
     color: 359,
     saturation: 100,
     light: 0,
@@ -29,7 +30,7 @@ export function PickerColor({ addColor, listColors }: PickerColorProps) {
       hue: color.color,
       saturation: color.saturation,
       lightness: color.light + color.dark,
-      alpha: color.alpha,
+      alpha: color.alpha || 1,
       color: `hsla(${color.color}, ${color.saturation}%, ${
         color.light + color.dark
       }%, ${color.alpha})`,

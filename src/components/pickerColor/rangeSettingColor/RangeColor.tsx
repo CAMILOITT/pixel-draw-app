@@ -1,34 +1,23 @@
 import React, { useRef } from 'react'
 import css from './RangeSettings.module.css'
+import { InfoColor, UIInfoColor } from '../../../types/color/enums'
+
+interface RangeColorProps {
+  modifyColor: React.Dispatch<React.SetStateAction<InfoColor>>
+}
 
 let activePickerColor = false
 const LimitTranslate = 0
 const borderWidth = 5
 
-export default function RangeColor({
-  modifyColor,
-}: {
-  modifyColor: React.Dispatch<
-    React.SetStateAction<{
-      color: number
-      saturation: number
-      light: number
-      dark: number
-      alpha: number
-    }>
-  >
-}) {
+export default function RangeColor({ modifyColor }: RangeColorProps) {
   const InfoColor = useRef<HTMLDivElement | null>(null)
 
   function activeChangeColor({
     clientX,
     left,
     widthParentPicker,
-  }: {
-    clientX: number
-    left: number
-    widthParentPicker: number
-  }) {
+  }: UIInfoColor) {
     activePickerColor = true
     if (!InfoColor.current) return
 
@@ -55,15 +44,7 @@ export default function RangeColor({
     })
   }
 
-  function changeColor({
-    clientX,
-    left,
-    widthParentPicker,
-  }: {
-    clientX: number
-    left: number
-    widthParentPicker: number
-  }) {
+  function changeColor({ clientX, left, widthParentPicker }: UIInfoColor) {
     if (!activePickerColor) return
     if (!InfoColor.current) return
 

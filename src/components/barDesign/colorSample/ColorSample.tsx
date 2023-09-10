@@ -1,4 +1,4 @@
-import { useContext, useRef, useState } from 'react'
+import { useContext, useRef } from 'react'
 import { ColorContext } from '../../../context/state/color/Color'
 import { ListInfoColor } from '../../../types/color/interface'
 import css from './ColorSample.module.css'
@@ -8,7 +8,10 @@ interface ColorSampleProps {
   setRecentColors: React.Dispatch<React.SetStateAction<ListInfoColor[]>>
 }
 
-export default function ColorSample({ color, setRecentColors }: ColorSampleProps) {
+export default function ColorSample({
+  color,
+  setRecentColors,
+}: ColorSampleProps) {
   const { setColor } = useContext(ColorContext)
 
   const RemoveColor = useRef<HTMLButtonElement | null>(null)

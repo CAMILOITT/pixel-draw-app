@@ -23,7 +23,7 @@ interface BarToolsProps {}
 export default function BarTools({}: BarToolsProps) {
   const { setColorFocus, colors } = useContext(ColorContext)
 
-  const { contextCanvasDrawing, setUrlImage } = useContext(InfoCanvasContext)
+  const { contextCanvasDrawing } = useContext(InfoCanvasContext)
 
   const [closeMenu, setCloseMenu] = useState(true)
 
