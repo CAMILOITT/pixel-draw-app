@@ -1,6 +1,6 @@
 @font-face {
   font-family: 'Minecraft';
-  src: url('fonts/Minecraft.ttf') format('truetype');
+  src: url('/public/fonts/Minecraft') format('truetype');
   font-display: swap;
 }
 
@@ -30,22 +30,6 @@
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
 }
-
-/* @media (prefers-color-scheme: dark) {
-  :root {
-    --imgBorderPixel: url('./assets/marcoPixel.png');
-
-    --barTools: #399eec;
-  }
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    --imgBorderPixel: url('./assets/marcoPixel.png');
-
-    --barTools: #399eec;
-  }
-} */
 
 * {
   margin: 0;
