@@ -1,7 +1,7 @@
 @font-face {
   font-family: 'Minecraft';
-  src: url('/public/fonts/Minecraft') format('truetype');
-  font-display: swap;
+  src: local('Minecraft'),
+    url('/fonts/Minecraft/Minecraft.ttf') format('truetype');
 }
 
 :root {
