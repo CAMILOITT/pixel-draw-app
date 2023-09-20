@@ -8,11 +8,11 @@
   gap: 15px;
   padding: 10px;
   width: 270px;
-  transition: .5s;
-  -webkit-transition: .5s;
-  -moz-transition: .5s;
-  -ms-transition: .5s;
-  -o-transition: .5s;
+  transition: 0.5s;
+  -webkit-transition: 0.5s;
+  -moz-transition: 0.5s;
+  -ms-transition: 0.5s;
+  -o-transition: 0.5s;
   background: var(--color-secondary, white);
 }
 
@@ -26,18 +26,14 @@
 }
 
 .closeMenu {
-  font-size: .9em;
+  font-size: 0.9em;
   font-weight: bold;
   position: absolute;
-  writing-mode: vertical-rl;
-  -webkit-writing-mode: vertical-rl;
-  -ms-writing-mode: vertical-rl;
-  left: calc((1em)* -1);
+  left: calc((1em) * -1);
   top: 50%;
-  translate: -85% -50%;
-  padding: 10px 5px;
-  rotate: 180deg;
-  z-index: 1;
+  translate: -60% -50%;
+  rotate: -90deg;
+  padding: 5px 10px;
 }
 
 .listColors {
@@ -55,8 +51,6 @@
 .listColors::-webkit-scrollbar {
   display: none;
 }
-
-
 
 .barDesign,
 .closeMenu,

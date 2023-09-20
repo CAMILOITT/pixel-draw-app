@@ -144,12 +144,10 @@
   position: absolute;
   right: 0;
   top: 50%;
-  translate: 125% -50%;
-  writing-mode: vertical-lr;
-  -webkit-writing-mode: vertical-lr;
-  -ms-writing-mode: vertical-lr;
+  translate: calc(100% - 10px) -50%;
+  rotate: 90deg;
   font-weight: bold;
-  padding: 10px 5px;
+  padding: 5px 10px;
 }
 
 .download button {
