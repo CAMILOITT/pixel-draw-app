@@ -16,31 +16,6 @@ export function eyeDropper({ ctx, x, y }: CanvasContext & CoordDrawing) {
   return color
 }
 
-/**
- * Redo the canvas drawing by adding a new coordinate to the array and redrawing the canvas.
- *
- * @param {CanvasContext} context - The canvas context object.
- * @prop {CanvasRenderingContext2D} ctx - The canvas rendering context
- */
-
-// export function redo({ ctx }: CanvasContext) {
-//   if (arrCoord.length === nextArrCoord.length) return
-//   const index = arrCoord.length
-//   arrCoord.push(nextArrCoord[index])
-//   reDrawing({ ctx })
-// }
-
-/**
- * Undraw the canvas by deleting the last coordinate of the array and redrawing the canvas.
- *
- * @param {CanvasContext} context - The canvas context object.
- * @prop {CanvasRenderingContext2D} ctx - The canvas rendering context
- */
-// export function undo({ ctx }: CanvasContext) {
-//   if (arrCoord.length < 0) return
-//   arrCoord.pop()
-//   reDrawing({ ctx })
-// }
 
 /**
  * Fill the adjacent area with a specific color.

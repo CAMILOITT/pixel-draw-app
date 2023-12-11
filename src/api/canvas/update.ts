@@ -3,32 +3,6 @@ import { cleanBgCanvas } from '../../const/infoCanvas'
 import { CleanCanvas } from '../../types/canvas/type'
 import { CanvasContext } from '../../types/drawing/interface'
 
-// export const arrCoord: InformationDrawing[][] = []
-// export let nextArrCoord: InformationDrawing[][] = []
-// export let group: InformationDrawing[] = []
-
-/**
- * Saves the information of the drawing to be able to repaint the canvas
- * @param {InformationDrawing} dataDrawing
- * @prop {number} x - coordinate on the x-axis in the two-dimensional plane
- * @prop {number} y - coordinate on the y-axis in the two-dimensional plane
- * @prop {number} w - pixel width to draw
- * @prop {number} h - pixel height to draw
- * @prop {Tools} tool - tool used for painting
- * @prop {string | null} bg - color of the pixel being painted
- */
-// export function toGroup({ x, y, w, h, tool, bg }: InformationDrawing) {
-//   group.push({ x, y, w, h, tool, bg })
-// }
-
-/**
- * Saves the information of the drawing to be able to repaint the canvas
- */
-// export function update() {
-//   arrCoord.push(group)
-//   nextArrCoord = [...arrCoord]
-//   group = []
-// }
 
 /**
  * erase the entire canvas

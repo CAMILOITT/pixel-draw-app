@@ -2,8 +2,8 @@ import { InformationDrawing } from '../../types/brush/interface'
 
 class Coords {
   coords: InformationDrawing[][] = []
-  nextCoords: InformationDrawing[][] = []
-  group: InformationDrawing[] = []
+  private nextCoords: InformationDrawing[][] = []
+  private group: InformationDrawing[] = []
 
   update() {
     this.coords.push(this.group)
