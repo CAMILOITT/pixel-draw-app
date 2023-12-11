@@ -17,7 +17,6 @@ export default function Brush({}: BrushProps) {
   function handleValueBrushSize(e: React.ChangeEvent<HTMLInputElement>) {
     const { value, name } = e.target
     if (Number(value) < 1) {
-      console.log('error')
       return
     }
 

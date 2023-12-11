@@ -1,14 +1,15 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { handleCorrection } from '../../api/canvas/correction'
-import { clean, draw, fillBackgroundCanvas } from '../../api/canvas/drawing'
-import { eyeDropper, redo, undo } from '../../api/canvas/tools'
-import { update } from '../../api/canvas/update'
+import { clean, draw, fillBackgroundCanvas, reDrawing } from '../../api/canvas/drawing'
+import { eyeDropper } from '../../api/canvas/tools'
+// import { update } from '../../api/canvas/update'
 import { ColorContext } from '../../context/state/color/Color'
 import { InfoCanvasContext } from '../../context/state/infoCanvas/InfoCanvas'
 import { BrushContext } from '../../context/state/pencil/Pencil'
 import { SelectorToolsContext } from '../../context/state/selectorTools/SelectorTools'
 import { Tools } from '../../types/tools/enums'
 import css from './LayerPixel.module.css'
+import { coords } from '../../api/canvas/coord'
 
 interface LayerPixelProps {}
 
@@ -238,7 +239,7 @@ export default function LayerPixel({}: LayerPixelProps) {
   function handleEndDrawing() {
     drawing = false
 
-    update()
+    coords.update()
     if (!LayerDrawing.current) return
     const imageUrl = LayerDrawing.current.toDataURL('image/png')
     setUrlImage(imageUrl)
@@ -358,13 +359,16 @@ export default function LayerPixel({}: LayerPixelProps) {
 
     if (key === 'z' && ctrlKey) {
       if (!ctx) return
-      undo({ ctx })
+      coords.undo()
+      reDrawing({ ctx })
       return
     }
 
     if (shiftKey && ctrlKey && key === 'Z') {
       if (!ctx) return
-      redo({ ctx })
+      coords.redo()
+      reDrawing({ ctx })
+
       return
     }
   }

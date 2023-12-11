@@ -1,7 +1,7 @@
 import { CanvasContext, CoordDrawing } from '../../types/drawing/interface'
 import { FillBucket } from '../../types/tools/type'
-import { reDrawing } from './drawing'
-import { arrCoord, nextArrCoord } from './update'
+// import { reDrawing } from './drawing'
+// import { arrCoord, nextArrCoord } from './update'
 
 /**
  * Gets the color of the canvas at the cursor position
@@ -23,12 +23,12 @@ export function eyeDropper({ ctx, x, y }: CanvasContext & CoordDrawing) {
  * @prop {CanvasRenderingContext2D} ctx - The canvas rendering context
  */
 
-export function redo({ ctx }: CanvasContext) {
-  if (arrCoord.length === nextArrCoord.length) return
-  const index = arrCoord.length
-  arrCoord.push(nextArrCoord[index])
-  reDrawing({ ctx })
-}
+// export function redo({ ctx }: CanvasContext) {
+//   if (arrCoord.length === nextArrCoord.length) return
+//   const index = arrCoord.length
+//   arrCoord.push(nextArrCoord[index])
+//   reDrawing({ ctx })
+// }
 
 /**
  * Undraw the canvas by deleting the last coordinate of the array and redrawing the canvas.
@@ -36,11 +36,11 @@ export function redo({ ctx }: CanvasContext) {
  * @param {CanvasContext} context - The canvas context object.
  * @prop {CanvasRenderingContext2D} ctx - The canvas rendering context
  */
-export function undo({ ctx }: CanvasContext) {
-  if (arrCoord.length < 0) return
-  arrCoord.pop()
-  reDrawing({ ctx })
-}
+// export function undo({ ctx }: CanvasContext) {
+//   if (arrCoord.length < 0) return
+//   arrCoord.pop()
+//   reDrawing({ ctx })
+// }
 
 /**
  * Fill the adjacent area with a specific color.

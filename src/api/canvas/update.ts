@@ -1,11 +1,11 @@
 import { cleanBgCanvas } from '../../const/infoCanvas'
-import { InformationDrawing } from '../../types/brush/interface'
+// import { InformationDrawing } from '../../types/brush/interface'
 import { CleanCanvas } from '../../types/canvas/type'
 import { CanvasContext } from '../../types/drawing/interface'
 
-export const arrCoord: InformationDrawing[][] = []
-export let nextArrCoord: InformationDrawing[][] = []
-export let group: InformationDrawing[] = []
+// export const arrCoord: InformationDrawing[][] = []
+// export let nextArrCoord: InformationDrawing[][] = []
+// export let group: InformationDrawing[] = []
 
 /**
  * Saves the information of the drawing to be able to repaint the canvas
@@ -17,18 +17,18 @@ export let group: InformationDrawing[] = []
  * @prop {Tools} tool - tool used for painting
  * @prop {string | null} bg - color of the pixel being painted
  */
-export function toGroup({ x, y, w, h, tool, bg }: InformationDrawing) {
-  group.push({ x, y, w, h, tool, bg })
-}
+// export function toGroup({ x, y, w, h, tool, bg }: InformationDrawing) {
+//   group.push({ x, y, w, h, tool, bg })
+// }
 
 /**
  * Saves the information of the drawing to be able to repaint the canvas
  */
-export function update() {
-  arrCoord.push(group)
-  nextArrCoord = [...arrCoord]
-  group = []
-}
+// export function update() {
+//   arrCoord.push(group)
+//   nextArrCoord = [...arrCoord]
+//   group = []
+// }
 
 /**
  * erase the entire canvas

@@ -5,7 +5,8 @@ import {
   InfoDrawing,
 } from '../../types/drawing/types'
 import { Tools } from '../../types/tools/enums'
-import { arrCoord, cleanCanvas, toGroup } from './update'
+import { coords } from './coord'
+import { cleanCanvas } from './update'
 
 /**
  * Fills the background of a canvas with the specified color.
@@ -33,14 +34,14 @@ export function fillBackgroundCanvas({ ctx, bg, w, h }: FillBackgroundCanvas) {
  * @param {InfoDrawing} infoDraw - The canvas context and configuration.
  */
 
-export function draw(infoDraw: InfoDrawing) {
-  const { ctx } = infoDraw
+export function draw({ ctx, bg, x, y, w, h }: InfoDrawing) {
   ctx.beginPath()
-  ctx.fillStyle = infoDraw.bg
-  ctx.rect(infoDraw.x, infoDraw.y, infoDraw.w, infoDraw.h)
+  ctx.fillStyle = bg
+  ctx.rect(x, y, w, h)
   ctx.fill()
   ctx.closePath()
-  toGroup({ tool: Tools.brush, ...infoDraw })
+  // toGroup({ tool: Tools.brush, bg,x,y,w,h })
+  coords.toGroup({ tool: Tools.brush, bg, x, y, w, h })
 }
 
 /**
@@ -60,11 +61,11 @@ export function clean({ ctx, x, y, w, h, bg }: Eraser) {
     draw(infoDrawing)
     return
   }
-
   ctx.beginPath()
   ctx.clearRect(x, y, w, h)
   ctx.closePath()
-  toGroup({ tool: Tools.eraser, x, y, w, h, bg })
+  coords.toGroup({ tool: Tools.eraser, x, y, w, h, bg })
+  // toGroup({ tool: Tools.eraser, x, y, w, h, bg })
 }
 
 /**
@@ -80,7 +81,7 @@ export function reDrawing({ ctx }: CanvasContext) {
 
   cleanCanvas({ ctx, w: ctx.canvas.width, h: ctx.canvas.height, bg: null })
 
-  for (const blockDraw of arrCoord) {
+  for (const blockDraw of coords.coords) {
     for (const dataDraw of blockDraw) {
       if (dataDraw.tool === Tools.eraser) {
         clean({ ...dataDraw, ctx })

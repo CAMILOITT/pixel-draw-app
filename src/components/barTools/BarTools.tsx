@@ -1,6 +1,6 @@
 import { useContext, useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
-import { redo, undo } from '../../api/canvas/tools'
+// import { redo, undo } from '../../api/canvas/tools'
 import BrushIcon from '../../assets/icons/BrushIcon'
 import ConfigurationIcon from '../../assets/icons/ConfigurationIcon'
 import DownloadIcon from '../../assets/icons/DownloadIcon'
@@ -17,6 +17,8 @@ import ConfigDownload from '../configDownload/ConfigDownload'
 import ConfigurationCanvas from '../configurationCanvas/ConfigurationCanvas'
 import Modal, { ModalRef } from '../modal/Modal'
 import css from './BarTools.module.css'
+import { coords } from '../../api/canvas/coord'
+import { reDrawing } from '../../api/canvas/drawing'
 
 interface BarToolsProps {}
 
@@ -63,7 +65,6 @@ export default function BarTools({}: BarToolsProps) {
   function handleSelectTools(
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) {
-    console.log(toolSelect)
     const { value } = e.currentTarget
     setToolSelect(Tools[value as keyof typeof Tools])
   }
@@ -90,12 +91,18 @@ export default function BarTools({}: BarToolsProps) {
 
   function handleRedo() {
     if (!contextCanvasDrawing) return
-    redo(contextCanvasDrawing)
+    coords.redo()
+    reDrawing({ ctx: contextCanvasDrawing.ctx })
+
+    // redo(contextCanvasDrawing)
   }
 
   function handleUndo() {
     if (!contextCanvasDrawing) return
-    undo(contextCanvasDrawing)
+    coords.undo()
+    reDrawing({ ctx: contextCanvasDrawing.ctx })
+
+    // undo(contextCanvasDrawing)
   }
 
   return (
