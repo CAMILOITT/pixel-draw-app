@@ -1,7 +1,5 @@
 import { CanvasContext, CoordDrawing } from '../../types/drawing/interface'
 import { FillBucket } from '../../types/tools/type'
-// import { reDrawing } from './drawing'
-// import { arrCoord, nextArrCoord } from './update'
 
 /**
  * Gets the color of the canvas at the cursor position

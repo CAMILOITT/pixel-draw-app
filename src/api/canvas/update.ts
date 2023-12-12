@@ -1,5 +1,4 @@
 import { cleanBgCanvas } from '../../const/infoCanvas'
-// import { InformationDrawing } from '../../types/brush/interface'
 import { CleanCanvas } from '../../types/canvas/type'
 import { CanvasContext } from '../../types/drawing/interface'
 
