@@ -14,4 +14,6 @@ export enum Tools {
   eraser = 'eraser',
   /** tool to obtain the value of a point on the canvas */
   eyeDropper = 'eyeDropper',
+  /** fill the adjacent area with a specific color  */
+  fillBucket = 'fillBucket',
 }

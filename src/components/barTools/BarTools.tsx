@@ -1,6 +1,5 @@
 import { useContext, useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
-// import { redo, undo } from '../../api/canvas/tools'
 import BrushIcon from '../../assets/icons/BrushIcon'
 import ConfigurationIcon from '../../assets/icons/ConfigurationIcon'
 import DownloadIcon from '../../assets/icons/DownloadIcon'
@@ -93,16 +92,12 @@ export default function BarTools({}: BarToolsProps) {
     if (!contextCanvasDrawing) return
     coords.redo()
     reDrawing({ ctx: contextCanvasDrawing.ctx })
-
-    // redo(contextCanvasDrawing)
   }
 
   function handleUndo() {
     if (!contextCanvasDrawing) return
     coords.undo()
     reDrawing({ ctx: contextCanvasDrawing.ctx })
-
-    // undo(contextCanvasDrawing)
   }
 
   return (
@@ -166,6 +161,19 @@ export default function BarTools({}: BarToolsProps) {
           value={Tools.eyeDropper}
           onClick={handleSelectTools}
           data-title="eye dropper (d)"
+        >
+          <EyeDropperIcon />
+        </button>
+      </li>
+      <li
+        className={`${css.tools} ${
+          Tools.fillBucket === toolSelect ? css.InUse : ''
+        }`}
+      >
+        <button
+          value={Tools.fillBucket}
+          onClick={handleSelectTools}
+          data-title="fill bucket (f)"
         >
           <EyeDropperIcon />
         </button>

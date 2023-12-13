@@ -20,7 +20,6 @@ import { cleanCanvas } from './update'
 
 export function fillBackgroundCanvas({ ctx, bg, w, h }: FillBackgroundCanvas) {
   if (!bg) return
-  // const { ctx, bg, w, h } = infoCanvas
   ctx.beginPath()
   ctx.fillStyle = bg
   ctx.rect(0, 0, w, h)
@@ -40,7 +39,6 @@ export function draw({ ctx, bg, x, y, w, h }: InfoDrawing) {
   ctx.rect(x, y, w, h)
   ctx.fill()
   ctx.closePath()
-  // toGroup({ tool: Tools.brush, bg,x,y,w,h })
   coords.toGroup({ tool: Tools.brush, bg, x, y, w, h })
 }
 

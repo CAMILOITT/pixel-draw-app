@@ -1,21 +1,21 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
+import { coords } from '../../api/canvas/coord'
 import { handleCorrection } from '../../api/canvas/correction'
-import { clean, draw, fillBackgroundCanvas, reDrawing } from '../../api/canvas/drawing'
-import { eyeDropper } from '../../api/canvas/tools'
-// import { update } from '../../api/canvas/update'
+import { fillBackgroundCanvas } from '../../api/canvas/drawing'
+import { actionsDrawing } from '../../api/canvas/drawingActions'
+import { calculatePixelMouse } from '../../api/canvas/utils/pixel'
 import { ColorContext } from '../../context/state/color/Color'
 import { InfoCanvasContext } from '../../context/state/infoCanvas/InfoCanvas'
 import { BrushContext } from '../../context/state/pencil/Pencil'
 import { SelectorToolsContext } from '../../context/state/selectorTools/SelectorTools'
-import { Tools } from '../../types/tools/enums'
+import { useKeyboardEvents } from '../../hooks/useKeyboardEvents'
 import css from './LayerPixel.module.css'
-import { coords } from '../../api/canvas/coord'
 
 interface LayerPixelProps {}
 
 let drawing = false
 
-const limit = 1
+// const limit = 1
 
 let prevPosition = { x: 0, y: 0 }
 
@@ -35,9 +35,10 @@ export default function LayerPixel({}: LayerPixelProps) {
   const [multiplier, setMultiplier] = useState({ x: 1, y: 1 })
   const { infoCanvas, sizePixel, setUrlImage, setContextCanvasDrawing } =
     useContext(InfoCanvasContext)
-  const { toolSelect, setToolSelect } = useContext(SelectorToolsContext)
-  const { colors, setColorFocus, setColor } = useContext(ColorContext)
+  const { toolSelect } = useContext(SelectorToolsContext)
+  const { colors, setColor } = useContext(ColorContext)
   const { brushSize } = useContext(BrushContext)
+  const { events: keyboardEvents, setCtx: setCtxKeyboard } = useKeyboardEvents()
 
   useEffect(() => {
     setMultiplier({
@@ -73,95 +74,47 @@ export default function LayerPixel({}: LayerPixelProps) {
 
     if (!ctx) return
     setCtx(ctx)
+    setCtxKeyboard(ctx)
     setContextCanvasDrawing({ ctx })
     fillBackgroundCanvas({ ctx, ...sizeCanvas, bg: infoCanvas.bg })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [infoCanvas, sizeCanvas])
 
-  function calculatePixelMouse({
-    clientX,
-    clientY,
-    left,
-    top,
-  }: {
-    clientX: number
-    clientY: number
-    left: number
-    top: number
-  }) {
-    const movementX = prevPosition.x < clientX ? 1 : -1
-    const movementY = prevPosition.y < clientY ? 1 : -1
-
-    const correctingX = clientX - left
-    const correctingY = clientY - top
-
-    const sizePixelW = sizePixel.w * multiplier.x
-    const sizePixelH = sizePixel.h * multiplier.y
-
-    const w = Math.ceil(sizePixelW * brushSize.w)
-    const h = Math.ceil(sizePixelH * brushSize.h)
-
-    const centerDrawX = brushSize.w > 1 ? w / 2 : 0
-    const centerDrawY = brushSize.h > 1 ? h / 2 : 0
-
-    const y = Math.floor(
-      Math.floor(correctingY / sizePixelH) * sizePixelH - centerDrawY
-    )
-
-    const x = Math.floor(
-      Math.floor(correctingX / sizePixelW) * sizePixelW - centerDrawX
-    )
-
-    return { x, y, w, h, movementX, movementY }
-  }
-
   function handleStartDrawing(e: React.MouseEvent<HTMLCanvasElement>) {
     drawing = true
+    
     const { clientX, clientY } = e
     const { left, top } = e.currentTarget.getBoundingClientRect()
 
-    const { x, y, w, h } = calculatePixelMouse({ clientX, clientY, left, top })
+    const { x, y, w, h } = calculatePixelMouse({
+      clientX,
+      clientY,
+      left,
+      top,
+      brushSize,
+      multiplier,
+      sizePixel,
+      prevPosition,
+    })
 
     if (!ctx) return
 
     prevPosition = { x, y }
 
-    if (Tools.brush === toolSelect) {
-      for (let i = 0; i < limit; i++) {
-        draw({
-          ctx,
-          x: x - w * (limit - i - 1),
-          y: y - h * i,
-          w: w * (limit - i) * 2 - w,
-          h: h,
-          bg: colors[colors.colorFocus].color,
-        })
+    const color = actionsDrawing({
+      ctx,
+      x,
+      y,
+      w,
+      h,
+      toolSelect,
+      infoCanvas,
+      colors,
+      prevPosition,
+    })
 
-        draw({
-          ctx,
-          x: x - w * (limit - i - 1),
-          y: y + h * i,
-          w: w * (limit - i) * 2 - w,
-          h: h,
-          bg: colors[colors.colorFocus].color,
-        })
-      }
-    }
-
-    if (Tools.eraser === toolSelect) {
-      clean({ ctx, x, y, w, h, bg: infoCanvas.bg })
-    }
-
-    if (Tools.eyeDropper === toolSelect) {
-      const color = eyeDropper({ ctx, x, y })
-      setColor({
-        hue: 0,
-        lightness: 0,
-        saturation: 100,
-        alpha: 1,
-        color: `rgba(${color[0]}, ${color[1]}, ${color[2]}, ${color[3]})`,
-      })
-    }
+    if (!color) return
+    setColor(color)
   }
 
   function handleDrawing(e: React.MouseEvent<HTMLCanvasElement>) {
@@ -169,7 +122,16 @@ export default function LayerPixel({}: LayerPixelProps) {
 
     const { clientX, clientY, movementX, movementY } = e
     const { left, top } = e.currentTarget.getBoundingClientRect()
-    const { x, y, w, h } = calculatePixelMouse({ clientX, clientY, left, top })
+    const { x, y, w, h } = calculatePixelMouse({
+      clientX,
+      clientY,
+      left,
+      top,
+      brushSize,
+      multiplier,
+      sizePixel,
+      prevPosition,
+    })
 
     ctxMouse.clearRect(0, 0, sizeCanvas.w, sizeCanvas.h)
     ctxMouse.beginPath()
@@ -179,71 +141,26 @@ export default function LayerPixel({}: LayerPixelProps) {
     ctxMouse.closePath()
 
     if (prevPosition.x === x && prevPosition.y === y) return
-
     if (!drawing) return
-    if (Tools.eyeDropper === toolSelect) {
-      const color = eyeDropper({
-        ctx,
-        x,
-        y,
-      })
-      setColor({
-        hue: 0,
-        lightness: 0,
-        saturation: 100,
-        alpha: 1,
-        color: `rgba(${color[0]}, ${color[1]}, ${color[2]}, ${color[3]})`,
-      })
-      return
-    }
-    if (Tools.eraser === toolSelect) {
-      const valueClean = {
-        ctx,
-        x,
-        y,
-        w,
-        h,
-        bg: infoCanvas.bg,
-      }
-      clean(valueClean)
-      return
-    }
 
-    if (Tools.brush === toolSelect) {
-      handleCorrection({
-        ctx,
-        x,
-        y,
-        w,
-        h,
-        bg: colors[colors.colorFocus].color,
-        movementX,
-        movementY,
-        prevPosition,
-      })
-
-      const infoDraw = {
-        ctx,
-        x,
-        y,
-        w,
-        h,
-        bg: colors[colors.colorFocus].color,
-      }
-      draw(infoDraw)
-    }
+    const color = actionsDrawing({
+      ctx,
+      x,
+      y,
+      w,
+      h,
+      toolSelect,
+      infoCanvas,
+      colors,
+      movementX,
+      movementY,
+      prevPosition,
+    })
 
     prevPosition = { x, y }
-  }
 
-  function handleEndDrawing() {
-    drawing = false
-
-    coords.update()
-    if (!LayerDrawing.current) return
-    const imageUrl = LayerDrawing.current.toDataURL('image/png')
-    setUrlImage(imageUrl)
-    ctxMouse?.clearRect(0, 0, sizeCanvas.w, sizeCanvas.h)
+    if (!color) return
+    setColor(color)
   }
 
   function handleTouch(e: React.TouchEvent<HTMLCanvasElement>) {
@@ -258,17 +175,25 @@ export default function LayerPixel({}: LayerPixelProps) {
       clientY,
       left,
       top,
+      brushSize,
+      multiplier,
+      sizePixel,
+      prevPosition,
     })
 
     if (prevPosition.x === x && prevPosition.y === y) return
 
-    handleCorrection({
+    const content = {
       ctx,
       x,
       y,
       w,
       h,
       bg: colors[colors.colorFocus].color,
+    }
+
+    handleCorrection({
+      ...content,
       movementX,
       movementY,
       prevPosition,
@@ -276,19 +201,28 @@ export default function LayerPixel({}: LayerPixelProps) {
 
     prevPosition = { x, y }
 
-    if (Tools.brush === toolSelect) {
-      draw({ ctx, x, y, w, h, bg: colors[colors.colorFocus].color })
-    }
+    const color = actionsDrawing({
+      ctx,
+      x,
+      y,
+      w,
+      h,
+      toolSelect,
+      infoCanvas,
+      colors,
+      movementX,
+      movementY,
+      prevPosition,
+    })
 
-    if (Tools.eraser === toolSelect) {
-      clean({ ctx, x, y, w, h, bg: infoCanvas.bg })
-    }
+    if (!color) return
+    setColor(color)
   }
 
   function handleTouchStart(e: React.TouchEvent<HTMLCanvasElement>) {
     drawing = true
-    if (e.targetTouches.length >= 2) return
 
+    if (e.targetTouches.length >= 2) return
     if (!ctx) return
 
     const { clientX, clientY } = e.targetTouches[0]
@@ -298,79 +232,28 @@ export default function LayerPixel({}: LayerPixelProps) {
       clientY,
       left,
       top,
+      brushSize,
+      multiplier,
+      sizePixel,
+      prevPosition,
     })
 
     prevPosition = { x, y }
 
-    if (Tools.brush === toolSelect) {
-      for (let i = 0; i < limit; i++) {
-        draw({
-          ctx,
-          x: x - w * (limit - i - 1),
-          y: y - h * i,
-          w: w * (limit - i) * 2 - w,
-          h: h,
-          bg: colors[colors.colorFocus].color,
-        })
+    const color = actionsDrawing({
+      ctx,
+      x,
+      y,
+      w,
+      h,
+      toolSelect,
+      infoCanvas,
+      colors,
+      prevPosition,
+    })
 
-        draw({
-          ctx,
-          x: x - w * (limit - i - 1),
-          y: y + h * i,
-          w: w * (limit - i) * 2 - w,
-          h: h,
-          bg: colors[colors.colorFocus].color,
-        })
-      }
-    }
-
-    if (Tools.eraser === toolSelect) {
-      clean({ ctx, x, y, w, h, bg: infoCanvas.bg })
-    }
-
-    if (Tools.eyeDropper === toolSelect) {
-      eyeDropper({ ctx, x, y })
-    }
-  }
-
-  function handleCommand(e: React.KeyboardEvent<HTMLCanvasElement>) {
-    e.preventDefault()
-
-    const { key, ctrlKey, shiftKey } = e
-
-    if (key === 'x') {
-      colors.colorFocus === 'colorPrimary'
-        ? setColorFocus('colorSecondary')
-        : setColorFocus('colorPrimary')
-      return
-    }
-    if (key === 'b') {
-      setToolSelect(Tools.brush)
-      return
-    }
-    if (key === 'e') {
-      setToolSelect(Tools.eraser)
-      return
-    }
-    if (key === 'd') {
-      setToolSelect(Tools.eyeDropper)
-      return
-    }
-
-    if (key === 'z' && ctrlKey) {
-      if (!ctx) return
-      coords.undo()
-      reDrawing({ ctx })
-      return
-    }
-
-    if (shiftKey && ctrlKey && key === 'Z') {
-      if (!ctx) return
-      coords.redo()
-      reDrawing({ ctx })
-
-      return
-    }
+    if (!color) return
+    setColor(color)
   }
 
   function wheel(e: React.WheelEvent<HTMLDivElement>) {
@@ -415,6 +298,16 @@ export default function LayerPixel({}: LayerPixelProps) {
 
   function cleanCanvasMouse() {
     ctxMouse?.clearRect(0, 0, sizeCanvas.w, sizeCanvas.h)
+    handleEndDrawing()
+  }
+
+  function handleEndDrawing() {
+    drawing = false
+    coords.update()
+    if (!LayerDrawing.current) return
+    const imageUrl = LayerDrawing.current.toDataURL('image/png')
+    setUrlImage(imageUrl)
+    ctxMouse?.clearRect(0, 0, sizeCanvas.w, sizeCanvas.h)
   }
 
   return (
@@ -427,7 +320,7 @@ export default function LayerPixel({}: LayerPixelProps) {
         <canvas ref={LayerDrawing} className={css.canvasPixel}>
           parece que tu navegador no soporta la api de canvas por favor
           considera actualizar el navegador a la version mas reciente o utilizar
-          otro navegador
+          otro navegador como Opera, Firefox, Chrome, etc
         </canvas>
         <canvas
           ref={LayerMouse}
@@ -435,7 +328,7 @@ export default function LayerPixel({}: LayerPixelProps) {
           onMouseMove={handleDrawing}
           onMouseDown={handleStartDrawing}
           onMouseUp={handleEndDrawing}
-          onKeyDown={handleCommand}
+          onKeyDown={keyboardEvents}
           onMouseLeave={cleanCanvasMouse}
           onTouchMove={handleTouch}
           onTouchStart={handleTouchStart}
@@ -446,3 +339,4 @@ export default function LayerPixel({}: LayerPixelProps) {
     </div>
   )
 }
+// 458
