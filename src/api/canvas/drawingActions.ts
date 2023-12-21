@@ -29,8 +29,8 @@ export function actionsDrawing({
   toolSelect,
   infoCanvas,
   colors,
-  movementX,
-  movementY,
+  movementX = 0,
+  movementY = 0,
   prevPosition,
 }: ActionsDrawing) {
   if (Tools.eyeDropper === toolSelect) {
@@ -73,7 +73,7 @@ export function actionsDrawing({
 
     draw(infoDraw)
 
-    if (!movementX || !movementY) return
+    if (movementX === 0 && movementY === 0) return
     handleCorrection({
       ...infoDraw,
       movementX,
@@ -81,6 +81,7 @@ export function actionsDrawing({
       prevPosition,
     })
   }
+  
 
   if (Tools.fillBucket === toolSelect) {
     bucketFill({ ctx, x, y, bg: '', fillColor: '' })

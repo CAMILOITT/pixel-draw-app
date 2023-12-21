@@ -63,3 +63,15 @@ export interface CleanDrawing {
   /** pixel color */
   bg: string | null
 }
+
+export interface Drawing {
+  clientX: number
+  clientY: number
+  left: number
+  top: number
+}
+
+export interface DrawingMove extends Drawing {
+  movementX?: number
+  movementY?: number
+}

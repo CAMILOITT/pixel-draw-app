@@ -30,6 +30,11 @@ const toolConfigurations = {
       <h2 className={css.nameWeb}>PixelDraw</h2>
     </menu>
   ),
+  [Tools.fillBucket]: (
+    <menu className={css.additionalTools}>
+      <h2 className={css.nameWeb}>PixelDraw</h2>
+    </menu>
+  ),
 }
 
 export default function AdditionalTools({}: AdditionalToolsProps) {

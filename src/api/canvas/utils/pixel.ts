@@ -5,21 +5,15 @@ export function calculatePixelMouse({
   clientY,
   left,
   top,
-  prevPosition,
   sizePixel,
   brushSize,
   multiplier,
-}: SizePixel) : {
+}: SizePixel): {
   x: number
   y: number
   w: number
   h: number
-  movementX: number
-  movementY: number
 } {
-  const movementX = prevPosition.x < clientX ? 1 : -1
-  const movementY = prevPosition.y < clientY ? 1 : -1
-
   const correctingX = clientX - left
   const correctingY = clientY - top
 
@@ -40,5 +34,20 @@ export function calculatePixelMouse({
     Math.floor(correctingX / sizePixelW) * sizePixelW - centerDrawX
   )
 
-  return { x, y, w, h, movementX, movementY }
+  return { x, y, w, h }
+}
+
+export function getMovementPosition({
+  x,
+  y,
+  prevPosition,
+}: {
+  x: number
+  y: number
+  prevPosition: { x: number; y: number }
+}) {
+  return {
+    movementX: prevPosition.x < x ? 1 : -1,
+    movementY: prevPosition.y < y ? 1 : -1,
+  }
 }
