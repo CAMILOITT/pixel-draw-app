@@ -40,15 +40,16 @@ export default function BarTools({}: BarToolsProps) {
   const ModalDownload = useRef<ModalRef | null>(null)
 
   useEffect(() => {
-    let idTimeOut: NodeJS.Timeout
-    const timeOut = 250
     setStatusColorPrimary('colorChangePrimary')
     setStatusColorSecondary('colorChangeSecondary')
+    const timeOut = 250
+    let idTimeOut: unknown 
+
     if (colors.colorFocus === 'colorPrimary') {
       idTimeOut = setTimeout(() => {
         setStatusColorPrimary('colorActive')
         setStatusColorSecondary('colorDesactive')
-      }, timeOut)
+      }, timeOut,) 
     }
     if (colors.colorFocus === 'colorSecondary') {
       idTimeOut = setTimeout(() => {
@@ -57,7 +58,8 @@ export default function BarTools({}: BarToolsProps) {
       }, timeOut)
     }
     return () => {
-      clearTimeout(idTimeOut)
+      if (!idTimeOut) return
+      clearTimeout(idTimeOut as number)
     }
   }, [colors.colorFocus])
 
