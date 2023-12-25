@@ -65,9 +65,9 @@ export default function LayerPixel({}: LayerPixelProps) {
   }
 
   function handleDrawing(e: React.MouseEvent) {
-    const { clientX, clientY, movementX, movementY } = e
+    const { clientX, clientY, movementX, movementY, type } = e
     const { left, top } = e.currentTarget.getBoundingClientRect()
-    drawing({ clientX, clientY, left, top, movementX, movementY })
+    drawing({ clientX, clientY, left, top, movementX, movementY, type })
   }
 
   function handleTouchStart(e: React.TouchEvent<HTMLCanvasElement>) {
@@ -82,7 +82,7 @@ export default function LayerPixel({}: LayerPixelProps) {
     if (touches.length >= 2) return
     const { clientX, clientY } = touches[0]
     const { left, top } = e.currentTarget.getBoundingClientRect()
-    drawing({ clientX, clientY, left, top })
+    drawing({ clientX, clientY, left, top,  })
   }
 
   function wheel(e: React.WheelEvent<HTMLDivElement>) {

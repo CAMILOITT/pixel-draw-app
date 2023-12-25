@@ -18,6 +18,7 @@ export default interface ActionsDrawing {
   prevPosition: CoordDrawing
   movementX?: number
   movementY?: number
+  type?: string
 }
 
 export function actionsDrawing({
@@ -32,6 +33,7 @@ export function actionsDrawing({
   movementX = 0,
   movementY = 0,
   prevPosition,
+  type,
 }: ActionsDrawing) {
   if (Tools.eyeDropper === toolSelect) {
     const color = eyeDropper({
@@ -81,9 +83,22 @@ export function actionsDrawing({
       prevPosition,
     })
   }
-  
 
   if (Tools.fillBucket === toolSelect) {
-    bucketFill({ ctx, x, y, bg: '', fillColor: '' })
+    console.log(type)
+    if (type === 'mousemove') {
+      console.log('cancelando relleno')
+      return
+    }
+    console.log(type)
+
+    const color = eyeDropper({
+      ctx,
+      x,
+      y,
+    })
+    const bg = `rgb(${color[0]}, ${color[1]}, ${color[2]})`
+    const fillColor = colors[colors.colorFocus].color
+    bucketFill({ ctx, x, y, w, h, bg, fillColor })
   }
 }

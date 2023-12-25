@@ -14,7 +14,6 @@ export function eyeDropper({ ctx, x, y }: CanvasContext & CoordDrawing) {
   return color
 }
 
-
 /**
  * Fill the adjacent area with a specific color.
  *
@@ -22,22 +21,24 @@ export function eyeDropper({ ctx, x, y }: CanvasContext & CoordDrawing) {
  * @prop {CanvasRenderingContext2D} ctx - The canvas rendering context.
  * @prop {number} x - The starting x-coordinate.
  * @prop {number} y - The starting y-coordinate.
+ * @prop {number} w - pixel paint width.
+ * @prop {number} h - pixel paint height.
  * @prop {string} bg - The color to be replaced.
  * @prop {string} fillColor - The color to fill with.
  */
-export function bucketFill({ ctx, x, y, bg, fillColor }: FillBucket) {
-  const pixelStack = [[x, y]]
+export function bucketFill({ ctx, x, y, w, h, bg, fillColor }: FillBucket) {
+  if (bg === fillColor) return
   const { canvas } = ctx
-  const w = 10
-  const h = 10
+  const pixelStack = [[x, y]]
   if (!pixelStack) return
-  while (pixelStack.length) {
-    if (!pixelStack === undefined) continue
+  while (pixelStack.length > 0) {
+    if (pixelStack.length < 1) break
     const coord = pixelStack.pop()
-    if (!coord) continue
+    if (!coord) break
     const [x, y] = coord
     if (x < 0 || x >= canvas.width || y < 0 || y >= canvas.height) continue
     const pixelData = ctx.getImageData(x, y, 1, 1).data
+    // console.log(pixelData)
     const pixelColor = `rgb(${pixelData[0]}, ${pixelData[1]}, ${pixelData[2]})`
     if (pixelColor === bg) {
       ctx.fillStyle = fillColor

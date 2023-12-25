@@ -1,5 +1,7 @@
 import { useContext, useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
+import { coords } from '../../api/canvas/coord'
+import { reDrawing } from '../../api/canvas/drawing'
 import BrushIcon from '../../assets/icons/BrushIcon'
 import ConfigurationIcon from '../../assets/icons/ConfigurationIcon'
 import DownloadIcon from '../../assets/icons/DownloadIcon'
@@ -16,8 +18,6 @@ import ConfigDownload from '../configDownload/ConfigDownload'
 import ConfigurationCanvas from '../configurationCanvas/ConfigurationCanvas'
 import Modal, { ModalRef } from '../modal/Modal'
 import css from './BarTools.module.css'
-import { coords } from '../../api/canvas/coord'
-import { reDrawing } from '../../api/canvas/drawing'
 
 interface BarToolsProps {}
 
@@ -40,7 +40,7 @@ export default function BarTools({}: BarToolsProps) {
   const ModalDownload = useRef<ModalRef | null>(null)
 
   useEffect(() => {
-    let idTimeOut: number
+    let idTimeOut: NodeJS.Timeout
     const timeOut = 250
     setStatusColorPrimary('colorChangePrimary')
     setStatusColorSecondary('colorChangeSecondary')

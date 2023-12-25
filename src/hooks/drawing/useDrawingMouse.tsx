@@ -83,6 +83,7 @@ export function useDrawingMouse({ sizeCanvas }: useDrawingMouseProps) {
     clientY,
     movementX,
     movementY,
+    type
   }: DrawingMove) {
     if (!ctx || !ctxMouse) return
 
@@ -129,6 +130,7 @@ export function useDrawingMouse({ sizeCanvas }: useDrawingMouseProps) {
       movementX,
       movementY,
       prevPosition,
+      type
     })
 
     prevPosition = { x, y }

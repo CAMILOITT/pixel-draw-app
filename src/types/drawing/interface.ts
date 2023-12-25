@@ -74,4 +74,5 @@ export interface Drawing {
 export interface DrawingMove extends Drawing {
   movementX?: number
   movementY?: number
+  type?: string
 }

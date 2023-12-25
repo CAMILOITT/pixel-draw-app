@@ -1,4 +1,4 @@
-import { CanvasContext, CoordDrawing, DrawingColor } from '../drawing/interface'
+import { CanvasContext, CoordDrawing, DrawingColor, DrawingDimensiones } from '../drawing/interface'
 
 /**
  * context of canvas
@@ -11,4 +11,4 @@ import { CanvasContext, CoordDrawing, DrawingColor } from '../drawing/interface'
  */
 export type FillBucket = CanvasContext &
   CoordDrawing &
-  DrawingColor & { fillColor: string }
+  DrawingColor & { fillColor: string } & DrawingDimensiones
