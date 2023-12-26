@@ -38,7 +38,6 @@ export function bucketFill({ ctx, x, y, w, h, bg, fillColor }: FillBucket) {
     const [x, y] = coord
     if (x < 0 || x >= canvas.width || y < 0 || y >= canvas.height) continue
     const pixelData = ctx.getImageData(x, y, 1, 1).data
-    // console.log(pixelData)
     const pixelColor = `rgb(${pixelData[0]}, ${pixelData[1]}, ${pixelData[2]})`
     if (pixelColor === bg) {
       ctx.fillStyle = fillColor
