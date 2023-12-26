@@ -1,0 +1,40 @@
+.colorPrimary,
+.colorSecondary {
+  position: absolute;
+  --size: 40px;
+  --positionX: -25%;
+  width: var(--size);
+  height: var(--size);
+  transition: 0.25s;
+  -webkit-transition: 0.25s;
+  -moz-transition: 0.25s;
+  -ms-transition: 0.25s;
+  -o-transition: 0.25s;
+}
+
+.colorPrimary {
+  top: 0;
+  left: var(--positionX);
+}
+
+.colorSecondary {
+  bottom: 0;
+  right: var(--positionX);
+}
+
+.colorActive {
+  z-index: 1;
+}
+
+.colorChangePrimary {
+  translate: -20px;
+  z-index: 1;
+}
+
+.colorChangeSecondary {
+  translate: 10px;
+}
+
+.colorDesactive {
+  z-index: 0;
+}

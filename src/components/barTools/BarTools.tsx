@@ -1,67 +1,62 @@
-import { useContext, useEffect, useRef, useState } from 'react'
+import { useContext, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { coords } from '../../api/canvas/coord'
 import { reDrawing } from '../../api/canvas/drawing'
 import BrushIcon from '../../assets/icons/BrushIcon'
+import BucketIcon from '../../assets/icons/BucketIcon'
 import ConfigurationIcon from '../../assets/icons/ConfigurationIcon'
 import DownloadIcon from '../../assets/icons/DownloadIcon'
 import EraserIcon from '../../assets/icons/EraserIcon'
 import EyeDropperIcon from '../../assets/icons/EyeDropperIcon'
 import RedoIcon from '../../assets/icons/RedoIcon'
 import UndoIcon from '../../assets/icons/UndoIcon'
-import { ColorContext } from '../../context/state/color/Color'
 import { InfoCanvasContext } from '../../context/state/infoCanvas/InfoCanvas'
 import { SelectorToolsContext } from '../../context/state/selectorTools/SelectorTools'
-import { StatusTransitionColor } from '../../types/color/type'
 import { Tools } from '../../types/tools/enums'
 import ConfigDownload from '../configDownload/ConfigDownload'
 import ConfigurationCanvas from '../configurationCanvas/ConfigurationCanvas'
 import Modal, { ModalRef } from '../modal/Modal'
 import css from './BarTools.module.css'
+import ColorsSelected from './colorsSelected/ColorsSelected'
 
 interface BarToolsProps {}
 
-export default function BarTools({}: BarToolsProps) {
-  const { setColorFocus, colors } = useContext(ColorContext)
+const listTools = [
+  {
+    value: Tools.brush,
+    icon: <BrushIcon />,
+    name: 'Brush',
+    dataTitle: 'brush (b)',
+  },
+  {
+    value: Tools.eraser,
+    icon: <EraserIcon />,
+    name: 'Eraser',
+    dataTitle: 'eraser (e)',
+  },
+  {
+    value: Tools.eyeDropper,
+    icon: <EyeDropperIcon />,
+    name: 'Eye Dropper',
+    dataTitle: 'eye dropper (d)',
+  },
+  {
+    value: Tools.fillBucket,
+    icon: <BucketIcon />,
+    name: 'Fill Bucket',
+    dataTitle: 'fill bucket (f)',
+  },
+]
 
+export default function BarTools({}: BarToolsProps) {
   const { contextCanvasDrawing } = useContext(InfoCanvasContext)
 
   const [closeMenu, setCloseMenu] = useState(true)
-
-  const [statusColorPrimary, setStatusColorPrimary] =
-    useState<StatusTransitionColor>('colorActive')
-
-  const [statusColorSecondary, setStatusColorSecondary] =
-    useState<StatusTransitionColor>('colorDesactive')
 
   const { setToolSelect, toolSelect } = useContext(SelectorToolsContext)
 
   const ModalConfigurationCanvas = useRef<ModalRef | null>(null)
   const ModalDownload = useRef<ModalRef | null>(null)
-
-  useEffect(() => {
-    setStatusColorPrimary('colorChangePrimary')
-    setStatusColorSecondary('colorChangeSecondary')
-    const timeOut = 250
-    let idTimeOut: unknown 
-
-    if (colors.colorFocus === 'colorPrimary') {
-      idTimeOut = setTimeout(() => {
-        setStatusColorPrimary('colorActive')
-        setStatusColorSecondary('colorDesactive')
-      }, timeOut,) 
-    }
-    if (colors.colorFocus === 'colorSecondary') {
-      idTimeOut = setTimeout(() => {
-        setStatusColorPrimary('colorDesactive')
-        setStatusColorSecondary('colorActive')
-      }, timeOut)
-    }
-    return () => {
-      if (!idTimeOut) return
-      clearTimeout(idTimeOut as number)
-    }
-  }, [colors.colorFocus])
 
   function handleSelectTools(
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
@@ -72,14 +67,6 @@ export default function BarTools({}: BarToolsProps) {
 
   function handleCloseMenu() {
     return () => setCloseMenu(before => !before)
-  }
-
-  function handleSelectColor(e: React.MouseEvent<HTMLDivElement>) {
-    const { color, colorSelect } = e.currentTarget.dataset
-    if (colors.colorFocus === colorSelect) return
-    if (colorSelect === 'colorPrimary' || colorSelect === 'colorSecondary')
-      setColorFocus(colorSelect)
-    if (!color) return
   }
 
   function openMenuDownload() {
@@ -110,96 +97,36 @@ export default function BarTools({}: BarToolsProps) {
         tools
       </button>
       <li className={`${css.tools}`}>
-        <button
-          value={Tools.brush}
-          onClick={handleRedo}
-          data-title="under (ctrl + Mays + z)"
-        >
+        <button onClick={handleRedo} data-title="under (ctrl + Mays + z)">
           <UndoIcon />
         </button>
       </li>
       <li className={css.tools}>
-        <button
-          value={Tools.brush}
-          onClick={handleUndo}
-          data-title="rendo (ctrl + z)"
-        >
+        <button onClick={handleUndo} data-title="rendo (ctrl + z)">
           <RedoIcon />
         </button>
       </li>
-
-      <li
-        className={`${css.tools} ${
-          Tools.brush === toolSelect ? css.InUse : ''
-        }`}
-      >
-        <button
-          value={Tools.brush}
-          onClick={handleSelectTools}
-          data-title="brush (b)"
+      {listTools.map(({ icon, name, dataTitle, value }) => (
+        <li
+          className={`${css.tools} ${toolSelect === value ? css.InUse : ''}`}
+          key={name}
         >
-          <BrushIcon />
-        </button>
-      </li>
-      <li
-        className={`${css.tools} ${
-          Tools.eraser === toolSelect ? css.InUse : ''
-        }`}
-      >
-        <button
-          value={Tools.eraser}
-          onClick={handleSelectTools}
-          data-title="eraser (e)"
-        >
-          <EraserIcon />
-        </button>
-      </li>
-      <li
-        className={`${css.tools} ${
-          Tools.eyeDropper === toolSelect ? css.InUse : ''
-        }`}
-      >
-        <button
-          value={Tools.eyeDropper}
-          onClick={handleSelectTools}
-          data-title="eye dropper (d)"
-        >
-          <EyeDropperIcon />
-        </button>
-      </li>
-      <li
-        className={`${css.tools} ${
-          Tools.fillBucket === toolSelect ? css.InUse : ''
-        }`}
-      >
-        <button
-          value={Tools.fillBucket}
-          onClick={handleSelectTools}
-          data-title="fill bucket (f)"
-        >
-          <EyeDropperIcon />
-        </button>
-      </li>
+          <button
+            value={value}
+            onClick={handleSelectTools}
+            data-title={dataTitle}
+          >
+            {icon}
+          </button>
+        </li>
+      ))}
       <li className={`${css.tools}`}>
         <button onClick={openMenuCanvas} data-title="configuration of canvas">
           <ConfigurationIcon />
         </button>
       </li>
       <li className={`${css.tools} ${css.toolsColors} `}>
-        <div
-          data-color={colors.colorPrimary.color}
-          data-color-select="colorPrimary"
-          style={{ background: colors.colorPrimary.color }}
-          onClick={handleSelectColor}
-          className={`${css.colorPrimary} ${css[statusColorPrimary]} `}
-        ></div>
-        <div
-          data-color={colors.colorSecondary.color}
-          data-color-select="colorSecondary"
-          style={{ background: colors.colorSecondary.color }}
-          onClick={handleSelectColor}
-          className={` ${css.colorSecondary} ${css[statusColorSecondary]} `}
-        ></div>
+        <ColorsSelected />
       </li>
       <li className={`${css.tools} ${css.download}`}>
         <button onClick={openMenuDownload} data-title="Download (ctrl + s)">

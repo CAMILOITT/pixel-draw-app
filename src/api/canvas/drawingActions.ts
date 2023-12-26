@@ -85,12 +85,8 @@ export function actionsDrawing({
   }
 
   if (Tools.fillBucket === toolSelect) {
-    console.log(type)
-    if (type === 'mousemove') {
-      console.log('cancelando relleno')
+    if (type === 'mousemove') 
       return
-    }
-    console.log(type)
 
     const color = eyeDropper({
       ctx,
