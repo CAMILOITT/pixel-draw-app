@@ -39,7 +39,7 @@ export default function RangeColor({ modifyColor }: RangeColorProps) {
     modifyColor(value => {
       return {
         ...value,
-        color,
+        hue: color,
       }
     })
   }
@@ -65,7 +65,7 @@ export default function RangeColor({ modifyColor }: RangeColorProps) {
     modifyColor(value => {
       return {
         ...value,
-        color,
+        hue: color,
       }
     })
   }

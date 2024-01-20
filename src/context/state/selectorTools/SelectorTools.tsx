@@ -8,7 +8,9 @@ interface SelectorToolsProviderProps {
   children: React.ReactNode
 }
 
-export function SelectorToolsProvider({ children }: SelectorToolsProviderProps) {
+export function SelectorToolsProvider({
+  children,
+}: SelectorToolsProviderProps) {
   const [toolSelect, setToolSelect] = useState<Tools>(Tools.brush)
 
   const data = {

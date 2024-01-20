@@ -109,9 +109,9 @@ export default function RangeLightness({
       onTouchMove={handlerChangeColorTouch}
       onTouchEnd={desactiveChangeColor}
       style={{
-        backgroundImage: `linear-gradient(to right, hsl(${infoColor.color}deg ${
+        backgroundImage: `linear-gradient(to right, hsl(${infoColor.hue}deg ${
           infoColor.saturation
-        }% 0%), hsl(${infoColor.color}deg ${infoColor.saturation}% ${
+        }% 0%), hsl(${infoColor.hue}deg ${infoColor.saturation}% ${
           infoColor.light + infoColor.dark
         }%))`,
       }}

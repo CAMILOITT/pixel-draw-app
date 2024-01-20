@@ -8,25 +8,27 @@ interface OutputColorProps {
 export default function OutputColor({ infoColor }: OutputColorProps) {
   function copyColor() {
     navigator.clipboard.writeText(
-      `hslaToRgba(${infoColor.color}, ${infoColor.saturation}%, ${
-        infoColor.light + infoColor.dark
-      }%, {infoColor.alpha})`
+      `hsla(${infoColor.hue}, ${infoColor.saturation}%, ${infoColor.lightness}%, ${infoColor.alpha})`
     )
   }
   return (
-    <div className={css.outputColor}>
-      <span
-        className={css.formatColor}
-        onClick={copyColor}
-        style={{
-          background: `hsl(${infoColor.color}, ${infoColor.saturation}%, ${
-            infoColor.light + infoColor.dark
-          }%)`,
-          color: infoColor.dark + infoColor.light < 45 ? 'white' : 'black',
-        }}
-      >
-        hsl({infoColor.color}, {infoColor.saturation}%,
-        {infoColor.dark + infoColor.light}%)
+    <div
+      className={css.outputColor}
+      style={{
+        background: `hsla(${infoColor.hue}, ${infoColor.saturation}%, ${infoColor.lightness}%, ${infoColor.alpha})`,
+        color:
+          infoColor.lightness < 45 ||
+          (infoColor.hue > 209 && infoColor.hue < 300)
+            ? 'white'
+            : 'black',
+      }}
+    >
+      <span className={css.formatColor} onClick={copyColor}>
+        hsla
+      </span>
+      <span className={css.valueColor}>
+        ({infoColor.hue}deg, {infoColor.saturation}%, {infoColor.lightness}%,{' '}
+        {infoColor.alpha})
       </span>
     </div>
   )

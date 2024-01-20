@@ -1,10 +1,18 @@
 .toolBrush {
   display: flex;
-  gap: 20px;
+  gap: 10px 20px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.selectBrush {
+  font-size: 1.2rem;
 }
 
 .selectBrush,
 .brushSize {
+  font-size: 1.1rem;
+
   display: flex;
   gap: 10px;
   align-items: center;
@@ -26,13 +34,12 @@
   border: none;
 }
 
-.brush slot {
-  /* border: none; */
-  border: 3px solid red;
-}
-
 .brushSizeValue {
   appearance: none;
   text-align: center;
   padding: 5px;
+}
+
+.brushSizeValue::-webkit-inner-spin-button {
+  appearance: none;
 }

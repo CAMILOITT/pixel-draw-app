@@ -76,7 +76,8 @@
 .labelSize {
   display: flex;
   gap: 10px;
-  position: relative;
+  align-items: center;
+  /* position: relative; */
 }
 
 .labelSize::after,

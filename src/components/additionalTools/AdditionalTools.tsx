@@ -9,36 +9,22 @@ import WebIcon from '../../assets/icons/WebIcon'
 interface AdditionalToolsProps {}
 
 const toolConfigurations = {
-  [Tools.brush]: (
-    <menu className={css.additionalTools}>
-      {window.innerWidth <= 768 ? (
-        <WebIcon />
-      ) : (
-        <h2 className={css.nameWeb}>PixelDraw</h2>
-      )}
-      <Brush />
-    </menu>
-  ),
-  [Tools.eraser]: (
-    <menu className={css.additionalTools}>
-      <h2 className={css.nameWeb}>PixelDraw</h2>
-      <Eraser />
-    </menu>
-  ),
-  [Tools.eyeDropper]: (
-    <menu className={css.additionalTools}>
-      <h2 className={css.nameWeb}>PixelDraw</h2>
-    </menu>
-  ),
-  [Tools.fillBucket]: (
-    <menu className={css.additionalTools}>
-      <h2 className={css.nameWeb}>PixelDraw</h2>
-    </menu>
-  ),
+  [Tools.brush]: <Brush />,
+  [Tools.eraser]: <Eraser />,
+  [Tools.eyeDropper]: null,
+  [Tools.fillBucket]: null,
 }
 
 export default function AdditionalTools({}: AdditionalToolsProps) {
   const { toolSelect } = useContext(SelectorToolsContext)
-
-  return toolConfigurations[toolSelect]
+  return (
+    <div className={css.additionalTools}>
+      <div className={css.nameWeb} >
+        <WebIcon />
+        <h2>PixelDraw</h2>
+      </div>
+      {toolConfigurations[toolSelect]}
+    </div>
+  )
+  // return toolConfigurations[toolSelect]
 }

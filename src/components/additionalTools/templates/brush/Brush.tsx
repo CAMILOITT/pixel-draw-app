@@ -16,9 +16,7 @@ export default function Brush({}: BrushProps) {
 
   function handleValueBrushSize(e: React.ChangeEvent<HTMLInputElement>) {
     const { value, name } = e.target
-    if (Number(value) < 1) {
-      return
-    }
+    if (Number(value) < 1) return
 
     let size
 
@@ -77,7 +75,7 @@ export default function Brush({}: BrushProps) {
 
   return (
     <div className={css.toolBrush}>
-      <h3>Pinceles</h3>
+      {/* <h3>Pinceles</h3> */}
       <label htmlFor="typePencil" className={css.selectBrush}>
         pincel:
         <select
@@ -94,6 +92,7 @@ export default function Brush({}: BrushProps) {
           </option>
         </select>
       </label>
+
       <label htmlFor="pencilSize" className={css.brushSize}>
         {selectedBrush !== ShapesBrush.rectangle ? 'tamaño:' : 'Ancho:'}
         <input

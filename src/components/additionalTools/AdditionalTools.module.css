@@ -1,20 +1,31 @@
 .additionalTools {
   width: 100%;
   height: min-content;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  align-items: center;
+  background: var(--bg);
+  gap: 10px 30px;
   grid-column: span 2;
-  box-shadow: 0 -6px 15px var(--color-secondary);
-  padding: 5px 20px;
+  box-shadow: 0 5px 10px -10px var(--color-secondary);
+  padding: 15px 20px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
 }
+
 .additionalTools svg {
   --size: 2rem;
   width: var(--size);
   height: var(--size);
 }
-.additionalTools > div {
+
+.nameWeb {
   display: flex;
   align-items: center;
+  gap: 10px;
+  font-size: clamp(1.3rem, 5vw, 1.3rem);
+}
+
+@media screen and (max-width: 375px) {
+  .nameWeb {
+    display: none;
+  }
 }

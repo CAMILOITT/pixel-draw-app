@@ -10,7 +10,6 @@ export default function ConfigurationCanvas({
   closeCanvas,
 }: ConfigurationCanvasProps) {
   const { setInfoCanvas, setSizePixel } = useContext(InfoCanvasContext)
-
   const [addBackground, setAddBackground] = useState(false)
 
   function actInfoCanvas(e: React.FormEvent<HTMLFormElement>) {
@@ -20,9 +19,8 @@ export default function ConfigurationCanvas({
 
     let bg = null
 
-    if (e.currentTarget.canvasBackground) {
+    if (e.currentTarget.canvasBackground)
       bg = e.currentTarget.canvasBackground.value
-    }
 
     const valueInfoCanvas = {
       w: parseInt(canvasWidth.value),
@@ -126,3 +124,4 @@ export default function ConfigurationCanvas({
     </form>
   )
 }
+// 129

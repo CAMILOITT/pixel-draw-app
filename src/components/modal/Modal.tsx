@@ -39,4 +39,5 @@ const Modal = forwardRef<ModalRef, ModalProps>(({ children }, ref) => {
     </dialog>
   )
 })
-export default Modal
+
+export default Modal 

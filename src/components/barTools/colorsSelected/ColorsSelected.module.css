@@ -6,10 +6,6 @@
   width: var(--size);
   height: var(--size);
   transition: 0.25s;
-  -webkit-transition: 0.25s;
-  -moz-transition: 0.25s;
-  -ms-transition: 0.25s;
-  -o-transition: 0.25s;
 }
 
 .colorPrimary {

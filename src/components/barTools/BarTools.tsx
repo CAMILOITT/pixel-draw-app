@@ -90,11 +90,11 @@ export default function BarTools({}: BarToolsProps) {
   }
 
   return (
-    <menu
+    <div
       className={`${css.menu} ${closeMenu ? css.menuOpen : css.menuClose}  `}
     >
       <button className={`${css.closeMenu} `} onClick={handleCloseMenu()}>
-        tools
+        herramientas
       </button>
       <li className={`${css.tools}`}>
         <button onClick={handleRedo} data-title="under (ctrl + Mays + z)">
@@ -147,6 +147,6 @@ export default function BarTools({}: BarToolsProps) {
         </Modal>,
         document.body
       )}
-    </menu>
+    </div>
   )
 }

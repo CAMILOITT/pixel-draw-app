@@ -9,15 +9,13 @@
  */
 export interface InfoColor {
   /** color value represents color hue */
-  color: number
+  hue: number
   /** color saturation */
   saturation: number
   /** color luminance */
-  light: number
-  /** color darkness */
-  dark: number
+  lightness: number
   /** color opacity */
-  alpha?: 1
+  alpha: number
 }
 
 /** event values to change color

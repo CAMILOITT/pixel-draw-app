@@ -5,20 +5,27 @@ import {
 } from '../../../types/color/interface'
 import { ColorType } from '../../../types/color/type'
 
-const InitialColorsPrimary: InformationColor = {
+const ColorPrimary: Omit<InformationColor, 'color'> = {
   hue: 0,
   saturation: 100,
   lightness: 50,
   alpha: 1,
-  color: 'hsla(360, 100%, 50%, 1)',
+}
+const ColorSecondary: Omit<InformationColor, 'color'> = {
+  hue: 0,
+  saturation: 100,
+  lightness: 50,
+  alpha: 1,
+}
+
+const InitialColorsPrimary: InformationColor = {
+  ...ColorPrimary,
+  color: `hsla(${ColorPrimary.hue}, ${ColorPrimary.saturation}%, ${ColorPrimary.lightness}%, ${ColorPrimary.alpha})`,
 }
 
 const InitialColorsSecondary: InformationColor = {
-  hue: 0,
-  saturation: 100,
-  lightness: 50,
-  alpha: 1,
-  color: 'hsla(20, 100%, 50%, 1)',
+  ...ColorSecondary,
+  color: `hsla(${ColorSecondary.hue}, ${ColorSecondary.saturation}%, ${ColorSecondary.lightness}%, ${ColorSecondary.alpha})`,
 }
 
 export const InitialColors: InformationColors = {

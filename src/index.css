@@ -1,4 +1,16 @@
 @font-face {
+  font-family: 'Pixelify Sans';
+  src: local('Pixelify Sans'),
+    url('/fonts/Pixelify_Sans/static/PixelifySans-Bold.ttf') format('truetype'),
+    url('/fonts/Pixelify_Sans/static/PixelifySans-Medium.ttf')
+      format('truetype'),
+    url('/fonts/Pixelify_Sans/static/PixelifySans-Regular.ttf')
+      format('truetype'),
+    url('/fonts/Pixelify_Sans/static/PixelifySans-SemiBold.ttf')
+      format('truetype');
+}
+
+@font-face {
   font-family: 'Minecraft';
   src: local('Minecraft'),
     url('/fonts/Minecraft/Minecraft.ttf') format('truetype');
@@ -18,7 +30,8 @@
 }
 
 :root {
-  font-family: 'Minecraft', sans-serif;
+  font-family: 'Pixelify Sans', 'Minecraft', sans-ser/if;
+
   font-size: 16px;
   color-scheme: dark;
   color: rgba(255, 255, 255, 0.87);
@@ -35,9 +48,8 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Minecraft', sans-serif;
-  letter-spacing: 1px;
-  line-height: 1.3;
+  font-family: 'Pixelify Sans','Minecraft', sans-serif;
+
   fill: var(--color);
 }
 

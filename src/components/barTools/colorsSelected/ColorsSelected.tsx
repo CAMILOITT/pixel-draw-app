@@ -62,5 +62,5 @@ export default function ColorsSelected({}: ColorsSelectedProps) {
         className={` ${css.colorSecondary} ${css[statusColorSecondary]} `}
       ></div>
     </>
-  )
+  ) 
 }

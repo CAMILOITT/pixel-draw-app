@@ -1,85 +1,95 @@
-import { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import AddIcon from '../../assets/icons/AddIcon'
 import { ColorContext } from '../../context/state/color/Color'
 import { InfoColor } from '../../types/color/enums'
 import { InformationColor, ListInfoColor } from '../../types/color/interface'
+import SliderColor from '../sliderColor/SliderColor'
 import css from './PickerColor.module.css'
 import OutputColor from './outputColor/OutputColor'
-import RangeColor from './rangeSettingColor/RangeColor'
-import RangeLightness from './rangeSettingColor/RangeLightness'
-import RangeSaturation from './rangeSettingColor/RangeSaturation'
-
 interface PickerColorProps {
   addColor: React.Dispatch<React.SetStateAction<ListInfoColor[]>>
   listColors: InformationColor[]
 }
-
 export function PickerColor({ addColor, listColors }: PickerColorProps) {
   const { setColor: getColor } = useContext(ColorContext)
-
   const [color, setColor] = useState<InfoColor>({
-    color: 359,
+    hue: 359,
     saturation: 100,
-    light: 0,
-    dark: 50,
+    lightness: 50,
     alpha: 1,
   })
-
   useEffect(() => {
     const newColor: InformationColor = {
-      hue: color.color,
+      hue: color.hue,
       saturation: color.saturation,
-      lightness: color.light + color.dark,
+      lightness: color.lightness,
       alpha: color.alpha || 1,
-      color: `hsla(${color.color}, ${color.saturation}%, ${
-        color.light + color.dark
-      }%, ${color.alpha})`,
+      color: `hsla(${color.hue}, ${color.saturation}%, ${color.lightness}%, ${color.alpha})`,
     }
     getColor(newColor)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [color])
-
   function handleAddColor() {
     const indexColor = listColors.findIndex(value => {
       if (
-        value.hue === color.color &&
+        value.hue === color.hue &&
         value.saturation === color.saturation &&
-        value.lightness === color.light + color.dark &&
+        value.lightness === color.lightness &&
         value.alpha === color.alpha
-      ) {
+      )
         return value
-      }
     })
-    indexColor < 0 &&
-      addColor(value => [
-        ...value,
-        {
-          id: crypto.randomUUID(),
-          hue: color.color,
-          saturation: color.saturation,
-          lightness: color.light + color.dark,
-          alpha: 1,
-          color: `hsl(${color.color}, ${color.saturation}%, ${
-            color.light + color.dark
-          }%)`,
-        },
-      ])
+    if (indexColor > 0) return
+    addColor(value => [
+      ...value,
+      {
+        id: crypto.randomUUID(),
+        ...color,
+        color: `hsla(${color.hue}, ${color.saturation}%, ${color.lightness}%, ${color.alpha})`,
+      },
+    ])
   }
-
+  function changeHue(e: React.ChangeEvent<HTMLInputElement>) {
+    const { value } = e.currentTarget
+    const hue = parseInt(value)
+    setColor(colorValue => ({ ...colorValue, hue }))
+  }
+  function changeSaturation(e: React.ChangeEvent<HTMLInputElement>) {
+    const { value } = e.currentTarget
+    const saturation = parseInt(value)
+    setColor(colorData => ({ ...colorData, saturation }))
+  }
+  function changeLightness(e: React.ChangeEvent<HTMLInputElement>) {
+    const { value } = e.currentTarget
+    const lightness = parseInt(value)
+    setColor(colorData => ({ ...colorData, lightness }))
+  }
+  function changeAlpha(e: React.ChangeEvent<HTMLInputElement>) {
+    const { value } = e.currentTarget
+    const alpha = parseInt(value) / 100
+    setColor(colorData => ({ ...colorData, alpha }))
+  }
   return (
     <div className={css.pickerColor}>
-      <div
-        style={{
-          background: `hsl(${color.color}, ${color.saturation}%, ${
-            color.light + color.dark
-          }%)`,
-        }}
-        className={css.colorSwatch}
-      ></div>
-      <RangeColor modifyColor={setColor} />
-      <RangeLightness modifyColor={setColor} infoColor={color} />
-      <RangeSaturation modifyColor={setColor} infoColor={color} />
       <OutputColor infoColor={color} />
+
+      <SliderColor
+        changeColor={changeHue}
+        color={`linear-gradient(to right, hsl(0deg 100% 50%),hsl(90deg 100% 50%), hsl(180deg 100% 50%), hsl(270deg 100% 50%),  hsl(360deg 100% 50%))`}
+        max={360}
+      />
+      <SliderColor
+        changeColor={changeSaturation}
+        color={`linear-gradient(to right, hsl(${color.hue}deg 0% 50%), hsl(${color.hue}deg 100% 50%)`}
+      />
+      <SliderColor
+        color={`linear-gradient(to right, hsl(${color.hue}deg ${color.saturation}% 0%), hsl(${color.hue}deg 100% 50%), hsl(${color.hue}deg ${color.saturation}% 100%))`}
+        changeColor={changeLightness}
+      />
+      <SliderColor
+        color={`linear-gradient(to right, transparent, hsl(${color.hue}deg 100% 50%))`}
+        changeColor={changeAlpha}
+      />
       <button className={css.addColor} onClick={handleAddColor}>
         <AddIcon />
       </button>

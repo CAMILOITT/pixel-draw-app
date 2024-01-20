@@ -100,11 +100,13 @@
 .closeMenu {
   position: absolute;
   right: 0;
-  top: 50%;
-  translate: calc(100% - 10px) -50%;
-  rotate: 90deg;
-  font-weight: bold;
   padding: 5px 10px;
+  top: 50%;
+  translate: calc(50% + 1rem + (5px * 2)) 0;
+  rotate: 90deg;
+  text-align: center;
+  font-weight: bold;
+  font-size: 1.1em;
 }
 
 .download button {

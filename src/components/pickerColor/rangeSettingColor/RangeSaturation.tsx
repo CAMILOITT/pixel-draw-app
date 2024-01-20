@@ -116,9 +116,9 @@ export default function RangeSaturation({
       onTouchEnd={desactiveChangeColor}
       style={{
         backgroundImage: `linear-gradient(to right, hsl(${
-          infoColor.color
+          infoColor.hue
         }deg 0% ${infoColor.light + infoColor.dark}%), hsl(${
-          infoColor.color
+          infoColor.hue
         }deg ${infoColor.saturation}% ${infoColor.light + infoColor.dark}%)`,
       }}
     >

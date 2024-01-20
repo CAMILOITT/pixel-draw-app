@@ -29,7 +29,6 @@ export function fillBackgroundCanvas({ ctx, bg, w, h }: FillBackgroundCanvas) {
 
 /**
  * Fills the background of a canvas with the specified color.
- *
  * @param {InfoDrawing} infoDraw - The canvas context and configuration.
  */
 
@@ -63,7 +62,6 @@ export function clean({ ctx, x, y, w, h, bg }: Eraser) {
   ctx.clearRect(x, y, w, h)
   ctx.closePath()
   coords.toGroup({ tool: Tools.eraser, x, y, w, h, bg })
-  // toGroup({ tool: Tools.eraser, x, y, w, h, bg })
 }
 
 /**

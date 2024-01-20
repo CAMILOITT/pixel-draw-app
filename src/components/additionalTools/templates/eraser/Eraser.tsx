@@ -32,7 +32,6 @@ export default function Eraser({}: EraserProps) {
   return (
     <div className="tool">
       <h3 className="nameTool">Borrador</h3>
-
       <label htmlFor="pencilSize" className="labelSize">
         Tamaño:
         <input
