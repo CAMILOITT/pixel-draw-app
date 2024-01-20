@@ -1,4 +1,4 @@
-import { InfoColor } from '../../../types/color/enums'
+import { InfoColor } from '../../types/color/enums'
 import css from './OutputColor.module.css'
 
 interface OutputColorProps {

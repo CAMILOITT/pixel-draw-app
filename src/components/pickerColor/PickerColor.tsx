@@ -5,7 +5,7 @@ import { InfoColor } from '../../types/color/enums'
 import { InformationColor, ListInfoColor } from '../../types/color/interface'
 import SliderColor from '../sliderColor/SliderColor'
 import css from './PickerColor.module.css'
-import OutputColor from './outputColor/OutputColor'
+import OutputColor from '../outputColor/OutputColor'
 interface PickerColorProps {
   addColor: React.Dispatch<React.SetStateAction<ListInfoColor[]>>
   listColors: InformationColor[]
