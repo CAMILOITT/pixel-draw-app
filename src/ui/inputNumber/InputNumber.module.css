@@ -1,0 +1,12 @@
+
+.inputNumber,
+.inputNumber::-webkit-inner-spin-button {
+  outline: none;
+  appearance: none;
+}
+
+.inputNumber {
+  appearance: none;
+  text-align: center;
+  padding: 5px;
+}
