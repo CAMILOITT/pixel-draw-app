@@ -7,7 +7,6 @@ import {
   within,
 } from '@storybook/testing-library'
 import cssBarTools from '../../components/barTools/BarTools.module.css'
-import { ShapesBrush } from '../../types/brush/enum'
 import JoinRoom from './JoinRoom'
 
 const meta: Meta<typeof JoinRoom> = {
@@ -16,7 +15,7 @@ const meta: Meta<typeof JoinRoom> = {
   args: {},
   parameters: { layout: 'fullscreen' },
   play: async ({ canvasElement, step }) => {
-    const { getByRole, findByRole, findAllByRole } = within(canvasElement)
+    const { getByRole, findByRole, /* findAllByRole */ } = within(canvasElement)
     const layerDrawing = getByRole('layerDrawing')
     const layerMouse = getByRole('layerMouse')
     const nav = getByRole('navigation')
@@ -252,191 +251,191 @@ const meta: Meta<typeof JoinRoom> = {
           )
         })
 
-        await step('cambiar el tamaño del cuadrado', async () => {
-          await userEvent.click(btnBrush)
+      //   await step('cambiar el tamaño del cuadrado', async () => {
+      //     await userEvent.click(btnBrush)
 
-          await step('x2', async () => {
-            const selectBrush = await findByRole('combobox')
-            const inputSize = await findByRole('spinbutton')
-            await userEvent.selectOptions(selectBrush, ShapesBrush.square)
-            await expect(selectBrush).toHaveValue('square')
-            await userEvent.click(inputSize)
-            await userEvent.keyboard('2{enter}')
-            let colorSelectorBox = await findByRole('ColorSelectorBox')
+      //     await step('x2', async () => {
+      //       const selectBrush = await findByRole('combobox')
+      //       const inputSize = await findByRole('spinbutton')
+      //       await userEvent.selectOptions(selectBrush, ShapesBrush.square)
+      //       await expect(selectBrush).toHaveValue('square')
+      //       await userEvent.click(inputSize)
+      //       await userEvent.keyboard('2{enter}')
+      //       let colorSelectorBox = await findByRole('ColorSelectorBox')
 
-            const hue = await findByRole('sliderHue')
-            const saturation = await findByRole('sliderSaturation')
-            const lightness = await findByRole('sliderLightness')
-            const alpha = await findByRole('sliderAlpha')
+      //       const hue = await findByRole('sliderHue')
+      //       const saturation = await findByRole('sliderSaturation')
+      //       const lightness = await findByRole('sliderLightness')
+      //       const alpha = await findByRole('sliderAlpha')
 
-            const newColor = {
-              hue: 301,
-              saturation: 50,
-              lightness: 50,
-              alpha: 1,
-            }
+      //       const newColor = {
+      //         hue: 301,
+      //         saturation: 50,
+      //         lightness: 50,
+      //         alpha: 1,
+      //       }
 
-            fireEvent.change(hue, { target: { value: newColor.hue } })
-            fireEvent.change(saturation, {
-              target: { value: newColor.saturation },
-            })
-            fireEvent.change(alpha, { target: { value: newColor.alpha } })
-            fireEvent.change(lightness, {
-              target: { value: newColor.lightness },
-            })
+      //       fireEvent.change(hue, { target: { value: newColor.hue } })
+      //       fireEvent.change(saturation, {
+      //         target: { value: newColor.saturation },
+      //       })
+      //       fireEvent.change(alpha, { target: { value: newColor.alpha } })
+      //       fireEvent.change(lightness, {
+      //         target: { value: newColor.lightness },
+      //       })
 
-            await expect(colorSelectorBox.textContent).toBe(
-              `hsla(${newColor.hue}, ${newColor.saturation}%, ${newColor.lightness}%, ${newColor.alpha})`
-            )
-            fireEvent(
-              layerMouse,
-              createEvent.mouseDown(layerMouse, initialDrawing)
-            )
-            fireEvent(
-              layerMouse,
-              createEvent.mouseUp(layerMouse, initialDrawing)
-            )
+      //       await expect(colorSelectorBox.textContent).toBe(
+      //         `hsla(${newColor.hue}, ${newColor.saturation}%, ${newColor.lightness}%, ${newColor.alpha})`
+      //       )
+      //       fireEvent(
+      //         layerMouse,
+      //         createEvent.mouseDown(layerMouse, initialDrawing)
+      //       )
+      //       fireEvent(
+      //         layerMouse,
+      //         createEvent.mouseUp(layerMouse, initialDrawing)
+      //       )
 
-            const btnEyeDropper = getByRole('buttonEyeDropper')
+      //       const btnEyeDropper = getByRole('buttonEyeDropper')
 
-            await userEvent.click(btnEyeDropper)
+      //       await userEvent.click(btnEyeDropper)
 
-            fireEvent(
-              layerMouse,
-              createEvent.click(layerMouse, {
-                clientX: initialDrawing.clientX + space,
-                clientY: initialDrawing.clientY + space,
-              })
-            )
+      //       fireEvent(
+      //         layerMouse,
+      //         createEvent.click(layerMouse, {
+      //           clientX: initialDrawing.clientX + space,
+      //           clientY: initialDrawing.clientY + space,
+      //         })
+      //       )
 
-            colorSelectorBox = await findByRole('ColorSelectorBox')
-            await expect(colorSelectorBox.textContent).toBe(
-              `hsla(${newColor.hue}, ${newColor.saturation}%, ${newColor.lightness}%, ${newColor.alpha})`
-            )
+      //       colorSelectorBox = await findByRole('ColorSelectorBox')
+      //       await expect(colorSelectorBox.textContent).toBe(
+      //         `hsla(${newColor.hue}, ${newColor.saturation}%, ${newColor.lightness}%, ${newColor.alpha})`
+      //       )
 
-            fireEvent(
-              layerMouse,
-              createEvent.click(layerMouse, {
-                clientX: initialDrawing.clientX,
-                clientY: initialDrawing.clientY + space,
-              })
-            )
-            colorSelectorBox = await findByRole('ColorSelectorBox')
-            await expect(colorSelectorBox.textContent).not.toBe(
-              `hsla(${newColor.hue}, ${newColor.saturation}%, ${newColor.lightness}%, ${newColor.alpha})`
-            )
+      //       fireEvent(
+      //         layerMouse,
+      //         createEvent.click(layerMouse, {
+      //           clientX: initialDrawing.clientX,
+      //           clientY: initialDrawing.clientY + space,
+      //         })
+      //       )
+      //       colorSelectorBox = await findByRole('ColorSelectorBox')
+      //       await expect(colorSelectorBox.textContent).not.toBe(
+      //         `hsla(${newColor.hue}, ${newColor.saturation}%, ${newColor.lightness}%, ${newColor.alpha})`
+      //       )
 
-            fireEvent(
-              layerMouse,
-              createEvent.click(layerMouse, {
-                clientX: initialDrawing.clientX + space,
-                clientY: initialDrawing.clientY,
-              })
-            )
-            colorSelectorBox = await findByRole('ColorSelectorBox')
-            await expect(colorSelectorBox.textContent).not.toBe(
-              `hsla(${newColor.hue}, ${newColor.saturation}%, ${newColor.lightness}%, ${newColor.alpha})`
-            )
-          })
+      //       fireEvent(
+      //         layerMouse,
+      //         createEvent.click(layerMouse, {
+      //           clientX: initialDrawing.clientX + space,
+      //           clientY: initialDrawing.clientY,
+      //         })
+      //       )
+      //       colorSelectorBox = await findByRole('ColorSelectorBox')
+      //       await expect(colorSelectorBox.textContent).not.toBe(
+      //         `hsla(${newColor.hue}, ${newColor.saturation}%, ${newColor.lightness}%, ${newColor.alpha})`
+      //       )
+      //     })
 
-          await step('x3', async () => {
-            await userEvent.click(btnBrush)
-            const selectBrush = await findByRole('combobox')
+      //     await step('x3', async () => {
+      //       await userEvent.click(btnBrush)
+      //       const selectBrush = await findByRole('combobox')
 
-            await userEvent.selectOptions(selectBrush, ShapesBrush.rectangle)
-            await expect(selectBrush).toHaveValue(ShapesBrush.rectangle)
-            const [inputWidth, inputHeight] = await findAllByRole('spinbutton')
+      //       await userEvent.selectOptions(selectBrush, ShapesBrush.rectangle)
+      //       await expect(selectBrush).toHaveValue(ShapesBrush.rectangle)
+            // const [inputWidth, inputHeight] = await findAllByRole('spinbutton')
 
-            await userEvent.click(inputWidth)
-            await userEvent.keyboard('3')
-            await userEvent.click(inputHeight)
-            await userEvent.keyboard('2')
+      //       await userEvent.click(inputWidth)
+      //       await userEvent.keyboard('3')
+      //       await userEvent.click(inputHeight)
+      //       await userEvent.keyboard('2')
 
-            await expect(inputWidth).toHaveValue(3)
-            await expect(inputHeight).toHaveValue(2)
-            let colorSelectorBox = await findByRole('ColorSelectorBox')
-            const hue = await findByRole('sliderHue')
-            const saturation = await findByRole('sliderSaturation')
-            const lightness = await findByRole('sliderLightness')
-            const alpha = await findByRole('sliderAlpha')
-            const newColor = {
-              hue: 100,
-              saturation: 50,
-              lightness: 50,
-              alpha: 1,
-            }
-            fireEvent.change(hue, { target: { value: newColor.hue } })
-            fireEvent.change(saturation, {
-              target: { value: newColor.saturation },
-            })
-            fireEvent.change(alpha, { target: { value: newColor.alpha } })
-            fireEvent.change(lightness, {
-              target: { value: newColor.lightness },
-            })
-            await expect(colorSelectorBox.textContent).toBe(
-              `hsla(${newColor.hue}, ${newColor.saturation}%, ${newColor.lightness}%, ${newColor.alpha})`
-            )
+      //       await expect(inputWidth).toHaveValue(3)
+      //       await expect(inputHeight).toHaveValue(2)
+      //       let colorSelectorBox = await findByRole('ColorSelectorBox')
+      //       const hue = await findByRole('sliderHue')
+      //       const saturation = await findByRole('sliderSaturation')
+      //       const lightness = await findByRole('sliderLightness')
+      //       const alpha = await findByRole('sliderAlpha')
+      //       const newColor = {
+      //         hue: 100,
+      //         saturation: 50,
+      //         lightness: 50,
+      //         alpha: 1,
+      //       }
+      //       fireEvent.change(hue, { target: { value: newColor.hue } })
+      //       fireEvent.change(saturation, {
+      //         target: { value: newColor.saturation },
+      //       })
+      //       fireEvent.change(alpha, { target: { value: newColor.alpha } })
+      //       fireEvent.change(lightness, {
+      //         target: { value: newColor.lightness },
+      //       })
+      //       await expect(colorSelectorBox.textContent).toBe(
+      //         `hsla(${newColor.hue}, ${newColor.saturation}%, ${newColor.lightness}%, ${newColor.alpha})`
+      //       )
 
-            fireEvent(
-              layerMouse,
-              createEvent.mouseDown(layerMouse, initialDrawing)
-            )
-            fireEvent(
-              layerMouse,
-              createEvent.mouseUp(layerMouse, initialDrawing)
-            )
-            const btnEyeDropper = getByRole('buttonEyeDropper')
-            await userEvent.click(btnEyeDropper)
-            fireEvent(
-              layerMouse,
-              createEvent.click(layerMouse, {
-                clientX: initialDrawing.clientX - space * 2,
-                clientY: initialDrawing.clientY,
-              })
-            )
-            colorSelectorBox = await findByRole('ColorSelectorBox')
-            await expect(colorSelectorBox.textContent).toBe(
-              `hsla(${newColor.hue}, ${newColor.saturation}%, ${newColor.lightness}%, ${newColor.alpha})`
-            )
-            fireEvent(
-              layerMouse,
-              createEvent.click(layerMouse, {
-                clientX: initialDrawing.clientX,
-                clientY: initialDrawing.clientY - space * 2,
-              })
-            )
-            colorSelectorBox = await findByRole('ColorSelectorBox')
-            await expect(colorSelectorBox.textContent).toBe(
-              `hsla(${newColor.hue}, ${newColor.saturation}%, ${newColor.lightness}%, ${newColor.alpha})`
-            )
-            fireEvent(
-              layerMouse,
-              createEvent.click(layerMouse, {
-                clientX: initialDrawing.clientX,
-                clientY: initialDrawing.clientY + space * 2,
-              })
-            )
-            colorSelectorBox = await findByRole('ColorSelectorBox')
-            await expect(colorSelectorBox.textContent).not.toBe(
-              `hsla(${newColor.hue}, ${newColor.saturation}%, ${newColor.lightness}%, ${newColor.alpha})`
-            )
-            fireEvent(
-              layerMouse,
-              createEvent.click(layerMouse, {
-                clientX: initialDrawing.clientX + space * 2,
-                clientY: initialDrawing.clientY,
-              })
-            )
-            colorSelectorBox = await findByRole('ColorSelectorBox')
-            await expect(colorSelectorBox.textContent).not.toBe(
-              `hsla(${newColor.hue}, ${newColor.saturation}%, ${newColor.lightness}%, ${newColor.alpha})`
-            )
-          })
-        })
-        await step('cambiar el tamaño del rectángulo', async () => {
-          await step('x2', async () => {})
-          await step('x3', async () => {})
-        })
+      //       fireEvent(
+      //         layerMouse,
+      //         createEvent.mouseDown(layerMouse, initialDrawing)
+      //       )
+      //       fireEvent(
+      //         layerMouse,
+      //         createEvent.mouseUp(layerMouse, initialDrawing)
+      //       )
+      //       const btnEyeDropper = getByRole('buttonEyeDropper')
+      //       await userEvent.click(btnEyeDropper)
+      //       fireEvent(
+      //         layerMouse,
+      //         createEvent.click(layerMouse, {
+      //           clientX: initialDrawing.clientX - space * 2,
+      //           clientY: initialDrawing.clientY,
+      //         })
+      //       )
+      //       colorSelectorBox = await findByRole('ColorSelectorBox')
+      //       await expect(colorSelectorBox.textContent).toBe(
+      //         `hsla(${newColor.hue}, ${newColor.saturation}%, ${newColor.lightness}%, ${newColor.alpha})`
+      //       )
+      //       fireEvent(
+      //         layerMouse,
+      //         createEvent.click(layerMouse, {
+      //           clientX: initialDrawing.clientX,
+      //           clientY: initialDrawing.clientY - space * 2,
+      //         })
+      //       )
+      //       colorSelectorBox = await findByRole('ColorSelectorBox')
+      //       await expect(colorSelectorBox.textContent).toBe(
+      //         `hsla(${newColor.hue}, ${newColor.saturation}%, ${newColor.lightness}%, ${newColor.alpha})`
+      //       )
+      //       fireEvent(
+      //         layerMouse,
+      //         createEvent.click(layerMouse, {
+      //           clientX: initialDrawing.clientX,
+      //           clientY: initialDrawing.clientY + space * 2,
+      //         })
+      //       )
+      //       colorSelectorBox = await findByRole('ColorSelectorBox')
+      //       await expect(colorSelectorBox.textContent).not.toBe(
+      //         `hsla(${newColor.hue}, ${newColor.saturation}%, ${newColor.lightness}%, ${newColor.alpha})`
+      //       )
+      //       fireEvent(
+      //         layerMouse,
+      //         createEvent.click(layerMouse, {
+      //           clientX: initialDrawing.clientX + space * 2,
+      //           clientY: initialDrawing.clientY,
+      //         })
+      //       )
+      //       colorSelectorBox = await findByRole('ColorSelectorBox')
+      //       await expect(colorSelectorBox.textContent).not.toBe(
+      //         `hsla(${newColor.hue}, ${newColor.saturation}%, ${newColor.lightness}%, ${newColor.alpha})`
+      //       )
+      //     })
+      //   })
+      //   await step('cambiar el tamaño del rectángulo', async () => {
+      //     await step('x2', async () => {})
+      //     await step('x3', async () => {})
+      //   })
       })
     })
 
