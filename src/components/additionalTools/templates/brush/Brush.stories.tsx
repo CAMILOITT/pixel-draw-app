@@ -3,6 +3,7 @@ import { Meta, StoryObj } from '@storybook/react'
 import { fireEvent, within } from '@storybook/testing-library'
 import { ShapesBrush } from '../../../../types/brush/enum'
 import Brush from './Brush'
+import { LIMIT_SIZE } from '../../../../const/brush'
 
 const meta: Meta<typeof Brush> = {
   title: 'v1/Components/AdditionalTools/Templates/Brush',
@@ -38,8 +39,8 @@ const meta: Meta<typeof Brush> = {
         await step(
           'cambiando los valores del ancho y alto del pincel',
           async () => {
-            const newValueWidth = 20
-            const newValueHeight = 50
+            const newValueWidth = 15
+            const newValueHeight = 10
             fireEvent.change(spinWidth, { target: { value: newValueWidth } })
             fireEvent.change(spinHeight, { target: { value: newValueHeight } })
             expect(spinWidth).toHaveValue(newValueWidth)
