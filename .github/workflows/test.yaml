@@ -21,7 +21,10 @@ jobs:
         run: npm run test
       - name: Install Playwright
         run: npx playwright install --with-deps
+      - name: Build Storybook
+        run: yarn build-storybook --quiet
       - name: run ui test
-        run: npm run test-storybook
-        env:
-          TARGET_URL: '${{ github.event.deployment_status.target_url }}'
+        run: |
+          npx concurrently -k -s first -n "SB,TEST" -c "magenta,blue" \
+            "npx http-server storybook-static --port 6006 --silent" \
+            "npx wait-on tcp:6006 && yarn test-storybook"
