@@ -6,18 +6,22 @@ on:
 
 jobs:
   tests:
+    timeout-minutes: 60
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
-      - name: Use Node.js 20.x
-        uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - name: Use Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 20.x
-          cache: 'npm'
       - name: install dependencies
         run: npm i
       - name: run logic test
         run: npm run test
+      - name: Install Playwright
+        run: npx playwright install --with-deps
       - name: run ui test
-        run: npm run storybook-test
+        run: npm run test-storybook
+        env:
+          TARGET_URL: '${{ github.event.deployment_status.target_url }}'
