@@ -1,13 +1,14 @@
 import { useContext, useState } from 'react'
 import { InfoCanvasContext } from '../../context/state/infoCanvas/InfoCanvas'
 import css from './ConfigurationCanvas.module.css'
+import InputNumber from '@ui/inputNumber/InputNumber'
 
 interface ConfigurationCanvasProps {
-  closeCanvas?: () => void
+  closeConfigurationCanvas?: () => void
 }
 
 export default function ConfigurationCanvas({
-  closeCanvas,
+  closeConfigurationCanvas,
 }: ConfigurationCanvasProps) {
   const { setInfoCanvas, setSizePixel } = useContext(InfoCanvasContext)
   const [addBackground, setAddBackground] = useState(false)
@@ -35,8 +36,7 @@ export default function ConfigurationCanvas({
 
     setInfoCanvas(valueInfoCanvas)
     setSizePixel(valueSizePixel)
-    // close Canvas
-    closeCanvas && closeCanvas()
+    closeConfigurationCanvas && closeConfigurationCanvas()
   }
 
   return (
@@ -45,51 +45,46 @@ export default function ConfigurationCanvas({
       <h3 className={css.subtitleSetting}>Tamaño del canvas</h3>
       <label htmlFor="canvas-width" className={css.nameSetting}>
         Ancho:
-        <input
-          type="number"
+        <InputNumber
           name="canvasWidth"
           id="canvas-width"
           min={0}
           max={500}
           defaultValue={500}
-          className={css.valueSetting}
         />
       </label>
       <label htmlFor="canvas-height" className={css.nameSetting}>
         Alto:
-        <input
+        <InputNumber
           type="number"
           name="canvasHeight"
           id="canvas-height"
           min={0}
           max={500}
           defaultValue={500}
-          className={css.valueSetting}
         />
       </label>
       <h3>Tamaño de los pixeles</h3>
       <label htmlFor="square-width" className={css.nameSetting}>
         Ancho:
-        <input
+        <InputNumber
           type="number"
           name="squareWidth"
           id="square-width"
           min={0}
           max={50}
           defaultValue={10}
-          className={css.valueSetting}
         />
       </label>
       <label htmlFor="square-height" className={css.nameSetting}>
         Alto:
-        <input
+        <InputNumber
           type="number"
           name="squareHeight"
           id="square-height"
           min={0}
           max={50}
           defaultValue={10}
-          className={css.valueSetting}
         />
       </label>
       <h3>Color de fondo</h3>
@@ -113,7 +108,7 @@ export default function ConfigurationCanvas({
             type="color"
             name="canvasBackground"
             id="canvas-background"
-            className={`${css.valueSetting} ${css.valueSettingColor}`}
+            className={`${css.valueSetting} ${css.valueSettingColor}`} role="boxColor"
           />
         </label>
       )}
@@ -124,4 +119,3 @@ export default function ConfigurationCanvas({
     </form>
   )
 }
-// 129

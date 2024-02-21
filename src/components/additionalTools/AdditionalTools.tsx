@@ -18,13 +18,12 @@ const toolConfigurations = {
 export default function AdditionalTools({}: AdditionalToolsProps) {
   const { toolSelect } = useContext(SelectorToolsContext)
   return (
-    <div className={css.additionalTools}>
+    <nav className={css.additionalTools}>
       <div className={css.nameWeb} >
         <WebIcon />
         <h2>PixelDraw</h2>
       </div>
       {toolConfigurations[toolSelect]}
-    </div>
+    </nav>
   )
-  // return toolConfigurations[toolSelect]
 }

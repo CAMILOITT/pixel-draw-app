@@ -12,7 +12,6 @@
 .selectBrush,
 .brushSize {
   font-size: 1.1rem;
-
   display: flex;
   gap: 10px;
   align-items: center;
@@ -20,26 +19,15 @@
   position: relative;
   overflow: hidden;
 }
-
-.brush,
+/* 
 .brushSizeValue,
 .brushSizeValue::-webkit-inner-spin-button {
   outline: none;
   appearance: none;
 }
 
-.brush {
-  text-align: center;
-  padding: 5px;
-  border: none;
-}
-
 .brushSizeValue {
   appearance: none;
   text-align: center;
   padding: 5px;
-}
-
-.brushSizeValue::-webkit-inner-spin-button {
-  appearance: none;
-}
+} */

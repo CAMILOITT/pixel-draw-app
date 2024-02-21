@@ -20,7 +20,7 @@ export const dataCanvasInt: DrawingCanvas & CoordDrawing = {
   x: (window.innerWidth - dataSize.w) / 2,
   y: (window.innerHeight - dataSize.h) / 2,
   ...dataSize,
-  bg: 'white',
+  color: 'white',
 }
 
 export const cleanBgCanvas: (CoordDrawing & DrawingDimensiones)[] = [

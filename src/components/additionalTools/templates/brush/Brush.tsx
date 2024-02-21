@@ -1,12 +1,13 @@
+import InputNumber from '@ui/inputNumber/InputNumber'
+import Select from '@ui/select/Select'
 import React, { useContext, useState } from 'react'
+import { LIMIT_SIZE } from '../../../../const/brush'
 import { BrushContext } from '../../../../context/state/pencil/Pencil'
 import { ShapesBrush } from '../../../../types/brush/enum'
 import '../style/styleTemplates.css'
 import css from './Brush.module.css'
 
 interface BrushProps {}
-
-const LIMITSIZE = { min: 1, max: 20 }
 
 export default function Brush({}: BrushProps) {
   const { brushSize, setBrushSize, selectedBrush, setSelectedBrush } =
@@ -16,9 +17,14 @@ export default function Brush({}: BrushProps) {
 
   function handleValueBrushSize(e: React.ChangeEvent<HTMLInputElement>) {
     const { value, name } = e.target
-    if (Number(value) < 1) return
+    if (!value) {
+      e.target.value = '1'
+      return
+    }
+    if (parseInt(value) > LIMIT_SIZE.max || parseInt(value) < LIMIT_SIZE.min)
+      return
 
-    let size
+    let size: { w: number; h: number }
 
     if (ShapesBrush.rectangle === selectedBrush) {
       size = {
@@ -31,14 +37,18 @@ export default function Brush({}: BrushProps) {
         h: parseInt(value),
       }
     }
-
     setValueBrushSize(size)
     setBrushSize(size)
   }
 
   function handleValueSelectionBrush(e: React.ChangeEvent<HTMLSelectElement>) {
     const { value } = e.currentTarget
-
+    if (!value) {
+      e.target.value = '1'
+      return
+    }
+    if (parseInt(value) > LIMIT_SIZE.max || parseInt(value) < LIMIT_SIZE.min)
+      return
     if (ShapesBrush.rectangle === selectedBrush) {
       const size = {
         w: brushSize.w,
@@ -50,39 +60,15 @@ export default function Brush({}: BrushProps) {
     setSelectedBrush(value as ShapesBrush)
   }
 
-  function handleValueInvalid(e: React.ChangeEvent<HTMLInputElement>) {
-    const { name } = e.target
-    if (Number(e.target.value) > 0) return
-    e.target.value = '1'
-    const value = '1'
-    let size
-
-    if (ShapesBrush.rectangle === selectedBrush) {
-      size = {
-        w: name === 'valueBrushSize' ? parseInt(value) : brushSize.w,
-        h: name === 'secondPencilSize' ? parseInt(value) : brushSize.h,
-      }
-    } else {
-      size = {
-        w: parseInt(value),
-        h: parseInt(value),
-      }
-    }
-
-    setValueBrushSize(size)
-    setBrushSize(size)
-  }
-
   return (
     <div className={css.toolBrush}>
-      {/* <h3>Pinceles</h3> */}
       <label htmlFor="typePencil" className={css.selectBrush}>
         pincel:
-        <select
+        <Select
           name="typePencil"
           id="typePencil"
           onChange={handleValueSelectionBrush}
-          className={css.brush}
+          role="selectBrush"
         >
           <option value={ShapesBrush.square} className={css.optionBrush}>
             {ShapesBrush.square}
@@ -90,37 +76,33 @@ export default function Brush({}: BrushProps) {
           <option value={ShapesBrush.rectangle} className={css.optionBrush}>
             {ShapesBrush.rectangle}
           </option>
-        </select>
+        </Select>
       </label>
 
       <label htmlFor="pencilSize" className={css.brushSize}>
         {selectedBrush !== ShapesBrush.rectangle ? 'tamaño:' : 'Ancho:'}
-        <input
-          type="number"
+        <InputNumber
           name="valueBrushSize"
           id="valueBrushSize"
           onChange={handleValueBrushSize}
-          onBlur={handleValueInvalid}
-          defaultValue={valueBrushSize.h}
-          max={LIMITSIZE.max}
-          min={LIMITSIZE.min}
-          className={css.brushSizeValue}
+          defaultValue={valueBrushSize.w}
+          value={valueBrushSize.w}
+          max={LIMIT_SIZE.max}
+          min={LIMIT_SIZE.min}
         />
       </label>
 
       {selectedBrush === ShapesBrush.rectangle && (
         <label htmlFor="pencilSize" className={css.brushSize}>
           Alto:
-          <input
-            type="number"
+          <InputNumber
             name="secondPencilSize"
             id="secondPencilSize"
             onChange={handleValueBrushSize}
-            onBlur={handleValueInvalid}
             defaultValue={valueBrushSize.h}
-            max={LIMITSIZE.max}
-            min={LIMITSIZE.min}
-            className={css.brushSizeValue}
+            value={valueBrushSize.h}
+            max={LIMIT_SIZE.max}
+            min={LIMIT_SIZE.min}
           />
         </label>
       )}

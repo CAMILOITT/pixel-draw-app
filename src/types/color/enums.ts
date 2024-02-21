@@ -7,7 +7,7 @@
  * @prop {number} dark - color darkness
  * @prop {number | null} alpha - color opacity
  */
-export interface InfoColor {
+export interface InformationColor {
   /** color value represents color hue */
   hue: number
   /** color saturation */

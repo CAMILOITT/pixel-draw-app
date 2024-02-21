@@ -1,5 +1,8 @@
 import { CanvasContext, CoordDrawing } from '../../types/drawing/interface'
+import { Tools } from '../../types/tools/enums'
 import { FillBucket } from '../../types/tools/type'
+import { Color, ConvertColor } from '../../utils/color'
+import { coords } from './coord'
 
 /**
  * Gets the color of the canvas at the cursor position
@@ -26,10 +29,32 @@ export function eyeDropper({ ctx, x, y }: CanvasContext & CoordDrawing) {
  * @prop {string} bg - The color to be replaced.
  * @prop {string} fillColor - The color to fill with.
  */
-export function bucketFill({ ctx, x, y, w, h, bg, fillColor }: FillBucket) {
-  if (bg === fillColor) return
+export function bucketFill({
+  ctx,
+  x,
+  y,
+  w,
+  h,
+  color: bg,
+  fillColor,
+}: FillBucket) {
+  const infoColor = Color.getDataHsla(fillColor)
+  const infoBg = ConvertColor.rgbToHsl(
+    ...(Color.getDataRgb(bg) || [0, 0, 0, 1])
+  )
+
+  if (
+    Color.compareColor(bg, fillColor) ||
+    !infoColor ||
+    (infoColor[3] < 0.5 && infoColor[0] === infoBg[0]) ||
+    infoColor[3] < 0.3
+  )
+    return
   const { canvas } = ctx
   const pixelStack = [[x, y]]
+
+  coords.toGroup({ tool: Tools.fillBucket, color: fillColor, x, y, w, h })
+
   if (!pixelStack) return
   while (pixelStack.length > 0) {
     if (pixelStack.length < 1) break

@@ -1,7 +1,7 @@
 import { createContext, useState } from 'react'
-import { Context, InitialColors } from './context'
 import { ColorType } from '../../../types/color/type'
-import { InformationColor } from '../../../types/color/interface'
+import { Context, InitialColors } from './context'
+import { InformationColor } from 'src/types/color/enums'
 
 export const ColorContext = createContext(Context)
 

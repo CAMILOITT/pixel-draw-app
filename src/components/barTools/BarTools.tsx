@@ -1,3 +1,4 @@
+import Button from '@ui/button/Button'
 import { useContext, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { coords } from '../../api/canvas/coord'
@@ -13,11 +14,11 @@ import UndoIcon from '../../assets/icons/UndoIcon'
 import { InfoCanvasContext } from '../../context/state/infoCanvas/InfoCanvas'
 import { SelectorToolsContext } from '../../context/state/selectorTools/SelectorTools'
 import { Tools } from '../../types/tools/enums'
+import ColorsSelected from '../../ui/colorsSelected/ColorsSelected'
 import ConfigDownload from '../configDownload/ConfigDownload'
 import ConfigurationCanvas from '../configurationCanvas/ConfigurationCanvas'
 import Modal, { ModalRef } from '../modal/Modal'
 import css from './BarTools.module.css'
-import ColorsSelected from './colorsSelected/ColorsSelected'
 
 interface BarToolsProps {}
 
@@ -27,24 +28,28 @@ const listTools = [
     icon: <BrushIcon />,
     name: 'Brush',
     dataTitle: 'brush (b)',
+    role: 'buttonBrush',
   },
   {
     value: Tools.eraser,
     icon: <EraserIcon />,
     name: 'Eraser',
     dataTitle: 'eraser (e)',
+    role: 'buttonEraser',
   },
   {
     value: Tools.eyeDropper,
     icon: <EyeDropperIcon />,
     name: 'Eye Dropper',
     dataTitle: 'eye dropper (d)',
+    role: 'buttonEyeDropper',
   },
   {
     value: Tools.fillBucket,
     icon: <BucketIcon />,
     name: 'Fill Bucket',
     dataTitle: 'fill bucket (f)',
+    role: 'buttonFillBucket',
   },
 ]
 
@@ -66,7 +71,7 @@ export default function BarTools({}: BarToolsProps) {
   }
 
   function handleCloseMenu() {
-    return () => setCloseMenu(before => !before)
+    setCloseMenu(before => !before)
   }
 
   function openMenuDownload() {
@@ -92,60 +97,72 @@ export default function BarTools({}: BarToolsProps) {
   return (
     <div
       className={`${css.menu} ${closeMenu ? css.menuOpen : css.menuClose}  `}
+      role="menuTools"
     >
-      <button className={`${css.closeMenu} `} onClick={handleCloseMenu()}>
-        herramientas
-      </button>
+      <Button
+        className={`${css.closeMenu} `}
+        onClick={handleCloseMenu}
+        children="herramientas"
+        role="closeMenu"
+      />
       <li className={`${css.tools}`}>
-        <button onClick={handleRedo} data-title="under (ctrl + Mays + z)">
-          <UndoIcon />
-        </button>
+        <Button
+          children={<UndoIcon />}
+          onClick={handleRedo} role= "buttonRedo"
+          data-title="redo (ctrl + ↑ shit + z)"
+        />
       </li>
       <li className={css.tools}>
-        <button onClick={handleUndo} data-title="rendo (ctrl + z)">
-          <RedoIcon />
-        </button>
+        <Button
+          children={<RedoIcon />}
+          onClick={handleUndo} role= "buttonUndo"
+          data-title="undo (ctrl + z)"
+        />
       </li>
-      {listTools.map(({ icon, name, dataTitle, value }) => (
-        <li
-          className={`${css.tools} ${toolSelect === value ? css.InUse : ''}`}
-          key={name}
-        >
-          <button
-            value={value}
+      {listTools.map(({ icon, name, dataTitle, value, role }) => (
+        <li className={`${css.tools}`} key={name}>
+          <Button
+            children={icon}
             onClick={handleSelectTools}
+            value={value}
             data-title={dataTitle}
-          >
-            {icon}
-          </button>
+            role={role}
+            className={toolSelect === value ? css.InUse : ''}
+          />
         </li>
       ))}
       <li className={`${css.tools}`}>
-        <button onClick={openMenuCanvas} data-title="configuration of canvas">
-          <ConfigurationIcon />
-        </button>
+        <Button
+          onClick={openMenuCanvas}
+          children={<ConfigurationIcon />}
+          data-title="configuration of canvas"
+          role="openConfigCanvas"
+        />
       </li>
       <li className={`${css.tools} ${css.toolsColors} `}>
         <ColorsSelected />
       </li>
       <li className={`${css.tools} ${css.download}`}>
-        <button onClick={openMenuDownload} data-title="Download (ctrl + s)">
-          <DownloadIcon />
-        </button>
+        <Button
+          onClick={openMenuDownload}
+          data-title="Download (ctrl + s)"
+          children={<DownloadIcon />}
+          role="openConfigDownload"
+        />
       </li>
       {createPortal(
-        <Modal ref={ModalConfigurationCanvas}>
+        <Modal ref={ModalConfigurationCanvas} role="configCanvas">
           <ConfigurationCanvas
-            closeCanvas={ModalConfigurationCanvas.current?.close}
+            closeConfigurationCanvas={ModalConfigurationCanvas.current?.close}
           />
         </Modal>,
-        document.body
+        (document.querySelector('#root') as HTMLDivElement) || document.body
       )}
       {createPortal(
-        <Modal ref={ModalDownload}>
+        <Modal ref={ModalDownload} role="configDownload">
           <ConfigDownload />
         </Modal>,
-        document.body
+        (document.querySelector('#root') as HTMLDivElement) || document.body
       )}
     </div>
   )

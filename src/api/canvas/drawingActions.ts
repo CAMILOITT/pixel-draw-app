@@ -1,10 +1,10 @@
 import { ConfigCanvas } from '../../types/canvas/interface'
-import { InformationColors } from '../../types/color/interface'
+import { InformationColorChange } from '../../types/color/interface'
 import { CoordDrawing } from '../../types/drawing/interface'
 import { Tools } from '../../types/tools/enums'
+import { Color } from '../../utils/color'
 import { handleCorrection } from './correction'
 import { clean, draw } from './drawing'
-import { eyeDropper, bucketFill } from './tools'
 
 export default interface ActionsDrawing {
   ctx: CanvasRenderingContext2D
@@ -14,7 +14,7 @@ export default interface ActionsDrawing {
   h: number
   toolSelect: Tools
   infoCanvas: ConfigCanvas
-  colors: InformationColors
+  colors: InformationColorChange
   prevPosition: CoordDrawing
   movementX?: number
   movementY?: number
@@ -33,23 +33,7 @@ export function actionsDrawing({
   movementX = 0,
   movementY = 0,
   prevPosition,
-  type,
 }: ActionsDrawing) {
-  if (Tools.eyeDropper === toolSelect) {
-    const color = eyeDropper({
-      ctx,
-      x,
-      y,
-    })
-    return {
-      hue: 0,
-      lightness: 0,
-      saturation: 100,
-      alpha: 1,
-      color: `rgba(${color[0]}, ${color[1]}, ${color[2]}, ${color[3]})`,
-    }
-  }
-
   if (Tools.eraser === toolSelect) {
     const valueClean = {
       ctx,
@@ -70,7 +54,7 @@ export function actionsDrawing({
       y,
       w,
       h,
-      bg: colors[colors.colorFocus].color,
+      color: Color.convertDataToString(colors[colors.colorFocus]),
     }
 
     draw(infoDraw)
@@ -82,19 +66,5 @@ export function actionsDrawing({
       movementY,
       prevPosition,
     })
-  }
-
-  if (Tools.fillBucket === toolSelect) {
-    if (type === 'mousemove') 
-      return
-
-    const color = eyeDropper({
-      ctx,
-      x,
-      y,
-    })
-    const bg = `rgb(${color[0]}, ${color[1]}, ${color[2]})`
-    const fillColor = colors[colors.colorFocus].color
-    bucketFill({ ctx, x, y, w, h, bg, fillColor })
   }
 }

@@ -22,7 +22,7 @@ export function handleCorrection({
   y,
   w,
   h,
-  bg,
+  color: bg,
   prevPosition,
   movementX,
   movementY,
@@ -44,7 +44,7 @@ export function handleCorrection({
       if (prevPosition.y > y) {
         prevPosition.y -= h
       }
-      draw({ ctx, ...prevPosition, w, h, bg })
+      draw({ ctx, ...prevPosition, w, h, color: bg })
     }
 
     return
@@ -62,7 +62,7 @@ export function handleCorrection({
       if (prevPosition.y < y) {
         prevPosition.y += h
       }
-      draw({ ctx, ...prevPosition, w, h, bg })
+      draw({ ctx, ...prevPosition, w, h, color: bg })
     }
     return
   }
@@ -79,7 +79,7 @@ export function handleCorrection({
       if (prevPosition.y < y) {
         prevPosition.y += h
       }
-      draw({ ctx, ...prevPosition, w, h, bg })
+      draw({ ctx, ...prevPosition, w, h, color: bg })
     }
     return
   }
@@ -96,7 +96,7 @@ export function handleCorrection({
       if (prevPosition.y > y) {
         prevPosition.y -= h
       }
-      draw({ ctx, ...prevPosition, w, h, bg })
+      draw({ ctx, ...prevPosition, w, h, color: bg })
     }
     return
   }
@@ -106,7 +106,7 @@ export function handleCorrection({
     const differenceX = (x - prevPosition.x) / w - 1
     for (let i = 0; i < differenceX; i++) {
       prevPosition.x += w
-      draw({ ctx, x: prevPosition.x, y, w, h, bg })
+      draw({ ctx, x: prevPosition.x, y, w, h, color: bg })
     }
     return
   }
@@ -115,7 +115,7 @@ export function handleCorrection({
     const differenceX = (prevPosition.x - x) / w - 1
     for (let i = 0; i < differenceX; i++) {
       prevPosition.x -= w
-      draw({ ctx, x: prevPosition.x, y, w, h, bg })
+      draw({ ctx, x: prevPosition.x, y, w, h, color: bg })
     }
     return
   }
@@ -126,7 +126,7 @@ export function handleCorrection({
     const differenceY = (prevPosition.y - y) / h - 1
     for (let i = 0; i < differenceY; i++) {
       prevPosition.y -= h
-      draw({ ctx, x, y: prevPosition.y, w, h, bg })
+      draw({ ctx, x, y: prevPosition.y, w, h, color: bg })
     }
     return
   }
@@ -135,7 +135,7 @@ export function handleCorrection({
     const differenceY = (y - prevPosition.y) / h - 1
     for (let i = 0; i < differenceY; i++) {
       prevPosition.y += h
-      draw({ ctx, w, h, bg, ...prevPosition })
+      draw({ ctx, w, h, color: bg, ...prevPosition })
     }
     return
   }

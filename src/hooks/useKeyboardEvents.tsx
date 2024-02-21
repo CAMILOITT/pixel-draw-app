@@ -1,10 +1,9 @@
 import { useContext, useState } from 'react'
+import { coords } from '../api/canvas/coord'
+import { reDrawing } from '../api/canvas/drawing'
 import { ColorContext } from '../context/state/color/Color'
 import { SelectorToolsContext } from '../context/state/selectorTools/SelectorTools'
 import { Tools } from '../types/tools/enums'
-import { coords } from '../api/canvas/coord'
-import { reDrawing } from '../api/canvas/drawing'
-
 
 export function useKeyboardEvents() {
   const { colors, setColorFocus } = useContext(ColorContext)
@@ -12,8 +11,8 @@ export function useKeyboardEvents() {
 
   const [ctx, setCtx] = useState<null | CanvasRenderingContext2D>(null)
 
-  function events(e: React.KeyboardEvent<HTMLCanvasElement>) {
-    e.preventDefault()
+  function events(e: KeyboardEvent) {
+    if ((e.target as HTMLElement).localName !== 'input') e.preventDefault()
     const { key, ctrlKey, shiftKey } = e
     if (key === 'x') {
       colors.colorFocus === 'colorPrimary'
@@ -33,7 +32,10 @@ export function useKeyboardEvents() {
       setToolSelect(Tools.eyeDropper)
       return
     }
-
+    if (key === 'f') {
+      setToolSelect(Tools.fillBucket)
+      return
+    }
     if (key === 'z' && ctrlKey) {
       if (!ctx) return
       coords.undo()

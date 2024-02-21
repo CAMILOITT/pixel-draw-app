@@ -18,7 +18,7 @@ export interface InformationDrawing extends CoordDrawing, DrawingDimensiones {
   /** brush */
   tool: Tools
   /** color */
-  bg: string | null
+  color: string | null
 }
 
 /**

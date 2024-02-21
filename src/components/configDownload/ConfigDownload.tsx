@@ -1,6 +1,7 @@
 import { useContext } from 'react'
 import { InfoCanvasContext } from '../../context/state/infoCanvas/InfoCanvas'
 import css from './ConfigDownload.module.css'
+import Select from '@ui/select/Select'
 
 interface ConfigDownloadProps {}
 
@@ -23,10 +24,10 @@ export default function ConfigDownload({}: ConfigDownloadProps) {
       </label>
       <label className={css.informationDownload}>
         formato de la imagen
-        <select name="type-img" id="typeImg" className={css.formatImg} >
+        <Select name="type-img" id="typeImg" className={css.formatImg}>
           <option value="png">PNG</option>
           <option value="img">IMG</option>
-        </select>
+        </Select>
       </label>
       <a href={urlImage} download={urlImage} className={css.downloadImage}>
         Download

@@ -6,6 +6,7 @@ import {
 } from '../../types/drawing/types'
 import { Tools } from '../../types/tools/enums'
 import { coords } from './coord'
+import { bucketFill, eyeDropper } from './tools'
 import { cleanCanvas } from './update'
 
 /**
@@ -32,13 +33,13 @@ export function fillBackgroundCanvas({ ctx, bg, w, h }: FillBackgroundCanvas) {
  * @param {InfoDrawing} infoDraw - The canvas context and configuration.
  */
 
-export function draw({ ctx, bg, x, y, w, h }: InfoDrawing) {
+export function draw({ ctx, color, x, y, w, h }: InfoDrawing) {
   ctx.beginPath()
-  ctx.fillStyle = bg
+  ctx.fillStyle = color
   ctx.rect(x, y, w, h)
   ctx.fill()
   ctx.closePath()
-  coords.toGroup({ tool: Tools.brush, bg, x, y, w, h })
+  coords.toGroup({ tool: Tools.brush, color, x, y, w, h })
 }
 
 /**
@@ -54,14 +55,14 @@ export function draw({ ctx, bg, x, y, w, h }: InfoDrawing) {
 
 export function clean({ ctx, x, y, w, h, bg }: Eraser) {
   if (bg) {
-    const infoDrawing = { ctx, x, y, w, h, bg }
+    const infoDrawing = { ctx, x, y, w, h, color: bg }
     draw(infoDrawing)
     return
   }
   ctx.beginPath()
   ctx.clearRect(x, y, w, h)
   ctx.closePath()
-  coords.toGroup({ tool: Tools.eraser, x, y, w, h, bg })
+  coords.toGroup({ tool: Tools.eraser, x, y, w, h, color: bg })
 }
 
 /**
@@ -79,11 +80,18 @@ export function reDrawing({ ctx }: CanvasContext) {
 
   for (const blockDraw of coords.coords) {
     for (const dataDraw of blockDraw) {
-      if (dataDraw.tool === Tools.eraser) {
-        clean({ ...dataDraw, ctx })
-      }
-      if (dataDraw.tool === Tools.brush && dataDraw.bg) {
-        draw({ ...dataDraw, bg: dataDraw.bg, ctx })
+      if (dataDraw.tool === Tools.eraser)
+        clean({ ...dataDraw, bg: dataDraw.color, ctx })
+      if (dataDraw.tool === Tools.brush && dataDraw.color)
+        draw({ ...dataDraw, color: dataDraw.color, ctx })
+      if (dataDraw.tool === Tools.fillBucket) {
+        const color = eyeDropper({
+          ctx,
+          ...dataDraw,
+        })
+        const bg = `rgb(${color[0]}, ${color[1]}, ${color[2]})`
+        const fillColor = dataDraw.color || 'black'
+        bucketFill({ ctx, ...dataDraw, color: bg, fillColor })
       }
     }
   }

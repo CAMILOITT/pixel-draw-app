@@ -19,14 +19,13 @@ export default function LayerPixel({}: LayerPixelProps) {
   const [sizeCanvas] = useState({ w: 500, h: 500 })
   const { infoCanvas, setContextCanvasDrawing } = useContext(InfoCanvasContext)
   const { events: keyboardEvents, setCtx: setCtxKeyboard } = useKeyboardEvents()
-
   const {
     drawing,
     endDrawing,
     startDrawing,
-    setMultiplier,
     setCtx: setCtxEvents,
     setCtxMouse: setCtxMouseEvents,
+    useTools,
   } = useDrawingMouse({ sizeCanvas })
 
   useEffect(() => {
@@ -35,8 +34,8 @@ export default function LayerPixel({}: LayerPixelProps) {
     LayerMouse.current.height = sizeCanvas.h
     LayerMouse.current.style.translate = `${translateX}% ${translateY}%`
     const ctx = LayerMouse.current.getContext('2d')
-    setCtxMouseEvents(ctx)
     if (!ctx) return
+    setCtxMouseEvents(ctx)
     fillBackgroundCanvas({ ctx, ...sizeCanvas, bg: infoCanvas.bg })
   }, [infoCanvas, setCtxMouseEvents, sizeCanvas])
 
@@ -46,10 +45,6 @@ export default function LayerPixel({}: LayerPixelProps) {
     LayerDrawing.current.height = sizeCanvas.h
     LayerDrawing.current.style.translate = `${translateX}% ${translateY}%`
     const ctx = LayerDrawing.current.getContext('2d')
-    setMultiplier({
-      x: sizeCanvas.w / infoCanvas.w,
-      y: sizeCanvas.h / infoCanvas.h,
-    })
     if (!ctx) return
     setCtxEvents(ctx)
     setCtxKeyboard(ctx)
@@ -57,6 +52,21 @@ export default function LayerPixel({}: LayerPixelProps) {
     fillBackgroundCanvas({ ctx, ...sizeCanvas, bg: infoCanvas.bg })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [infoCanvas, sizeCanvas])
+
+  useEffect(() => {
+    function handleWheel(e: WheelEvent) {
+      if (e.ctrlKey) e.preventDefault()
+    }
+    document.addEventListener('keydown', keyboardEvents)
+    document.addEventListener('wheel', handleWheel, {
+      passive: false,
+    })
+    return () => {
+      document.removeEventListener('keydown', keyboardEvents)
+      document.removeEventListener('wheel', handleWheel)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [keyboardEvents])
 
   function handleStartDrawing(e: React.MouseEvent) {
     const { clientX, clientY } = e
@@ -82,7 +92,7 @@ export default function LayerPixel({}: LayerPixelProps) {
     if (touches.length >= 2) return
     const { clientX, clientY } = touches[0]
     const { left, top } = e.currentTarget.getBoundingClientRect()
-    drawing({ clientX, clientY, left, top,  })
+    drawing({ clientX, clientY, left, top })
   }
 
   function wheel(e: React.WheelEvent<HTMLDivElement>) {
@@ -136,18 +146,23 @@ export default function LayerPixel({}: LayerPixelProps) {
       onTouchMove={handleRemoveScrollTouch}
     >
       <div>
-        <canvas ref={LayerDrawing} className={css.canvasPixel}>
+        <canvas
+          ref={LayerDrawing}
+          className={css.canvasPixel}
+          role="layerDrawing"
+        >
           parece que tu navegador no soporta la api de canvas por favor
           considera actualizar el navegador a la version mas reciente o utilizar
           otro navegador como Opera, Firefox, Chrome, etc
         </canvas>
         <canvas
+          role="layerMouse"
           ref={LayerMouse}
           className={css.canvasPixel}
+          onClick={useTools}
           onMouseMove={handleDrawing}
           onMouseDown={handleStartDrawing}
           onMouseUp={endDrawing}
-          onKeyDown={keyboardEvents}
           onMouseLeave={cleanCanvasMouse}
           onTouchMove={handleTouch}
           onTouchStart={handleTouchStart}

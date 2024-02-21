@@ -2,6 +2,7 @@
   display: flex;
   flex-direction: column;
   gap: 15px;
+  max-width: 350px;
 }
 
 .colorSwatch {
@@ -12,12 +13,4 @@
 .colorSwatch {
   width: 100%;
   height: 75px;
-}
-
-.addColor {
-  --size: 35px;
-  width: var(--size);
-  height: var(--size);
-  padding: 4px;
-  margin: auto;
 }

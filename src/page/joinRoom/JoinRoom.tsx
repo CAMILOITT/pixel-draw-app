@@ -1,5 +1,5 @@
 import AdditionalTools from '../../components/additionalTools/AdditionalTools'
-import BarDesign from '../../components/barDesign/BarDesign'
+import MenuColor from '../../components/menuColor/MenuColor'
 import BarTools from '../../components/barTools/BarTools'
 import LayerPixel from '../../components/layerPixel/LayerPixel'
 import css from './JoinRoom.module.css'
@@ -12,7 +12,8 @@ export default function JoinRoom({}: JoinRoomProps) {
       <AdditionalTools />
       <LayerPixel />
       <BarTools />
-      <BarDesign />
+      <MenuColor />
+      {/* <iframe src="http://localhost:5173/canvas" style={{position: 'absolute', top: 0, left: '40%', width: '50%', height: '50%'}} ></iframe> */}
     </div>
   )
 }

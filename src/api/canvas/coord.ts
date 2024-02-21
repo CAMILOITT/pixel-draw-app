@@ -1,29 +1,33 @@
 import { InformationDrawing } from '../../types/brush/interface'
 
-class Coords {
-  coords: InformationDrawing[][] = []
+export class Coords {
+  private _coords: InformationDrawing[][] = []
   private nextCoords: InformationDrawing[][] = []
   private group: InformationDrawing[] = []
 
+  get coords() {
+    return this._coords
+  }
+
   update() {
-    this.coords.push(this.group)
-    this.nextCoords = [...this.coords]
+    this._coords.push(this.group)
+    this.nextCoords = [...this._coords]
     this.group = []
   }
 
-  toGroup({ x, y, w, h, tool, bg }: InformationDrawing) {
-    this.group.push({ x, y, w, h, tool, bg })
+  toGroup({ x, y, w, h, tool, color: bg }: InformationDrawing) {
+    this.group.push({ x, y, w, h, tool, color: bg })
   }
 
   redo() {
-    if (this.coords.length === this.nextCoords.length) return
-    const index = this.coords.length
-    this.coords.push(this.nextCoords[index])
+    if (this._coords.length === this.nextCoords.length) return
+    const index = this._coords.length
+    this._coords.push(this.nextCoords[index])
   }
 
   undo() {
-    if (this.coords.length < 1) return
-    this.coords.pop()
+    if (this._coords.length < 1) return
+    this._coords.pop()
   }
 }
 

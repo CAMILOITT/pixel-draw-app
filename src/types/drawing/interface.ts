@@ -51,7 +51,7 @@ export interface DrawingDimensiones {
 
 export interface DrawingColor {
   /** brush color */
-  bg: string
+  color: string
 }
 
 /**

@@ -1,98 +1,76 @@
-import React, { useContext, useEffect, useState } from 'react'
-import AddIcon from '../../assets/icons/AddIcon'
-import { ColorContext } from '../../context/state/color/Color'
-import { InfoColor } from '../../types/color/enums'
-import { InformationColor, ListInfoColor } from '../../types/color/interface'
+import React from 'react'
+import { ColorContext as Context } from '../../types/color/interface'
+import { InformationColor } from '../../types/color/enums'
+import OutputColor from '../../ui/outputColor/OutputColor'
 import SliderColor from '../sliderColor/SliderColor'
 import css from './PickerColor.module.css'
-import OutputColor from '../outputColor/OutputColor'
-interface PickerColorProps {
-  addColor: React.Dispatch<React.SetStateAction<ListInfoColor[]>>
-  listColors: InformationColor[]
-}
-export function PickerColor({ addColor, listColors }: PickerColorProps) {
-  const { setColor: getColor } = useContext(ColorContext)
-  const [color, setColor] = useState<InfoColor>({
-    hue: 359,
-    saturation: 100,
-    lightness: 50,
-    alpha: 1,
-  })
-  useEffect(() => {
-    const newColor: InformationColor = {
-      hue: color.hue,
-      saturation: color.saturation,
-      lightness: color.lightness,
-      alpha: color.alpha || 1,
-      color: `hsla(${color.hue}, ${color.saturation}%, ${color.lightness}%, ${color.alpha})`,
-    }
-    getColor(newColor)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [color])
-  function handleAddColor() {
-    const indexColor = listColors.findIndex(value => {
-      if (
-        value.hue === color.hue &&
-        value.saturation === color.saturation &&
-        value.lightness === color.lightness &&
-        value.alpha === color.alpha
-      )
-        return value
-    })
-    if (indexColor > 0) return
-    addColor(value => [
-      ...value,
-      {
-        id: crypto.randomUUID(),
-        ...color,
-        color: `hsla(${color.hue}, ${color.saturation}%, ${color.lightness}%, ${color.alpha})`,
-      },
-    ])
-  }
-  function changeHue(e: React.ChangeEvent<HTMLInputElement>) {
-    const { value } = e.currentTarget
-    const hue = parseInt(value)
-    setColor(colorValue => ({ ...colorValue, hue }))
-  }
-  function changeSaturation(e: React.ChangeEvent<HTMLInputElement>) {
-    const { value } = e.currentTarget
-    const saturation = parseInt(value)
-    setColor(colorData => ({ ...colorData, saturation }))
-  }
-  function changeLightness(e: React.ChangeEvent<HTMLInputElement>) {
-    const { value } = e.currentTarget
-    const lightness = parseInt(value)
-    setColor(colorData => ({ ...colorData, lightness }))
-  }
-  function changeAlpha(e: React.ChangeEvent<HTMLInputElement>) {
-    const { value } = e.currentTarget
-    const alpha = parseInt(value) / 100
-    setColor(colorData => ({ ...colorData, alpha }))
-  }
-  return (
-    <div className={css.pickerColor}>
-      <OutputColor infoColor={color} />
 
+interface PickerColorProps extends Omit<Context, 'setColorFocus'> {}
+
+export function PickerColor({ colors, setColor }: PickerColorProps) {
+  function changeColor(e: React.ChangeEvent<HTMLInputElement>) {
+    const { value, role } = e.currentTarget
+    const color: InformationColor = { ...colors[colors.colorFocus] }
+    
+    if (role === 'sliderHue') setColor({ ...color, hue: parseInt(value) })
+
+    if (role === 'sliderSaturation')
+      setColor({ ...color, saturation: parseInt(value) })
+
+    if (role === 'sliderLightness')
+      setColor({ ...color, lightness: parseInt(value) })
+
+    if (role === 'sliderAlpha') setColor({ ...color, alpha: Number(value) })
+  }
+
+  return (
+    <div className={css.pickerColor} role="pickerColor">
+      <OutputColor infoColor={colors[colors.colorFocus]} />
       <SliderColor
-        changeColor={changeHue}
-        color={`linear-gradient(to right, hsl(0deg 100% 50%),hsl(90deg 100% 50%), hsl(180deg 100% 50%), hsl(270deg 100% 50%),  hsl(360deg 100% 50%))`}
+        onChange={changeColor}
         max={360}
+        defaultValue={colors[colors.colorFocus].hue}
+        role="sliderHue"
+        style={{
+          background: `linear-gradient(to right, hsl(0deg 100% 50%),hsl(90deg 100% 50%), hsl(180deg 100% 50%), hsl(270deg 100% 50%),  hsl(360deg 100% 50%))`,
+        }}
       />
       <SliderColor
-        changeColor={changeSaturation}
-        color={`linear-gradient(to right, hsl(${color.hue}deg 0% 50%), hsl(${color.hue}deg 100% 50%)`}
+        role="sliderSaturation"
+        onChange={changeColor}
+        defaultValue={colors[colors.colorFocus].saturation}
+        style={{
+          background: `linear-gradient(to right, hsl(${
+            colors[colors.colorFocus].hue
+          }deg 0% 50%), hsl(${colors[colors.colorFocus].hue}deg 100% 50%)`,
+        }}
       />
       <SliderColor
-        color={`linear-gradient(to right, hsl(${color.hue}deg ${color.saturation}% 0%), hsl(${color.hue}deg 100% 50%), hsl(${color.hue}deg ${color.saturation}% 100%))`}
-        changeColor={changeLightness}
+        role="sliderLightness"
+        onChange={changeColor}
+        defaultValue={colors[colors.colorFocus].lightness}
+        style={{
+          background: `linear-gradient(to right, hsl(${
+            colors[colors.colorFocus].hue
+          }deg ${colors[colors.colorFocus].saturation}% 0%), hsl(${
+            colors[colors.colorFocus].hue
+          }deg 100% 50%), hsl(${colors[colors.colorFocus].hue}deg ${
+            colors[colors.colorFocus].saturation
+          }% 100%))`,
+        }}
       />
       <SliderColor
-        color={`linear-gradient(to right, transparent, hsl(${color.hue}deg 100% 50%))`}
-        changeColor={changeAlpha}
+        role="sliderAlpha"
+        onChange={changeColor}
+        defaultValue={colors[colors.colorFocus].alpha}
+        step={0.01}
+        max={1}
+        style={{
+          background: `linear-gradient(to right, transparent, hsl(${
+            colors[colors.colorFocus].hue
+          }deg 100% 50%))`,
+        }}
       />
-      <button className={css.addColor} onClick={handleAddColor}>
-        <AddIcon />
-      </button>
     </div>
   )
 }

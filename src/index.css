@@ -19,7 +19,7 @@
 :root {
   --imgBorderPixel: url('./assets/marcoPixel.png');
 
-  --bg: #181818;
+  --bg: rgb(24, 24, 24);
   --color-secondary: #5c5c5c;
 
   --color: #fafafa;
@@ -48,13 +48,25 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Pixelify Sans','Minecraft', sans-serif;
+  font-family: 'Pixelify Sans', 'Minecraft', sans-serif;
 
   fill: var(--color);
 }
 
+html {
+  touch-action: none; /* disable pinch-zoom o pan-y */
+  zoom: reset;
+  position: absolute;
+}
+
+* {
+  zoom: reset;
+}
+
 body {
   user-select: none;
+  width: 100dvw;
+  height: 100dvh;
 }
 
 button,
@@ -64,6 +76,10 @@ input {
   appearance: none;
   font-size: unset;
   background: var(--color-secondary);
+}
+
+li {
+  list-style: none;
 }
 
 dialog {
