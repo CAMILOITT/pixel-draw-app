@@ -13,7 +13,7 @@ describe('coord', () => {
     coord1 = Array.from({ length: 5 }, () => ({
       x: Math.round(Math.random() * 30),
       y: Math.round(Math.random() * 30),
-      bg: 'white',
+      color: 'white',
       w: 10,
       h: 10,
       tool: Tools.brush,
@@ -22,7 +22,7 @@ describe('coord', () => {
     coord2 = Array.from({ length: 8 }, () => ({
       x: Math.round(Math.random() * 30),
       y: Math.round(Math.random() * 30),
-      bg: 'white',
+      color: 'white',
       w: 10,
       h: 10,
       tool: Tools.brush,
