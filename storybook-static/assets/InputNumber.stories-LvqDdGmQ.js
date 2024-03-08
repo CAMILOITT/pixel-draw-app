@@ -1,2 +1,0 @@
-import{I as a}from"./InputNumber-lsN1jdQ-.js";import"./jsx-runtime-vNq4Oc-g.js";import"./index-4g5l5LRQ.js";import"./_commonjsHelpers-4gQjN7DL.js";const c={title:"v1/UI/InputNumber",component:a,args:{value:0}},r={};var e,t,o;r.parameters={...r.parameters,docs:{...(e=r.parameters)==null?void 0:e.docs,source:{originalSource:"{}",...(o=(t=r.parameters)==null?void 0:t.docs)==null?void 0:o.source}}};const n=["Default"];export{r as Default,n as __namedExportsOrder,c as default};
-//# sourceMappingURL=InputNumber.stories-LvqDdGmQ.js.map

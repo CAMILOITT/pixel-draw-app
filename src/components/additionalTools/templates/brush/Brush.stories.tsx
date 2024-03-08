@@ -3,7 +3,6 @@ import { Meta, StoryObj } from '@storybook/react'
 import { fireEvent, within } from '@storybook/testing-library'
 import { ShapesBrush } from '../../../../types/brush/enum'
 import Brush from './Brush'
-import { LIMIT_SIZE } from '../../../../const/brush'
 
 const meta: Meta<typeof Brush> = {
   title: 'v1/Components/AdditionalTools/Templates/Brush',

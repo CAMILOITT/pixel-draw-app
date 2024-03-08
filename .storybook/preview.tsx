@@ -10,6 +10,7 @@ import {
 import * as React from 'react'
 import StateProvider from '../src/context'
 import { themes } from '@storybook/theming'
+import { DocsContainer } from '@storybook/addon-docs'
 
 const preview: Preview = {
   parameters: {
@@ -22,6 +23,11 @@ const preview: Preview = {
     },
     docs: {
       theme: themes.dark,
+
+      // container: ({ children, context }) => (
+      //   <DocsContainer context={context} children={children} />
+
+      // ),
     },
   },
   decorators: [
@@ -31,6 +37,18 @@ const preview: Preview = {
       </StateProvider>
     ),
   ],
+  globalTypes: {
+    docs: {
+      description: 'change page of canvas to docs',
+      defaultValue: 'canvas',
+      toolbar: {
+        title: 'canvas',
+        icon: 'circlehollow',
+        items: ['canvas', 'docs'],
+        dynamicTitle: true,
+      },
+    },
+  },
 }
 
 export default preview

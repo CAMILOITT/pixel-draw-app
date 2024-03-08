@@ -17,19 +17,13 @@ const config: StorybookConfig = {
     '@storybook/addon-interactions',
     '@storybook/test-runner',
     '@storybook/addon-coverage',
-    // {
-    //   name: '@storybook/addon-coverage',
-    //   options: {
-    //     istanbul: {
-    //       ...coverageConfig,
-    //     },
-    //   },
-    // },
+    '@storybook/addon-a11y',
+    '@storybook/addon-actions',
   ],
   framework: {
     name: '@storybook/react-vite',
     options: {},
   },
-  docs: { autodocs: 'tag' },
+  docs: { autodocs: true },
 }
 export default config
