@@ -1,3 +1,4 @@
+import { CanvasSizeChange } from '../../canvas/interface'
 import { CoordDrawing, DrawingDimensiones } from '../../drawing/interface'
 
 export interface SizePixel {
@@ -9,6 +10,7 @@ export interface SizePixel {
   sizePixel: DrawingDimensiones
   brushSize: DrawingDimensiones
   multiplier: CoordDrawing
+  size: CanvasSizeChange
 }
 
 export interface PositionPixel {

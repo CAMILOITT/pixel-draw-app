@@ -54,9 +54,10 @@ export function bucketFill({
   const pixelStack = [[x, y]]
 
   coords.toGroup({ tool: Tools.fillBucket, color: fillColor, x, y, w, h })
-
+  const numberMaxRepetition = 10000
+  let indexRepetition = 0
   if (!pixelStack) return
-  while (pixelStack.length > 0) {
+  while (pixelStack.length > 0 || indexRepetition > numberMaxRepetition) {
     if (pixelStack.length < 1) break
     const coord = pixelStack.pop()
     if (!coord) break
@@ -72,5 +73,6 @@ export function bucketFill({
       pixelStack.push([x, y + h])
       pixelStack.push([x, y - h])
     }
+    indexRepetition++
   }
 }

@@ -8,6 +8,7 @@ export function calculatePixelMouse({
   sizePixel,
   brushSize,
   multiplier,
+  size,
 }: SizePixel): {
   x: number
   y: number
@@ -23,16 +24,14 @@ export function calculatePixelMouse({
   const w = Math.ceil(sizePixelW * brushSize.w)
   const h = Math.ceil(sizePixelH * brushSize.h)
 
-  const centerDrawX = brushSize.w > 1 ? w / 2 : 0
-  const centerDrawY = brushSize.h > 1 ? h / 2 : 0
+  const pixelCalculate = {
+    w: size?.new / (size?.old / sizePixelW),
+    h: size?.new / (size?.old / sizePixelH),
+  }
 
-  const y = Math.floor(
-    Math.floor(correctingY / sizePixelH) * sizePixelH - centerDrawY
-  )
+  const y = Math.floor(Math.floor(correctingY / pixelCalculate.h) * sizePixelH)
 
-  const x = Math.floor(
-    Math.floor(correctingX / sizePixelW) * sizePixelW - centerDrawX
-  )
+  const x = Math.floor(Math.floor(correctingX / pixelCalculate.w) * sizePixelW)
 
   return { x, y, w, h }
 }

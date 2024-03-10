@@ -1,6 +1,6 @@
 import { forwardRef, useImperativeHandle, useRef } from 'react'
-import css from './Modal.module.css'
 import CloseIcon from '../../assets/icons/CloseIcon'
+import css from './Modal.module.css'
 
 interface ModalProps extends React.HTMLAttributes<HTMLDialogElement> {
   children?: React.ReactNode

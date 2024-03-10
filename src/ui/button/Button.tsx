@@ -1,13 +1,23 @@
+import { ForwardedRef, forwardRef } from 'react'
 import css from './Button.module.css'
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  ref?: React.LegacyRef<HTMLButtonElement> | undefined
-}
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {}
 
-export default function Button({ children, ref, className, ...props }: ButtonProps) {
-  return (
-    <button className={`${css.button} ${className||''}`} {...props} ref={ref}>
-      {children}
-    </button>
-  )
-}
+const Button = forwardRef<HTMLButtonElement, ButtonProps>(
+  (
+    { children, className, ...props }: ButtonProps,
+    ref: ForwardedRef<HTMLButtonElement>
+  ) => {
+    return (
+      <button
+        className={`${css.button} ${className || ''}`}
+        {...props}
+        ref={ref}
+      >
+        {children}
+      </button>
+    )
+  }
+)
+
+export default Button

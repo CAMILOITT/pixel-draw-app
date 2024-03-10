@@ -1,8 +1,8 @@
-import { useContext, useRef } from 'react'
-import css from './ColorSample.module.css'
 import Button from '@ui/button/Button'
+import { useContext, useRef } from 'react'
 import { ColorContext } from '../../context/state/color/Color'
 import { ListInfoColor } from '../../types/color/interface'
+import css from './ColorSample.module.css'
 
 interface ColorSampleProps {
   color: ListInfoColor

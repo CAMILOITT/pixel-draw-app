@@ -1,12 +1,12 @@
 import { expect } from '@storybook/jest'
 import { Meta, StoryObj } from '@storybook/react'
 import { userEvent, within } from '@storybook/testing-library'
-import Modal, { ModalRef } from './Modal'
-import { useRef } from 'react'
 import Button from '@ui/button/Button'
+import { useRef } from 'react'
+import Modal, { ModalRef } from './Modal'
 
 const meta: Meta<typeof Modal> = {
-  title: 'v1/components/modal',
+  title: 'v1/ui/modal',
   component: Modal,
   args: {
     children: 'este es el contenido de un modal',
@@ -35,7 +35,6 @@ const meta: Meta<typeof Modal> = {
   },
   render: function Render(storyArgs) {
     const RefModal = useRef<ModalRef | null>(null)
-
     function open() {
       if (!RefModal.current) return
       RefModal.current?.open()
@@ -44,7 +43,7 @@ const meta: Meta<typeof Modal> = {
     return (
       <div>
         <Button onClick={open} children="open modal" />
-        <Modal ref={RefModal} children={storyArgs.children}  />
+        <Modal ref={RefModal} children={storyArgs.children} />
       </div>
     )
   },

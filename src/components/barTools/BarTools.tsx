@@ -17,7 +17,7 @@ import { Tools } from '../../types/tools/enums'
 import ColorsSelected from '../../ui/colorsSelected/ColorsSelected'
 import ConfigDownload from '../configDownload/ConfigDownload'
 import ConfigurationCanvas from '../configurationCanvas/ConfigurationCanvas'
-import Modal, { ModalRef } from '../modal/Modal'
+import Modal, { ModalRef } from '../../ui/modal/Modal'
 import css from './BarTools.module.css'
 
 interface BarToolsProps {}

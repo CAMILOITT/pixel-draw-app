@@ -38,7 +38,7 @@ export function useDrawingMouse({ sizeCanvas }: useDrawingMouseProps) {
     })
   }, [infoCanvas, sizeCanvas])
 
-  function startDrawing({ clientX, clientY, left, top }: Drawing) {
+  function startDrawing({ clientX, clientY, left, top, size }: Drawing) {
     canDrawn = true
     if (toolSelect === Tools.eyeDropper || toolSelect === Tools.fillBucket)
       return
@@ -51,13 +51,17 @@ export function useDrawingMouse({ sizeCanvas }: useDrawingMouseProps) {
       multiplier,
       sizePixel,
       prevPosition,
+      size: {
+        old: sizeCanvas.w,
+        new: size || 1,
+      },
     })
 
     if (!ctx) return
 
     prevPosition = { x, y }
 
-    /* const color = */ actionsDrawing({
+    actionsDrawing({
       ctx,
       x,
       y,
@@ -68,9 +72,6 @@ export function useDrawingMouse({ sizeCanvas }: useDrawingMouseProps) {
       colors,
       prevPosition,
     })
-
-    // if (!color) return
-    // setColor(color)
   }
 
   function drawing({
@@ -81,6 +82,7 @@ export function useDrawingMouse({ sizeCanvas }: useDrawingMouseProps) {
     movementX,
     movementY,
     type,
+    size,
   }: DrawingMove) {
     if (!ctx || !ctxMouse) return
     if (toolSelect === Tools.eyeDropper || toolSelect === Tools.fillBucket)
@@ -95,6 +97,10 @@ export function useDrawingMouse({ sizeCanvas }: useDrawingMouseProps) {
       multiplier,
       sizePixel,
       prevPosition,
+      size: {
+        old: sizeCanvas.w,
+        new: size || 1,
+      },
     })
 
     if (movementX === undefined || movementY === undefined) {
@@ -117,7 +123,7 @@ export function useDrawingMouse({ sizeCanvas }: useDrawingMouseProps) {
     if (prevPosition.x === x && prevPosition.y === y) return
     if (!canDrawn) return
 
-    /*  const color = */ actionsDrawing({
+    actionsDrawing({
       ctx,
       x,
       y,
@@ -133,9 +139,6 @@ export function useDrawingMouse({ sizeCanvas }: useDrawingMouseProps) {
     })
 
     prevPosition = { x, y }
-
-    // if (!color) return
-    // setColor(color)
   }
 
   function endDrawing() {
@@ -161,7 +164,10 @@ export function useDrawingMouse({ sizeCanvas }: useDrawingMouseProps) {
       multiplier,
       sizePixel,
       prevPosition,
-    })
+      size: {
+        old: sizeCanvas.w,
+        new: sizeCanvas.w,
+      },})
 
     if (!ctx) return
 

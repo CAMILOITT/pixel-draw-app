@@ -25,6 +25,9 @@ dist-ssr
 
 dist
 
+yarn.lock
+package-lock.json
+
 # storybook
 
-# storybook-static
+storybook-static

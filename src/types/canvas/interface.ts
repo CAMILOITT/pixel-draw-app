@@ -50,3 +50,12 @@ export interface CanvasProvider {
     React.SetStateAction<CanvasContext | null>
   >
 }
+
+/** value of the canvas size */
+export interface CanvasSizeChange 
+{
+  /** old value */
+  old: number
+  /** new value */
+  new: number
+}

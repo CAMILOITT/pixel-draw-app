@@ -69,6 +69,7 @@ export interface Drawing {
   clientY: number
   left: number
   top: number
+  size: number
 }
 
 export interface DrawingMove extends Drawing {

@@ -1,22 +1,27 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { fillBackgroundCanvas } from '../../api/canvas/drawing'
+import {
+  changeSizeCanvas,
+  maxSizeCanvas,
+  maxTranslate,
+  minSizeCanvas,
+} from '../../const/infoCanvas'
 import { InfoCanvasContext } from '../../context/state/infoCanvas/InfoCanvas'
 import { useDrawingMouse } from '../../hooks/drawing/useDrawingMouse'
 import { useKeyboardEvents } from '../../hooks/useKeyboardEvents'
 import css from './LayerPixel.module.css'
 
-interface LayerPixelProps {}
-
 let prevPosition = { x: 0, y: 0 }
-let translateX = -50
-let translateY = -50
-const maxTranslate = 100
+const translate = { x: -50, y: -50 }
+
+interface LayerPixelProps {}
 
 export default function LayerPixel({}: LayerPixelProps) {
   const LayerDrawing = useRef<HTMLCanvasElement | null>(null)
   const LayerMouse = useRef<HTMLCanvasElement | null>(null)
 
   const [sizeCanvas] = useState({ w: 500, h: 500 })
+  const [dimensionsCanvas, setDimensionsCanvas] = useState(sizeCanvas)
   const { infoCanvas, setContextCanvasDrawing } = useContext(InfoCanvasContext)
   const { events: keyboardEvents, setCtx: setCtxKeyboard } = useKeyboardEvents()
   const {
@@ -28,11 +33,13 @@ export default function LayerPixel({}: LayerPixelProps) {
     useTools,
   } = useDrawingMouse({ sizeCanvas })
 
+  const [ctx, setCtx] = useState<CanvasRenderingContext2D>()
+
   useEffect(() => {
     if (!LayerMouse.current) return
     LayerMouse.current.width = sizeCanvas.w
     LayerMouse.current.height = sizeCanvas.h
-    LayerMouse.current.style.translate = `${translateX}% ${translateY}%`
+    LayerMouse.current.style.translate = `${translate.x}% ${translate.y}%`
     const ctx = LayerMouse.current.getContext('2d')
     if (!ctx) return
     setCtxMouseEvents(ctx)
@@ -43,9 +50,10 @@ export default function LayerPixel({}: LayerPixelProps) {
     if (!LayerDrawing.current) return
     LayerDrawing.current.width = sizeCanvas.w
     LayerDrawing.current.height = sizeCanvas.h
-    LayerDrawing.current.style.translate = `${translateX}% ${translateY}%`
+    LayerDrawing.current.style.translate = `${translate.x}% ${translate.y}%`
     const ctx = LayerDrawing.current.getContext('2d')
     if (!ctx) return
+    setCtx(ctx)
     setCtxEvents(ctx)
     setCtxKeyboard(ctx)
     setContextCanvasDrawing({ ctx })
@@ -71,20 +79,29 @@ export default function LayerPixel({}: LayerPixelProps) {
   function handleStartDrawing(e: React.MouseEvent) {
     const { clientX, clientY } = e
     const { left, top } = e.currentTarget.getBoundingClientRect()
-    startDrawing({ clientX, clientY, left, top })
+    startDrawing({ clientX, clientY, left, top, size: dimensionsCanvas.h })
   }
 
   function handleDrawing(e: React.MouseEvent) {
     const { clientX, clientY, movementX, movementY, type } = e
     const { left, top } = e.currentTarget.getBoundingClientRect()
-    drawing({ clientX, clientY, left, top, movementX, movementY, type })
+    drawing({
+      clientX,
+      clientY,
+      left,
+      top,
+      movementX,
+      movementY,
+      type,
+      size: dimensionsCanvas.h,
+    })
   }
 
   function handleTouchStart(e: React.TouchEvent<HTMLCanvasElement>) {
     if (e.targetTouches.length >= 2) return
     const { clientX, clientY } = e.targetTouches[0]
     const { left, top } = e.currentTarget.getBoundingClientRect()
-    startDrawing({ clientX, clientY, left, top })
+    startDrawing({ clientX, clientY, left, top, size: dimensionsCanvas.h })
   }
 
   function handleTouch(e: React.TouchEvent<HTMLCanvasElement>) {
@@ -92,21 +109,65 @@ export default function LayerPixel({}: LayerPixelProps) {
     if (touches.length >= 2) return
     const { clientX, clientY } = touches[0]
     const { left, top } = e.currentTarget.getBoundingClientRect()
-    drawing({ clientX, clientY, left, top })
+    drawing({ clientX, clientY, left, top, size: dimensionsCanvas.h })
   }
 
   function wheel(e: React.WheelEvent<HTMLDivElement>) {
-    const { deltaY, shiftKey } = e
+    const { deltaY, ctrlKey, shiftKey, altKey } = e
     if (!LayerDrawing.current || !LayerMouse.current) return
-    LayerDrawing.current.style.translate = `${translateX}% ${translateY}%`
-    LayerMouse.current.style.translate = `${translateX}% ${translateY}%`
-    if (shiftKey) {
-      deltaY < 0 && maxTranslate / 2 > translateX && translateX++
-      deltaY > 0 && -maxTranslate < translateX && translateX--
+    LayerDrawing.current.style.translate = `${translate.x}% ${translate.y}%`
+    LayerMouse.current.style.translate = `${translate.x}% ${translate.y}%`
+
+    if (!ctx) return
+
+    if (altKey) {
+      let changeSize = changeSizeCanvas
+      if (shiftKey) changeSize = changeSizeCanvas + 10
+      if (deltaY > 0) {
+        setDimensionsCanvas(oldValue => ({
+          w:
+            dimensionsCanvas.h <= maxSizeCanvas
+              ? oldValue.w + changeSize
+              : oldValue.w,
+          h:
+            dimensionsCanvas.w <= maxSizeCanvas
+              ? oldValue.h + changeSize
+              : oldValue.w,
+        }))
+        return
+      }
+      setDimensionsCanvas(oldValue => ({
+        w:
+          dimensionsCanvas.w >= minSizeCanvas
+            ? oldValue.w - changeSize
+            : oldValue.w,
+        h:
+          dimensionsCanvas.h >= minSizeCanvas
+            ? oldValue.h - changeSize
+            : oldValue.h,
+      }))
+      return
+    }
+
+    if (ctrlKey) {
+      if (shiftKey) {
+        deltaY < 0 && maxTranslate / 2 > translate.x && (translate.x += 5)
+        deltaY > 0 && -maxTranslate < translate.x && (translate.x -= 5)
+        return
+      }
+
+      deltaY < 0 && maxTranslate / 2 > translate.x && translate.x++
+      deltaY > 0 && -maxTranslate < translate.x && translate.x--
       return
     } else {
-      deltaY > 0 && maxTranslate / 2 > translateY && translateY++
-      deltaY < 0 && -maxTranslate < translateY && translateY--
+      if (shiftKey) {
+        deltaY > 0 && maxTranslate / 2 > translate.y && (translate.y += 5)
+        deltaY < 0 && -maxTranslate < translate.y && (translate.y -= 5)
+        return
+      }
+
+      deltaY > 0 && maxTranslate / 2 > translate.y && translate.y++
+      deltaY < 0 && -maxTranslate < translate.y && translate.y--
     }
   }
 
@@ -121,16 +182,16 @@ export default function LayerPixel({}: LayerPixelProps) {
     if (!LayerDrawing.current || !LayerMouse.current) return
 
     if (clientX !== prevPosition.x) {
-      movementX > 0 && maxTranslate / 2 > translateX && translateX++
-      movementX < 0 && -maxTranslate < translateX && translateX--
+      movementX > 0 && maxTranslate / 2 > translate.x && translate.x++
+      movementX < 0 && -maxTranslate < translate.x && translate.x--
     }
     if (clientY !== prevPosition.y) {
-      movementY > 0 && maxTranslate / 2 > translateY && translateY++
-      movementY < 0 && -maxTranslate < translateY && translateY--
+      movementY > 0 && maxTranslate / 2 > translate.y && translate.y++
+      movementY < 0 && -maxTranslate < translate.y && translate.y--
     }
 
-    LayerDrawing.current.style.translate = `${translateX}% ${translateY}%`
-    LayerMouse.current.style.translate = `${translateX}% ${translateY}%`
+    LayerDrawing.current.style.translate = `${translate.x}% ${translate.y}%`
+    LayerMouse.current.style.translate = `${translate.x}% ${translate.y}%`
 
     prevPosition = { x: clientX, y: clientY }
   }
@@ -150,12 +211,14 @@ export default function LayerPixel({}: LayerPixelProps) {
           ref={LayerDrawing}
           className={css.canvasPixel}
           role="layerDrawing"
+          style={{ width: dimensionsCanvas.w, height: dimensionsCanvas.h }}
         >
           parece que tu navegador no soporta la api de canvas por favor
           considera actualizar el navegador a la version mas reciente o utilizar
           otro navegador como Opera, Firefox, Chrome, etc
         </canvas>
         <canvas
+          style={{ width: dimensionsCanvas.w, height: dimensionsCanvas.h }}
           role="layerMouse"
           ref={LayerMouse}
           className={css.canvasPixel}
