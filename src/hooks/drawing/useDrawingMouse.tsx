@@ -31,6 +31,11 @@ export function useDrawingMouse({ sizeCanvas }: useDrawingMouseProps) {
   const { brushSize } = useContext(BrushContext)
   const [multiplier, setMultiplier] = useState({ x: 1, y: 1 })
 
+  const [sizeRelative, setSizeRelative] = useState({
+    w: infoCanvas.w,
+    h: infoCanvas.h,
+  })
+
   useEffect(() => {
     setMultiplier({
       x: sizeCanvas.w / infoCanvas.w,
@@ -38,7 +43,7 @@ export function useDrawingMouse({ sizeCanvas }: useDrawingMouseProps) {
     })
   }, [infoCanvas, sizeCanvas])
 
-  function startDrawing({ clientX, clientY, left, top, size }: Drawing) {
+  function startDrawing({ clientX, clientY, left, top }: Drawing) {
     canDrawn = true
     if (toolSelect === Tools.eyeDropper || toolSelect === Tools.fillBucket)
       return
@@ -52,8 +57,8 @@ export function useDrawingMouse({ sizeCanvas }: useDrawingMouseProps) {
       sizePixel,
       prevPosition,
       size: {
-        old: sizeCanvas.w,
-        new: size || 1,
+        absolute: infoCanvas,
+        relative: sizeRelative,
       },
     })
 
@@ -82,7 +87,6 @@ export function useDrawingMouse({ sizeCanvas }: useDrawingMouseProps) {
     movementX,
     movementY,
     type,
-    size,
   }: DrawingMove) {
     if (!ctx || !ctxMouse) return
     if (toolSelect === Tools.eyeDropper || toolSelect === Tools.fillBucket)
@@ -98,8 +102,8 @@ export function useDrawingMouse({ sizeCanvas }: useDrawingMouseProps) {
       sizePixel,
       prevPosition,
       size: {
-        old: sizeCanvas.w,
-        new: size || 1,
+        absolute: infoCanvas,
+        relative: sizeRelative,
       },
     })
 
@@ -165,9 +169,10 @@ export function useDrawingMouse({ sizeCanvas }: useDrawingMouseProps) {
       sizePixel,
       prevPosition,
       size: {
-        old: sizeCanvas.w,
-        new: sizeCanvas.w,
-      },})
+        absolute: infoCanvas,
+        relative: sizeRelative,
+      },
+    })
 
     if (!ctx) return
 
@@ -210,5 +215,6 @@ export function useDrawingMouse({ sizeCanvas }: useDrawingMouseProps) {
     setCtxMouse,
     setMultiplier,
     useTools,
+    setSizeRelative,
   }
 }

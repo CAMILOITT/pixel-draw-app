@@ -19,10 +19,11 @@ interface LayerPixelProps {}
 export default function LayerPixel({}: LayerPixelProps) {
   const LayerDrawing = useRef<HTMLCanvasElement | null>(null)
   const LayerMouse = useRef<HTMLCanvasElement | null>(null)
-
-  const [sizeCanvas] = useState({ w: 500, h: 500 })
-  const [dimensionsCanvas, setDimensionsCanvas] = useState(sizeCanvas)
   const { infoCanvas, setContextCanvasDrawing } = useContext(InfoCanvasContext)
+  const [dimensionsCanvas, setDimensionsCanvas] = useState({
+    w: infoCanvas.w,
+    h: infoCanvas.h,
+  })
   const { events: keyboardEvents, setCtx: setCtxKeyboard } = useKeyboardEvents()
   const {
     drawing,
@@ -31,25 +32,26 @@ export default function LayerPixel({}: LayerPixelProps) {
     setCtx: setCtxEvents,
     setCtxMouse: setCtxMouseEvents,
     useTools,
-  } = useDrawingMouse({ sizeCanvas })
+    setSizeRelative,
+  } = useDrawingMouse({ sizeCanvas: infoCanvas })
 
   const [ctx, setCtx] = useState<CanvasRenderingContext2D>()
 
   useEffect(() => {
     if (!LayerMouse.current) return
-    LayerMouse.current.width = sizeCanvas.w
-    LayerMouse.current.height = sizeCanvas.h
+    LayerMouse.current.width = infoCanvas.w
+    LayerMouse.current.height = infoCanvas.h
     LayerMouse.current.style.translate = `${translate.x}% ${translate.y}%`
     const ctx = LayerMouse.current.getContext('2d')
     if (!ctx) return
     setCtxMouseEvents(ctx)
-    fillBackgroundCanvas({ ctx, ...sizeCanvas, bg: infoCanvas.bg })
-  }, [infoCanvas, setCtxMouseEvents, sizeCanvas])
+    fillBackgroundCanvas({ ctx, ...infoCanvas })
+  }, [infoCanvas, setCtxMouseEvents])
 
   useEffect(() => {
     if (!LayerDrawing.current) return
-    LayerDrawing.current.width = sizeCanvas.w
-    LayerDrawing.current.height = sizeCanvas.h
+    LayerDrawing.current.width = infoCanvas.w
+    LayerDrawing.current.height = infoCanvas.h
     LayerDrawing.current.style.translate = `${translate.x}% ${translate.y}%`
     const ctx = LayerDrawing.current.getContext('2d')
     if (!ctx) return
@@ -57,9 +59,10 @@ export default function LayerPixel({}: LayerPixelProps) {
     setCtxEvents(ctx)
     setCtxKeyboard(ctx)
     setContextCanvasDrawing({ ctx })
-    fillBackgroundCanvas({ ctx, ...sizeCanvas, bg: infoCanvas.bg })
+    fillBackgroundCanvas({ ctx, ...infoCanvas })
+    setDimensionsCanvas({ w: infoCanvas.w, h: infoCanvas.h })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [infoCanvas, sizeCanvas])
+  }, [infoCanvas])
 
   useEffect(() => {
     function handleWheel(e: WheelEvent) {
@@ -79,7 +82,7 @@ export default function LayerPixel({}: LayerPixelProps) {
   function handleStartDrawing(e: React.MouseEvent) {
     const { clientX, clientY } = e
     const { left, top } = e.currentTarget.getBoundingClientRect()
-    startDrawing({ clientX, clientY, left, top, size: dimensionsCanvas.h })
+    startDrawing({ clientX, clientY, left, top })
   }
 
   function handleDrawing(e: React.MouseEvent) {
@@ -93,7 +96,6 @@ export default function LayerPixel({}: LayerPixelProps) {
       movementX,
       movementY,
       type,
-      size: dimensionsCanvas.h,
     })
   }
 
@@ -101,7 +103,7 @@ export default function LayerPixel({}: LayerPixelProps) {
     if (e.targetTouches.length >= 2) return
     const { clientX, clientY } = e.targetTouches[0]
     const { left, top } = e.currentTarget.getBoundingClientRect()
-    startDrawing({ clientX, clientY, left, top, size: dimensionsCanvas.h })
+    startDrawing({ clientX, clientY, left, top })
   }
 
   function handleTouch(e: React.TouchEvent<HTMLCanvasElement>) {
@@ -109,7 +111,7 @@ export default function LayerPixel({}: LayerPixelProps) {
     if (touches.length >= 2) return
     const { clientX, clientY } = touches[0]
     const { left, top } = e.currentTarget.getBoundingClientRect()
-    drawing({ clientX, clientY, left, top, size: dimensionsCanvas.h })
+    drawing({ clientX, clientY, left, top })
   }
 
   function wheel(e: React.WheelEvent<HTMLDivElement>) {
@@ -123,51 +125,50 @@ export default function LayerPixel({}: LayerPixelProps) {
     if (altKey) {
       let changeSize = changeSizeCanvas
       if (shiftKey) changeSize = changeSizeCanvas + 10
+
       if (deltaY > 0) {
+        if (
+          dimensionsCanvas.h <= maxSizeCanvas ||
+          dimensionsCanvas.w <= maxSizeCanvas
+        ) {
+          setDimensionsCanvas(oldValue => ({
+            w: oldValue.w + changeSize,
+            h: oldValue.h + changeSize,
+          }))
+          setSizeRelative(dimensionsCanvas)
+          return
+        }
+      }
+
+      if (
+        dimensionsCanvas.w >= minSizeCanvas ||
+        dimensionsCanvas.h >= minSizeCanvas
+      ) {
         setDimensionsCanvas(oldValue => ({
-          w:
-            dimensionsCanvas.h <= maxSizeCanvas
-              ? oldValue.w + changeSize
-              : oldValue.w,
-          h:
-            dimensionsCanvas.w <= maxSizeCanvas
-              ? oldValue.h + changeSize
-              : oldValue.w,
+          w: oldValue.w - changeSize,
+          h: oldValue.h - changeSize,
         }))
+        setSizeRelative(dimensionsCanvas)
         return
       }
-      setDimensionsCanvas(oldValue => ({
-        w:
-          dimensionsCanvas.w >= minSizeCanvas
-            ? oldValue.w - changeSize
-            : oldValue.w,
-        h:
-          dimensionsCanvas.h >= minSizeCanvas
-            ? oldValue.h - changeSize
-            : oldValue.h,
-      }))
-      return
     }
 
     if (ctrlKey) {
-      if (shiftKey) {
-        deltaY < 0 && maxTranslate / 2 > translate.x && (translate.x += 5)
-        deltaY > 0 && -maxTranslate < translate.x && (translate.x -= 5)
-        return
-      }
-
-      deltaY < 0 && maxTranslate / 2 > translate.x && translate.x++
-      deltaY > 0 && -maxTranslate < translate.x && translate.x--
+      let moveIncrement = 2
+      if (shiftKey) moveIncrement = 5
+      if (deltaY < 0 && maxTranslate / 2 > translate.x)
+        translate.x += moveIncrement
+      if (deltaY > 0 && -maxTranslate < translate.x)
+        translate.x -= moveIncrement
       return
     } else {
-      if (shiftKey) {
-        deltaY > 0 && maxTranslate / 2 > translate.y && (translate.y += 5)
-        deltaY < 0 && -maxTranslate < translate.y && (translate.y -= 5)
-        return
-      }
-
-      deltaY > 0 && maxTranslate / 2 > translate.y && translate.y++
-      deltaY < 0 && -maxTranslate < translate.y && translate.y--
+      let moveIncrement = 2
+      if (shiftKey) moveIncrement = 5
+      if (deltaY > 0 && maxTranslate / 2 > translate.y)
+        translate.y += moveIncrement
+      if (deltaY < 0 && -maxTranslate < translate.y)
+        translate.y -= moveIncrement
+      return
     }
   }
 

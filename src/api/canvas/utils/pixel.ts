@@ -25,8 +25,8 @@ export function calculatePixelMouse({
   const h = Math.ceil(sizePixelH * brushSize.h)
 
   const pixelCalculate = {
-    w: size?.new / (size?.old / sizePixelW),
-    h: size?.new / (size?.old / sizePixelH),
+    w: size.relative.w / (size.absolute.w / sizePixelW),
+    h: size.relative.h / (size.absolute.h / sizePixelH),
   }
 
   const y = Math.floor(Math.floor(correctingY / pixelCalculate.h) * sizePixelH)

@@ -52,10 +52,9 @@ export interface CanvasProvider {
 }
 
 /** value of the canvas size */
-export interface CanvasSizeChange 
-{
+export interface CanvasSizeChange {
   /** old value */
-  old: number
+  absolute: DrawingDimensiones
   /** new value */
-  new: number
+  relative: DrawingDimensiones
 }
