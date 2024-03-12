@@ -1,4 +1,4 @@
-import { Color } from '@utils/color'
+import { GetColor } from '@utils/color'
 import { useContext, useEffect, useState } from 'react'
 import { ColorContext } from '../../context/state/color/Color'
 import { StatusTransitionColor } from '../../types/color/type'
@@ -49,17 +49,21 @@ export default function ColorsSelected({}: ColorsSelectedProps) {
   return (
     <>
       <div
-        data-color={Color.convertDataToString(colors.colorPrimary)}
+        data-color={GetColor.convertDataToString(colors.colorPrimary)}
         data-color-select="colorPrimary"
-        style={{ background: Color.convertDataToString(colors.colorPrimary) }}
+        style={{
+          background: GetColor.convertDataToString(colors.colorPrimary),
+        }}
         onClick={handleSelectColor}
         className={`${css.colorPrimary} ${css[statusColorPrimary]} `}
         role="colorPanelPrimary"
       ></div>
       <div
-        data-color={Color.convertDataToString(colors.colorSecondary)}
+        data-color={GetColor.convertDataToString(colors.colorSecondary)}
         data-color-select="colorSecondary"
-        style={{ background: Color.convertDataToString(colors.colorSecondary) }}
+        style={{
+          background: GetColor.convertDataToString(colors.colorSecondary),
+        }}
         onClick={handleSelectColor}
         className={` ${css.colorSecondary} ${css[statusColorSecondary]} `}
         role="colorPanelSecondary"

@@ -1,7 +1,7 @@
 import { expect } from '@storybook/jest'
 import { Meta, StoryObj } from '@storybook/react'
 import { fireEvent, within } from '@storybook/testing-library'
-import { Color } from '@utils/color'
+import { GetColor } from '@utils/color'
 import { useState } from 'react'
 import { InformationColor } from 'src/types/color/enums'
 import { PickerColor } from './PickerColor'
@@ -32,7 +32,7 @@ const meta: Meta<typeof PickerColor> = {
     },
   },
 
-  play: async ({ canvasElement, step,  }) => {
+  play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement)
     const selectBox = canvas.getByRole('ColorSelectorBox')
     const hue = canvas.getByRole('sliderHue')
@@ -50,7 +50,7 @@ const meta: Meta<typeof PickerColor> = {
         await expect(alpha).toBeInTheDocument()
 
         await step('cambiando de valor del colores', async () => {
-          const valueInitial = Color.getDataHsla(
+          const valueInitial = GetColor.getDataHsla(
             selectBox.textContent as string
           ) as [number, number, number, number]
           await expect(selectBox).toHaveTextContent(
@@ -66,7 +66,7 @@ const meta: Meta<typeof PickerColor> = {
           fireEvent.change(lightness, { target: { value: 50 } })
           fireEvent.change(alpha, { target: { value: 0.5 } })
 
-          const valueChanged = Color.getDataHsla(
+          const valueChanged = GetColor.getDataHsla(
             selectBox.textContent as string
           ) as [number, number, number, number]
           expect(selectBox).toHaveTextContent(

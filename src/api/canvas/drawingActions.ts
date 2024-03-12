@@ -1,25 +1,8 @@
-import { ConfigCanvas } from '../../types/canvas/interface'
-import { InformationColorChange } from '../../types/color/interface'
-import { CoordDrawing } from '../../types/drawing/interface'
+import ActionsDrawing from '../../types/drawing/interface'
 import { Tools } from '../../types/tools/enums'
-import { Color } from '../../utils/color'
+import { GetColor } from '../../utils/color'
 import { handleCorrection } from './correction'
 import { clean, draw } from './drawing'
-
-export default interface ActionsDrawing {
-  ctx: CanvasRenderingContext2D
-  x: number
-  y: number
-  w: number
-  h: number
-  toolSelect: Tools
-  infoCanvas: ConfigCanvas
-  colors: InformationColorChange
-  prevPosition: CoordDrawing
-  movementX?: number
-  movementY?: number
-  type?: string
-}
 
 export function actionsDrawing({
   ctx,
@@ -54,7 +37,7 @@ export function actionsDrawing({
       y,
       w,
       h,
-      color: Color.convertDataToString(colors[colors.colorFocus]),
+      color: GetColor.convertDataToString(colors[colors.colorFocus]),
     }
 
     draw(infoDraw)

@@ -1,3 +1,6 @@
+import { ConfigCanvas } from '../canvas/interface'
+import { InformationColorChange } from '../color/interface'
+import { Tools } from '../tools/enums'
 
 /**
  * context of canvas
@@ -73,6 +76,19 @@ export interface Drawing {
 }
 
 export interface DrawingMove extends Drawing {
+  movementX?: number
+  movementY?: number
+  type?: string
+}
+
+export default interface ActionsDrawing
+  extends DrawingDimensiones,
+    CoordDrawing,
+    CanvasContext {
+  toolSelect: Tools
+  infoCanvas: ConfigCanvas
+  colors: InformationColorChange
+  prevPosition: CoordDrawing
   movementX?: number
   movementY?: number
   type?: string

@@ -35,7 +35,7 @@ export default function LayerPixel({}: LayerPixelProps) {
     setSizeRelative,
   } = useDrawingMouse({ sizeCanvas: infoCanvas })
 
-  const [ctx, setCtx] = useState<CanvasRenderingContext2D>()
+  const [ctx, setCtx] = useState<RenderingContext>()
 
   useEffect(() => {
     if (!LayerMouse.current) return
@@ -53,7 +53,9 @@ export default function LayerPixel({}: LayerPixelProps) {
     LayerDrawing.current.width = infoCanvas.w
     LayerDrawing.current.height = infoCanvas.h
     LayerDrawing.current.style.translate = `${translate.x}% ${translate.y}%`
-    const ctx = LayerDrawing.current.getContext('2d')
+    const ctx = LayerDrawing.current.getContext('2d', {
+      willReadFrequently: true,
+    })
     if (!ctx) return
     setCtx(ctx)
     setCtxEvents(ctx)

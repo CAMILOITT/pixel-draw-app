@@ -1,4 +1,4 @@
-import { InformationColor } from 'src/types/color/enums'
+import { InformationColor } from '../../../types/color/enums'
 import {
   ColorContext,
   InformationColorChange,

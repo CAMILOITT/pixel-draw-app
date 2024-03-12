@@ -21,6 +21,25 @@ export interface InformationDrawing extends CoordDrawing, DrawingDimensiones {
   color: string | null
 }
 
+export interface InformationDrawingEraser
+  extends CoordDrawing,
+    DrawingDimensiones {
+  tool: Tools.eraser
+  /** color */
+  color: string | null
+}
+
+export interface InformationDrawingOtherTool
+  extends CoordDrawing,
+    DrawingDimensiones {
+  tool: Tools.brush
+  /** color */
+  color: string
+}
+export type InformationCo =
+  | InformationDrawingEraser
+  | InformationDrawingOtherTool
+
 /**
  * brush information
  *

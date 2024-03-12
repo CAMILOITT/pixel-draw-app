@@ -1,4 +1,4 @@
-import { Color, ConvertColor } from '@utils/color'
+import { GetColor } from '@utils/color'
 import { useContext, useEffect, useState } from 'react'
 import { coords } from '../../api/canvas/coord'
 import { actionsDrawing } from '../../api/canvas/drawingActions'
@@ -119,7 +119,7 @@ export function useDrawingMouse({ sizeCanvas }: useDrawingMouseProps) {
 
     ctxMouse.clearRect(0, 0, sizeCanvas.w, sizeCanvas.h)
     ctxMouse.beginPath()
-    ctxMouse.fillStyle = Color.convertDataToString(colors[colors.colorFocus])
+    ctxMouse.fillStyle = GetColor.convertDataToString(colors[colors.colorFocus])
     ctxMouse.rect(x, y, w, h)
     ctxMouse.fill()
     ctxMouse.closePath()
@@ -177,34 +177,34 @@ export function useDrawingMouse({ sizeCanvas }: useDrawingMouseProps) {
     if (!ctx) return
 
     if (toolSelect === Tools.eyeDropper) {
-      const color = eyeDropper({
+      const {
+        color: { h, s, l, a },
+      } = eyeDropper({
         ctx,
         x,
         y,
       })
-      const [hue, saturation, lightness, alpha] = ConvertColor.rgbToHsl(
-        color[0],
-        color[1],
-        color[2],
-        color[3] / 255
-      )
+
       setColor({
-        hue,
-        lightness,
-        saturation,
-        alpha,
+        hue: h,
+        lightness: l,
+        saturation: s,
+        alpha: a,
       })
     }
+    console.time('bucket fill')
     if (toolSelect === Tools.fillBucket) {
-      const color = eyeDropper({
+      const { colorFormat: bg } = eyeDropper({
         ctx,
         x,
         y,
       })
-      const bg = `rgb(${color[0]}, ${color[1]}, ${color[2]})`
-      const fillColor = Color.convertDataToString(colors[colors.colorFocus])
+      const fillColor = GetColor.convertDataToString(colors[colors.colorFocus])
+
       bucketFill({ ctx, x, y, w, h, color: bg, fillColor })
     }
+
+    console.timeEnd('bucket fill')
   }
 
   return {

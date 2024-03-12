@@ -85,11 +85,10 @@ export function reDrawing({ ctx }: CanvasContext) {
       if (dataDraw.tool === Tools.brush && dataDraw.color)
         draw({ ...dataDraw, color: dataDraw.color, ctx })
       if (dataDraw.tool === Tools.fillBucket) {
-        const color = eyeDropper({
+        const { colorFormat: bg } = eyeDropper({
           ctx,
           ...dataDraw,
         })
-        const bg = `rgb(${color[0]}, ${color[1]}, ${color[2]})`
         const fillColor = dataDraw.color || 'black'
         bucketFill({ ctx, ...dataDraw, color: bg, fillColor })
       }

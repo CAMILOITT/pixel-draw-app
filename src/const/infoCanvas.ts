@@ -12,7 +12,7 @@ export const SizeCanvas: DrawingDimensiones = {
   h: 500,
 }
 
-export const SizePixel : DrawingDimensiones = {
+export const SizePixel: DrawingDimensiones = {
   w: 10,
   h: 10,
 }

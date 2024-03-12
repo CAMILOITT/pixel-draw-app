@@ -6,7 +6,7 @@ interface SliderColorProps
 
 export default function SliderColor({
   ...props
-}: // setDefaultValue,
+}:
 SliderColorProps) {
   return <input type="range" className={css.sliderColor} {...props} />
 }

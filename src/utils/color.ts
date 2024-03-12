@@ -1,14 +1,53 @@
-import { InformationColor } from 'src/types/color/enums'
+import { InformationColor } from '../types/color/enums'
 
-export class Color {
+export class GetColor {
+  static getData(color: string) {
+    const data = {
+      data: { h: 0, s: 0, l: 0, a: 0 },
+      colorFormat: '',
+    }
+    if (color.includes('rgb')) {
+      const { r, g, b, a: ra } = this.getDataRgb(color)
+      const { h, s, l, a } = ConvertColor.rgbToHsl(r, g, b, ra)
+      data.data = { h, s, l, a }
+      data.colorFormat = this.convertDataToString({
+        hue: h,
+        saturation: s,
+        lightness: l,
+        alpha: a,
+      })
+    }
+
+    if (color.includes('hsl')) {
+      const { h, s, l, a } = this.getDataHsla(color)
+      data.data = { h, s, l, a }
+      data.colorFormat = this.convertDataToString({
+        hue: h,
+        saturation: s,
+        lightness: l,
+        alpha: a,
+      })
+    }
+    return data
+  }
+
   static getDataHsla(colorHsla: string) {
     const regex =
       /hsla?\s*?\(\s*?(?<h>\d+),\s*?(?<s>\d+)%?,\s*?(?<l>\d+)%,?\s*(?<a>\d+(?:\.\d+)?)?\s*?\)/
     const infoMatch = colorHsla.match(regex)
-    if (!infoMatch || !infoMatch.groups) return null
-    return Object.values(infoMatch.groups).map(element =>
-      isNaN(parseInt(element)) ? 1 : Number(element)
-    ) as [number, number, number, number]
+    if (!infoMatch || !infoMatch.groups)
+      return {
+        h: 0,
+        s: 0,
+        l: 0,
+        a: 0,
+      }
+    return {
+      h: Number(infoMatch.groups.h),
+      s: Number(infoMatch.groups.s),
+      l: Number(infoMatch.groups.l),
+      a: Number(infoMatch.groups.a)||1,
+    }
   }
 
   static getDataRgb(colorRgb: string) {
@@ -16,26 +55,25 @@ export class Color {
       /rgba?\s*?\(\s*?(?<r>\d+),\s*?(?<g>\d+),\s*?(?<b>\d+),?\s*?(?<a>\d+(?:\.\d+)?)?\s*?\)/
 
     const infoMatch = colorRgb.match(regex)
-    if (!infoMatch || !infoMatch.groups) return null
-    return Object.values(infoMatch.groups).map(element =>
-      isNaN(parseInt(element)) ? 1 : Number(element)
-    ) as [number, number, number, number]
-  }
-
-  static convertRgbToHsl(color: string) {
-    if (color.includes('rgb')) {
-      const value = this.getDataRgb(color)
-      if (value) return ConvertColor.rgbToHsl(...value)
+    if (!infoMatch || !infoMatch.groups)
+      return {
+        r: 0,
+        g: 0,
+        b: 0,
+        a: 0,
+      }
+    return {
+      r: Number(infoMatch.groups.r),
+      g: Number(infoMatch.groups.g),
+      b: Number(infoMatch.groups.b),
+      a: Number(infoMatch.groups.a)||1,
     }
-    if (color.includes('hsl')) return this.getDataHsla(color)
-    return null
   }
 
   static compareColor(color1: string, color2: string) {
-    const valueColor1 = this.convertRgbToHsl(color1)
-    const valueColor2 = this.convertRgbToHsl(color2)
-
-    return JSON.stringify(valueColor1) === JSON.stringify(valueColor2)
+    const { colorFormat: value1 } = this.getData(color1)
+    const { colorFormat: value2 } = this.getData(color2)
+    return value1 === value2
   }
 
   static convertDataToString({
@@ -49,34 +87,32 @@ export class Color {
 }
 
 export class ConvertColor {
-  static rgbToHsl(
-    red: number,
-    green: number,
-    blue: number,
-    alpha: number = 1
-  ): [number, number, number, number] {
-    if (!alpha) alpha = 1
-
+  static rgbToHsl(red: number, green: number, blue: number, alpha: number = 1) {
     red /= 255
     green /= 255
     blue /= 255
-    const l = Math.max(red, green, blue)
-    const s = l - Math.min(red, green, blue)
-    const h = s
-      ? l === red
-        ? (green - blue) / s
-        : l === green
-        ? 2 + (blue - red) / s
-        : 4 + (red - green) / s
+    const light = Math.max(red, green, blue)
+    const saturation = light - Math.min(red, green, blue)
+    const hue = saturation
+      ? light === red
+        ? (green - blue) / saturation
+        : light === green
+        ? 2 + (blue - red) / saturation
+        : 4 + (red - green) / saturation
       : 0
 
-    const r = Math.round(60 * h < 0 ? 60 * h + 360 : 60 * h)
-    const g = Math.round(
-      100 * (s ? (l <= 0.5 ? s / (2 * l - s) : s / (2 - (2 * l - s))) : 0)
+    const h = Math.round(60 * hue < 0 ? 60 * hue + 360 : 60 * hue)
+    const s = Math.round(
+      100 *
+        (saturation
+          ? light <= 0.5
+            ? saturation / (2 * light - saturation)
+            : saturation / (2 - (2 * light - saturation))
+          : 0)
     )
-    const b = Math.round((100 * (2 * l - s)) / 2)
+    const l = Math.round((100 * (2 * light - saturation)) / 2)
 
-    return [r, g, b, alpha]
+    return { h, s, l, a: alpha }
   }
 
   static hslToRgb(
@@ -126,6 +162,6 @@ export class ConvertColor {
     g = Math.round((g + m) * 255)
     b = Math.round((b + m) * 255)
 
-    return [r, g, b, alpha]
+    return { r, g, b, a: alpha }
   }
 }

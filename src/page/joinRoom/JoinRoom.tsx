@@ -13,7 +13,6 @@ export default function JoinRoom({}: JoinRoomProps) {
       <LayerPixel />
       <BarTools />
       <MenuColor />
-      {/* <iframe src="http://localhost:5173/canvas" style={{position: 'absolute', top: 0, left: '40%', width: '50%', height: '50%'}} ></iframe> */}
     </div>
   )
 }
